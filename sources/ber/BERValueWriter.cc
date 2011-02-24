@@ -221,7 +221,8 @@ void BERValueWriter::_doWriteOctetString(const OctetString& value, const OctetSt
 void BERValueWriter::_doWriteVisibleString(const OctetString& value, const VisibleStringType& type)
 {
    _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : BERBuffer::VISIBLESTRING_BERTYPE,
-      BERBuffer::PRIMITIVE_OBJECTYPE, type.tagClass());
+      ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+      type.tagClass());
 
    // primitive encoding
    _buffer.encodeLengthOctets(value.size());

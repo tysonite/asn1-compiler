@@ -611,10 +611,10 @@ public:
    }
 };
 
-class Type8 : public asn1::VisibleStringType
+class Type8 : public asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>
 {
 public:
-   Type8()
+   Type8() : asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>(new asn1::VisibleStringType)
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -622,10 +622,10 @@ public:
    }
 };
 
-class Type9 : public asn1::VisibleStringType
+class Type9 : public asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>
 {
 public:
-   Type9()
+   Type9() : asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>(new asn1::VisibleStringType)
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);

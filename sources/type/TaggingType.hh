@@ -42,6 +42,8 @@ public:
          // override inner type definition
          const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
          const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
+         if (!_innerType->hasExplicitTagging())
+            const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
 
          _innerType->write(writer, value);
       }
