@@ -248,7 +248,7 @@ public:
       }
 
       pc = h & 0x20;
-      cl = 0x03 & (h >> 6);
+      cl = (h << 6) & 0xC0;
    }
 
    // Lookups identifiers octets (position of cursor inside BER buffer is not changed)

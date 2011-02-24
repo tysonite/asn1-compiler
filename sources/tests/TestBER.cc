@@ -347,7 +347,7 @@ void TestBERIntegerConstraintsWithValue(const asn1::Integer& vToWrite)
    asn1::BERBuffer outbuffer;
    asn1::BERValueWriter writer(outbuffer);
 
-   asn1::IntegerType type(0, false);
+   asn1::IntegerType type;
    type.setMinValue(0);
    type.setMaxValue(255);
 

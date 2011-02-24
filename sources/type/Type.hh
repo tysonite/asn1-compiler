@@ -93,7 +93,7 @@ private:
    DISALLOW_COPY_AND_ASSIGN(Type);
 };
 
-template <class TValue>
+template <typename TValue>
 class ValueRestorer
 {
 public:

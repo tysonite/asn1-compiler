@@ -38,8 +38,8 @@ void BERValueWriter::writeInteger(const Integer& value, const IntegerType& type)
       _nestedWriter->writeInteger(value, type);
    else
    {
-      BERBuffer::SizeType position =  _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::INTEGER_BERTYPE,
-         (type.hasExplicitTagging() || type.hasEmptyTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+      BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::INTEGER_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
          type.tagClass());
 
       Integer tmpValue = (value >= 0 ? value : ~value);
@@ -77,7 +77,7 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
    else
    {
       BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::OBJECTID_BERTYPE,
-         (type.hasExplicitTagging() || type.hasEmptyTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
          type.tagClass());
 
       if (value.size() < 2)
@@ -210,7 +210,8 @@ BERValueWriter* BERValueWriter::_prototype() const
 void BERValueWriter::_doWriteOctetString(const OctetString& value, const OctetStringType& type)
 {
    _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : BERBuffer::OCTETSTRING_BERTYPE,
-      BERBuffer::PRIMITIVE_OBJECTYPE, type.tagClass());
+      ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+      type.tagClass());
 
    // primitive encoding
    _buffer.encodeLengthOctets(value.size());

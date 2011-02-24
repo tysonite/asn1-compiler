@@ -242,7 +242,7 @@ void BERValueReader::readExplicitBegin(const Type& type)
       int64_t length;
 
       _buffer.decodeIL(tag, pc, cl, length);
-      if (tag != type.tagNumber())
+      if (tag != type.tagNumber() || cl != type.tagClass())
          throw BERBufferException("BER " + type.toString() + " is expected");
       if (pc != BERBuffer::CONSTRUCTED_OBJECTYPE)
       {
@@ -283,7 +283,7 @@ void BERValueReader::_readOctetStringOctets(OctetString& value, const OctetStrin
 // Checks tag for correctness
 void BERValueReader::_checkTagIsCorrect(PCType pc, const Type& type)
 {
-   if (type.hasExplicitTagging() || type.hasEmptyTagging())
+   if (type.hasTagNumber() && (type.hasExplicitTagging() || type.hasEmptyTagging()))
    {
       if (pc != BERBuffer::CONSTRUCTED_OBJECTYPE)
          throw BERBufferException("BER " + type.toString() + " must be CONSTRUCTED");
