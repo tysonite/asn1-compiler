@@ -13,10 +13,12 @@ namespace asn1
 // Consider the following examples:
 // Type1 ::= [1] INTEGER
 // Type2 ::= EXPLICIT VisibleString
-template <typename TypeItem, typename TypeItemType>
+template <typename TypeItemType>
 class TaggingType : public Type
 {
 public:
+
+   typedef typename TypeItemType::ValueType ValueType;
 
    // Constructor
    explicit TaggingType(const TypeItemType* innerType)
@@ -31,7 +33,7 @@ public:
    // Returns reference to inner type
    const TypeItemType& innerType() const { return *_innerType; }
 
-   void read(ASN1ValueReader& reader, TypeItem& value) const
+   void read(ASN1ValueReader& reader, ValueType& value) const
    {
       if (hasExplicitTagging() || hasEmptyTagging())
          reader.readExplicitBegin(*this);
@@ -42,25 +44,25 @@ public:
          reader.readExplicitEnd(*this);
    }
 
-   void write(ASN1ValueWriter& writer, const TypeItem& value) const
+   void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
       if (hasImplicitTagging())
       {
          // override inner type definition
          ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagType> > > tagRestorer(
-            std::bind1st(std::mem_fun1(&Type::setTagNumber), const_cast<TaggingType<TypeItem, TypeItemType>*>(this)),
+            std::bind1st(std::mem_fun1(&Type::setTagNumber), const_cast<TaggingType<TypeItemType>*>(this)),
             tagNumber());
 
          const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
 
          ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
-            std::bind1st(std::mem_fun1(&Type::setTagClass), const_cast<TaggingType<TypeItem, TypeItemType>*>(this)),
+            std::bind1st(std::mem_fun1(&Type::setTagClass), const_cast<TaggingType<TypeItemType>*>(this)),
             tagClass());
 
          const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
 
          ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
-            std::bind1st(std::mem_fun1(&Type::setTagging), const_cast<TaggingType<TypeItem, TypeItemType>*>(this)),
+            std::bind1st(std::mem_fun1(&Type::setTagging), const_cast<TaggingType<TypeItemType>*>(this)),
             tagging());
 
          if (!_innerType->hasExplicitTagging())

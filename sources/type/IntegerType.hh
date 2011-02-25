@@ -13,6 +13,8 @@ namespace asn1
 class IntegerType : public Type
 {
 public:
+
+   typedef Integer ValueType;
    
    explicit IntegerType(const Integer& defaultValue = 0, bool hasDefault = false)
       : _defaultValue(defaultValue), _hasDefault(hasDefault), _minValue(0),

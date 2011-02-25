@@ -15,6 +15,8 @@ class SequenceOfType : public SequenceType
 {
 public:
 
+   typedef typename std::vector<TypeItem> ValueType;
+
    // Constructor
    explicit SequenceOfType(const TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)
       : SequenceType(minSize, maxSize), _innerType(innerType) {}

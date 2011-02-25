@@ -16,6 +16,8 @@ class OctetStringType : public Type
 {
 public:
 
+   typedef OctetString ValueType;
+
    typedef std::pair<int64_t, int64_t> SizeMinMaxType;
    typedef std::vector<SizeMinMaxType> SizesType;
    

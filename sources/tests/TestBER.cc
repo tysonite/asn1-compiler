@@ -540,10 +540,10 @@ class Type1 : public asn1::VisibleStringType
 {
 };
 
-class Type2 : public asn1::TaggingType<asn1::OctetString, Type1>
+class Type2 : public asn1::TaggingType<Type1>
 {
 public:
-   Type2() : asn1::TaggingType<asn1::OctetString, Type1>(new Type1)
+   Type2() : asn1::TaggingType<Type1>(new Type1)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(3);
@@ -551,10 +551,10 @@ public:
    }
 };
 
-class Type3 : public asn1::TaggingType<asn1::OctetString, Type2>
+class Type3 : public asn1::TaggingType<Type2>
 {
 public:
-   Type3() : asn1::TaggingType<asn1::OctetString, Type2>(new Type2)
+   Type3() : asn1::TaggingType<Type2>(new Type2)
    {
       setTagging(asn1::Type::EXPLICIT_TAGGING);
       setTagNumber(2);
@@ -562,10 +562,10 @@ public:
    }
 };
 
-class Type4 : public asn1::TaggingType<asn1::OctetString, Type3>
+class Type4 : public asn1::TaggingType<Type3>
 {
 public:
-   Type4() : asn1::TaggingType<asn1::OctetString, Type3>(new Type3)
+   Type4() : asn1::TaggingType<Type3>(new Type3)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(7);
@@ -573,10 +573,10 @@ public:
    }
 };
 
-class Type5 : public asn1::TaggingType<asn1::OctetString, Type2>
+class Type5 : public asn1::TaggingType<Type2>
 {
 public:
-   Type5() : asn1::TaggingType<asn1::OctetString, Type2>(new Type2)
+   Type5() : asn1::TaggingType<Type2>(new Type2)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(2);
@@ -585,10 +585,10 @@ public:
 };
 
 
-class Type6 : public asn1::TaggingType<asn1::OctetString, Type3>
+class Type6 : public asn1::TaggingType<Type3>
 {
 public:
-   Type6() : asn1::TaggingType<asn1::OctetString, Type3>(new Type3)
+   Type6() : asn1::TaggingType<Type3>(new Type3)
    {
       setTagging(asn1::Type::EXPLICIT_TAGGING);
       setTagNumber(3);
@@ -596,10 +596,10 @@ public:
    }
 };
 
-class Type7 : public asn1::TaggingType<asn1::OctetString, Type6>
+class Type7 : public asn1::TaggingType<Type6>
 {
 public:
-   Type7() : asn1::TaggingType<asn1::OctetString, Type6>(new Type6)
+   Type7() : asn1::TaggingType<Type6>(new Type6)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(4);
@@ -607,10 +607,10 @@ public:
    }
 };
 
-class Type8 : public asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>
+class Type8 : public asn1::TaggingType<asn1::VisibleStringType>
 {
 public:
-   Type8() : asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>(new asn1::VisibleStringType)
+   Type8() : asn1::TaggingType<asn1::VisibleStringType>(new asn1::VisibleStringType)
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -618,10 +618,10 @@ public:
    }
 };
 
-class Type9 : public asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>
+class Type9 : public asn1::TaggingType<asn1::VisibleStringType>
 {
 public:
-   Type9() : asn1::TaggingType<asn1::OctetString, asn1::VisibleStringType>(new asn1::VisibleStringType)
+   Type9() : asn1::TaggingType<asn1::VisibleStringType>(new asn1::VisibleStringType)
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -892,10 +892,10 @@ class Type1 : public asn1::IntegerType
 {
 };
 
-class Type2 : public asn1::TaggingType<asn1::Integer, Type1>
+class Type2 : public asn1::TaggingType<Type1>
 {
 public:
-   Type2() : asn1::TaggingType<asn1::Integer, Type1>(new Type1)
+   Type2() : asn1::TaggingType<Type1>(new Type1)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(3);
@@ -903,10 +903,10 @@ public:
    }
 };
 
-class Type3 : public asn1::TaggingType<asn1::Integer, Type2>
+class Type3 : public asn1::TaggingType<Type2>
 {
 public:
-   Type3() : asn1::TaggingType<asn1::Integer, Type2>(new Type2)
+   Type3() : asn1::TaggingType<Type2>(new Type2)
    {
       setTagging(asn1::Type::EXPLICIT_TAGGING);
       setTagNumber(2);
@@ -914,10 +914,10 @@ public:
    }
 };
 
-class Type4 : public asn1::TaggingType<asn1::Integer, Type3>
+class Type4 : public asn1::TaggingType<Type3>
 {
 public:
-   Type4() : asn1::TaggingType<asn1::Integer, Type3>(new Type3)
+   Type4() : asn1::TaggingType<Type3>(new Type3)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(7);
@@ -925,10 +925,10 @@ public:
    }
 };
 
-class Type5 : public asn1::TaggingType<asn1::Integer, Type2>
+class Type5 : public asn1::TaggingType<Type2>
 {
 public:
-   Type5() : asn1::TaggingType<asn1::Integer, Type2>(new Type2)
+   Type5() : asn1::TaggingType<Type2>(new Type2)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(2);
@@ -937,10 +937,10 @@ public:
 };
 
 
-class Type6 : public asn1::TaggingType<asn1::Integer, Type3>
+class Type6 : public asn1::TaggingType<Type3>
 {
 public:
-   Type6() : asn1::TaggingType<asn1::Integer, Type3>(new Type3)
+   Type6() : asn1::TaggingType<Type3>(new Type3)
    {
       setTagging(asn1::Type::EXPLICIT_TAGGING);
       setTagNumber(3);
@@ -948,10 +948,10 @@ public:
    }
 };
 
-class Type7 : public asn1::TaggingType<asn1::Integer, Type6>
+class Type7 : public asn1::TaggingType<Type6>
 {
 public:
-   Type7() : asn1::TaggingType<asn1::Integer, Type6>(new Type6)
+   Type7() : asn1::TaggingType<Type6>(new Type6)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(4);
@@ -959,10 +959,10 @@ public:
    }
 };
 
-class Type8 : public asn1::TaggingType<asn1::Integer, asn1::IntegerType>
+class Type8 : public asn1::TaggingType<asn1::IntegerType>
 {
 public:
-   Type8() : asn1::TaggingType<asn1::Integer, asn1::IntegerType>(new asn1::IntegerType)
+   Type8() : asn1::TaggingType<asn1::IntegerType>(new asn1::IntegerType)
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -970,10 +970,10 @@ public:
    }
 };
 
-class Type9 : public asn1::TaggingType<asn1::Integer, asn1::IntegerType>
+class Type9 : public asn1::TaggingType<asn1::IntegerType>
 {
 public:
-   Type9() : asn1::TaggingType<asn1::Integer, asn1::IntegerType>(new asn1::IntegerType)
+   Type9() : asn1::TaggingType<asn1::IntegerType>(new asn1::IntegerType)
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -1241,16 +1241,16 @@ namespace sequence_of_integer
 // Type9 ::= [5] IMPLICIT SEQUENCE OF INTEGER
 // Type10 ::= [8] EXPLICIT SEQUENCE OF Type7
 
-class Type1 : public asn1::SequenceOfType<asn1::Integer, asn1::IntegerType>
+class Type1 : public asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>
 {
 public:
-   Type1() : asn1::SequenceOfType<asn1::Integer, asn1::IntegerType>(new asn1::IntegerType) {}
+   Type1() : asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>(new asn1::IntegerType) {}
 };
 
-class Type2 : public asn1::TaggingType<std::vector<asn1::Integer>, Type1>
+class Type2 : public asn1::TaggingType<Type1>
 {
 public:
-   Type2() : asn1::TaggingType<std::vector<asn1::Integer>, Type1>(new Type1)
+   Type2() : asn1::TaggingType<Type1>(new Type1)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(3);
@@ -1258,10 +1258,10 @@ public:
    }
 };
 
-class Type3 : public asn1::TaggingType<std::vector<asn1::Integer>, Type2>
+class Type3 : public asn1::TaggingType<Type2>
 {
 public:
-   Type3() : asn1::TaggingType<std::vector<asn1::Integer>, Type2>(new Type2)
+   Type3() : asn1::TaggingType<Type2>(new Type2)
    {
       setTagging(asn1::Type::EXPLICIT_TAGGING);
       setTagNumber(2);
@@ -1269,10 +1269,10 @@ public:
    }
 };
 
-class Type4 : public asn1::TaggingType<std::vector<asn1::Integer>, Type3>
+class Type4 : public asn1::TaggingType<Type3>
 {
 public:
-   Type4() : asn1::TaggingType<std::vector<asn1::Integer>, Type3>(new Type3)
+   Type4() : asn1::TaggingType<Type3>(new Type3)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(7);
@@ -1280,10 +1280,10 @@ public:
    }
 };
 
-class Type5 : public asn1::TaggingType<std::vector<asn1::Integer>, Type2>
+class Type5 : public asn1::TaggingType<Type2>
 {
 public:
-   Type5() : asn1::TaggingType<std::vector<asn1::Integer>, Type2>(new Type2)
+   Type5() : asn1::TaggingType<Type2>(new Type2)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(2);
@@ -1292,10 +1292,10 @@ public:
 };
 
 
-class Type6 : public asn1::TaggingType<std::vector<asn1::Integer>, Type3>
+class Type6 : public asn1::TaggingType<Type3>
 {
 public:
-   Type6() : asn1::TaggingType<std::vector<asn1::Integer>, Type3>(new Type3)
+   Type6() : asn1::TaggingType<Type3>(new Type3)
    {
       setTagging(asn1::Type::EXPLICIT_TAGGING);
       setTagNumber(3);
@@ -1303,10 +1303,10 @@ public:
    }
 };
 
-class Type7 : public asn1::TaggingType<std::vector<asn1::Integer>, Type6>
+class Type7 : public asn1::TaggingType<Type6>
 {
 public:
-   Type7() : asn1::TaggingType<std::vector<asn1::Integer>, Type6>(new Type6)
+   Type7() : asn1::TaggingType<Type6>(new Type6)
    {
       setTagging(asn1::Type::IMPLICIT_TAGGING);
       setTagNumber(4);
@@ -1314,10 +1314,14 @@ public:
    }
 };
 
-class Type8 : public asn1::TaggingType<std::vector<asn1::Integer>, asn1::SequenceOfType<asn1::Integer, asn1::IntegerType> >
+class Type8
+   : public asn1::TaggingType<asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType> >
 {
 public:
-   Type8() : asn1::TaggingType<std::vector<asn1::Integer>, asn1::SequenceOfType<asn1::Integer, asn1::IntegerType> >(new asn1::SequenceOfType<asn1::Integer, asn1::IntegerType>(new asn1::IntegerType))
+   Type8()
+      : asn1::TaggingType<
+      asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>
+      >(new asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>(new asn1::IntegerType))
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -1325,10 +1329,15 @@ public:
    }
 };
 
-class Type9 : public asn1::TaggingType<std::vector<asn1::Integer>, asn1::SequenceOfType<asn1::Integer, asn1::IntegerType> >
+class Type9
+   : public asn1::TaggingType<
+   asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType> >
 {
 public:
-   Type9() : asn1::TaggingType<std::vector<asn1::Integer>, asn1::SequenceOfType<asn1::Integer, asn1::IntegerType> > (new asn1::SequenceOfType<asn1::Integer, asn1::IntegerType>(new asn1::IntegerType))
+   Type9()
+      : asn1::TaggingType<
+      asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>
+      > (new asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>(new asn1::IntegerType))
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -1336,16 +1345,14 @@ public:
    }
 };
 
-class Type10 : public asn1::TaggingType<std::vector<std::vector<asn1::Integer> >,
-   asn1::SequenceOfType<std::vector<asn1::Integer>, Type7> >
+class Type10 : public asn1::TaggingType<asn1::SequenceOfType<Type7::ValueType, Type7> >
 {
 public:
    Type10()
       : asn1::TaggingType<
-      std::vector<std::vector<asn1::Integer> >,
-      asn1::SequenceOfType<std::vector<asn1::Integer>, Type7>
+      asn1::SequenceOfType<Type7::ValueType, Type7>
       >
-      (new asn1::SequenceOfType<std::vector<asn1::Integer>, Type7>(new Type7))
+      (new asn1::SequenceOfType<Type7::ValueType, Type7>(new Type7))
    {
       setTagNumber(8);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
