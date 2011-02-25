@@ -132,10 +132,8 @@ void BERValueWriter::writeSequenceBegin(const SequenceType& type)
    else
    {
       assert(_compositionStart == 0);
-      //_compositionStart = _buffer.encodeIL(BERBuffer::SEQUENCE_BERTYPE, BERBuffer::CONSTRUCTED_OBJECTYPE);
       _compositionStart = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::SEQUENCE_BERTYPE,
-         BERBuffer::CONSTRUCTED_OBJECTYPE,
-         type.tagClass());
+         BERBuffer::CONSTRUCTED_OBJECTYPE, type.tagClass());
 
       _nestedWriter = _prototype();
    }
