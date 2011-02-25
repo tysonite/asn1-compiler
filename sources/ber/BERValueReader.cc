@@ -249,8 +249,6 @@ void BERValueReader::readExplicitBegin(const Type& type)
          if (type.hasExplicitTagging() || type.hasEmptyTagging())
             throw BERBufferException("BER " + type.toString() + " must be CONSTRUCTED");
       }
-//   if (cl != BERBuffer::CONTEXT_CLASSTYPE)
-//      throw BERBufferException("Explicitly defined tag must be context-specific");
    }
 }
 
