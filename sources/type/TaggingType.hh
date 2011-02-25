@@ -60,6 +60,8 @@ public:
 
          if (!_innerType->hasExplicitTagging())
             const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
+         else
+            taggingRestorer.restoreNotNeeded();
 
          _innerType->write(writer, value);
       }
