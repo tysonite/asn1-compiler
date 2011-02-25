@@ -12,6 +12,8 @@ class BooleanType : public Type
 {
 public:
 
+   typedef Boolean ValueType;
+
    explicit BooleanType(const Boolean& defaultValue = false, bool hasDefault = false)
       : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
 

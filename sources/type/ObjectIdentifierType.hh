@@ -12,6 +12,8 @@ class ObjectIdentifierType : public Type
 {
 public:
 
+   typedef ObjectIdentifier ValueType;
+
    explicit ObjectIdentifierType() {}
 
    // Returns type identifier
