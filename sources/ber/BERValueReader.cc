@@ -1,11 +1,6 @@
 #include <ber/BERValueReader.hh>
 #include <ber/BERBuffer.hh>
-
-#include <type/VisibleStringType.hh>
-#include <type/IntegerType.hh>
-#include <type/BooleanType.hh>
-#include <type/SequenceType.hh>
-
+#include <type/Types.hh>
 #include <common/Utils.hh>
 
 namespace asn1

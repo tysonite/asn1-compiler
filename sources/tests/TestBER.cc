@@ -12,14 +12,10 @@ typedef boost::test_tools::output_test_stream onullstream_type;
 typedef boost::onullstream onullstream_type;
 #endif
 
-#include "ber/BERBuffer.hh"
-#include "ber/BERValueWriter.hh"
-#include "ber/BERValueReader.hh"
-
-#include <type/IntegerType.hh>
-#include <type/VisibleStringType.hh>
-#include <type/SequenceOfType.hh>
-#include <type/TaggingType.hh>
+#include <ber/BERBuffer.hh>
+#include <ber/BERValueWriter.hh>
+#include <ber/BERValueReader.hh>
+#include <type/Types.hh>
 
 namespace ut = boost::unit_test;
 

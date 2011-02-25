@@ -1,11 +1,7 @@
 #include <cassert>
 
 #include <ber/BERValueWriter.hh>
-#include <type/BooleanType.hh>
-#include <type/IntegerType.hh>
-#include <type/VisibleStringType.hh>
-#include <type/ObjectIdentifierType.hh>
-#include <type/SequenceType.hh>
+#include <type/Types.hh>
 
 namespace asn1
 {
