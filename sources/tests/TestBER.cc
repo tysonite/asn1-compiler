@@ -1242,7 +1242,8 @@ namespace sequence_of_integer
 // Type6 ::= [3] Type3
 // Type7 ::= [4] IMPLICIT Type6
 // Type8 ::= [5] SEQUENCE OF INTEGER
-// Type9 ::= [5] IMPLICIT SEQUENCE OF INTEGER 
+// Type9 ::= [5] IMPLICIT SEQUENCE OF INTEGER
+// Type10 ::= [8] EXPLICIT SEQUENCE OF Type7
 
 class Type1 : public asn1::SequenceOfType<asn1::Integer, asn1::IntegerType>
 {
@@ -1336,6 +1337,23 @@ public:
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
       setTagging(asn1::Type::IMPLICIT_TAGGING);
+   }
+};
+
+class Type10 : public asn1::TaggingType<std::vector<std::vector<asn1::Integer> >,
+   asn1::SequenceOfType<std::vector<asn1::Integer>, Type7> >
+{
+public:
+   Type10()
+      : asn1::TaggingType<
+      std::vector<std::vector<asn1::Integer> >,
+      asn1::SequenceOfType<std::vector<asn1::Integer>, Type7>
+      >
+      (new asn1::SequenceOfType<std::vector<asn1::Integer>, Type7>(new Type7))
+   {
+      setTagNumber(8);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
    }
 };
 
@@ -1625,6 +1643,48 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType9)
    BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
 
    BOOST_CHECK_EQUAL_COLLECTIONS(outValues.begin(), outValues.end(), inValues.begin(), inValues.end());
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType10)
+{
+   std::vector<std::vector<asn1::Integer> > outValues;
+   
+   std::vector<asn1::Integer> outValue1;
+   outValue1.push_back(-1);
+   
+   std::vector<asn1::Integer> outValue2;
+   outValue2.push_back(0);
+
+   std::vector<asn1::Integer> outValue3;
+   outValue3.push_back(1);
+
+   outValues.push_back(outValue1);
+   outValues.push_back(outValue2);
+   outValues.push_back(outValue3);
+
+   Type10 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, outValues));
+   
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA8, 0x1D, 0x30, 0x1B, 0xA4, 0x07, 0xA2, 0x05, 0x63, 0x03, 0x02, 0x01, 0xFF, 0xA4, 0x07, 0xA2, 0x05, 0x63, 0x03, 0x02, 0x01, 0x00, 0xA4, 0x07, 0xA2, 0x05, 0x63, 0x03, 0x02, 0x01, 0x01 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   std::vector<std::vector<asn1::Integer> > inValues;
+   BOOST_CHECK_NO_THROW(type.read(reader, inValues));
+   BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
+
+   //BOOST_CHECK_EQUAL_COLLECTIONS(outValues.begin(), outValues.end(), inValues.begin(), inValues.end());
 }
 
 }
