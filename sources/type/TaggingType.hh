@@ -1,6 +1,8 @@
 #ifndef __TAGGING_TYPE_HH
 #define __TAGGING_TYPE_HH
 
+#include <functional>
+
 #include <type/Type.hh>
 
 namespace asn1
@@ -40,8 +42,22 @@ public:
       if (hasImplicitTagging())
       {
          // override inner type definition
+         ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagType> > > tagRestorer(
+            std::bind1st(std::mem_fun1(&Type::setTagNumber), const_cast<TaggingType<TypeItem, TypeItemType>*>(this)),
+            tagNumber());
+
          const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
+
+         ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
+            std::bind1st(std::mem_fun1(&Type::setTagClass), const_cast<TaggingType<TypeItem, TypeItemType>*>(this)),
+            tagClass());
+
          const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
+
+         ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
+            std::bind1st(std::mem_fun1(&Type::setTagging), const_cast<TaggingType<TypeItem, TypeItemType>*>(this)),
+            tagging());
+
          if (!_innerType->hasExplicitTagging())
             const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
 

@@ -98,8 +98,10 @@ class ValueRestorer
 {
 public:
 
-   ValueRestorer(TValue& value): _value(value), _oldValue(value), _needRestore(true) {}
-   ~ValueRestorer() 
+   ValueRestorer(TValue& value)
+      : _value(value), _oldValue(value), _needRestore(true) {}
+
+   ~ValueRestorer()
    { 
       if (_needRestore)
          _value = _oldValue;
@@ -114,6 +116,32 @@ private:
    bool    _needRestore;
 
    DISALLOW_COPY_AND_ASSIGN(ValueRestorer);
+};
+
+template <typename TFunctor>
+class ValueRestorerByFunctor
+{
+public:
+
+   ValueRestorerByFunctor(TFunctor functor, const typename TFunctor::argument_type& value)
+      : _functor(functor), _value(value), _needRestore(true) {}
+
+   // _functor must not throw an exception
+   ~ValueRestorerByFunctor()
+   {
+      if (_needRestore)
+         _functor(_value);
+   }
+
+   void restoreNotNeeded() { _needRestore = false; }
+
+private:
+
+   TFunctor                         _functor;
+   typename TFunctor::argument_type _value;
+   bool                             _needRestore;
+
+   DISALLOW_COPY_AND_ASSIGN(ValueRestorerByFunctor);
 };
 
 }

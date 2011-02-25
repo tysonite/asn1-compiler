@@ -245,10 +245,9 @@ void BERValueReader::readExplicitBegin(const Type& type)
       if (tag != type.tagNumber() || cl != type.tagClass())
          throw BERBufferException("BER " + type.toString() + " is expected");
       if (pc != BERBuffer::CONSTRUCTED_OBJECTYPE)
-      {
-         if (type.hasExplicitTagging() || type.hasEmptyTagging())
-            throw BERBufferException("BER " + type.toString() + " must be CONSTRUCTED");
-      }
+         throw BERBufferException("BER " + type.toString() + " must be CONSTRUCTED");
+      if (length <= 0)
+         throw BERBufferException("BER " + type.toString() + " must contain at least nested indentifier");
    }
 }
 
@@ -300,16 +299,18 @@ void BERValueReader::_checkTagTagging(TagType tag, CLType cl, TagType expectedTa
    {
       if (type.hasTagNumber() && tag != type.tagNumber())
          throw BERBufferException("BER " + type.toString() + " is expected");
-//      if (cl != BERBuffer::CONTEXT_CLASSTYPE)
-//         throw BERBufferException("Implicitly defined tag must be context-specific");
    }
-   else if (type.hasEmptyTagging() || type.hasExplicitTagging())
+
+   if (type.hasEmptyTagging() || type.hasExplicitTagging())
    {
       if (!type.hasTagNumber() && tag != expectedTag)
          throw BERBufferException("BER " + type.toString() + " is expected");
-      else if (type.hasTagNumber() && tag != type.tagNumber())
+      if (type.hasTagNumber() && tag != type.tagNumber())
          throw BERBufferException("BER " + type.toString() + " is expected");
    }
+
+   if (cl != type.tagClass())
+      throw BERBufferException("BER " + type.toString() + " is expected");
 }
 
 }
