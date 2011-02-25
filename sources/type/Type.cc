@@ -20,6 +20,8 @@ std::string Type::typeName() const
       return "OCTET STRING";
    case VISIBLE_STRING_TYPE:
       return "VISIBLE STRING";
+   case PRINTABLE_STRING_TYPE:
+      return "PRINTABLE STRING";
    case SEQUENCE_TYPE:
       return "SEQUENCE";
    case SEQUENCE_OF_TYPE:

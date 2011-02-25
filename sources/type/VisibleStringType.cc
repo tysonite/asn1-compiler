@@ -13,7 +13,7 @@ void VisibleStringType::checkType(const OctetString& value) const
    {
       OctetString::value_type c = value[i];
       if (c < 32 || c > 126)
-         throw ASN1Exception(typeName() + " value '" + value + "' is not valid");
+         throw ASN1Exception(toString() + " value '" + value + "' is not valid");
    }
 }
 

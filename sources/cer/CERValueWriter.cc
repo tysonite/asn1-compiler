@@ -16,30 +16,16 @@ namespace
 }
 
 // Writes content octets of the OCTET STRING value
-void CERValueWriter::_doWriteOctetString(const OctetString& value, const OctetStringType& type)
+void CERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type)
 {
    if (value.size() <= OCTETSTRING_MAX_LENGTH) // write as primitive (as in BER)
-      BERValueWriter::_doWriteOctetString(value, type);
+      BERValueWriter::_doWriteOctetString(value, tagType, type);
    else // write chunked value
    {
-      _buffer.encodeIdentifierOctets(BERBuffer::OCTETSTRING_BERTYPE, BERBuffer::CONSTRUCTED_OBJECTYPE);
+      _buffer.encodeIdentifierOctets(tagType, BERBuffer::CONSTRUCTED_OBJECTYPE);
       _buffer.encodeLengthOctets(-1);
 
-      _writeOctetsContentOfOctetStringByChunks(BERBuffer::OCTETSTRING_BERTYPE, value, OCTETSTRING_MAX_LENGTH);
-   }
-}
-
-// Writes VISIBLE STRING value
-void CERValueWriter::_doWriteVisibleString(const OctetString& value, const VisibleStringType& type)
-{
-   if (value.size() <= OCTETSTRING_MAX_LENGTH) // write as primitive (as in BER)
-      BERValueWriter::_doWriteVisibleString(value, type);
-   else // write chunked value
-   {
-      _buffer.encodeIdentifierOctets(BERBuffer::VISIBLESTRING_BERTYPE, BERBuffer::CONSTRUCTED_OBJECTYPE);
-      _buffer.encodeLengthOctets(-1);
-
-      _writeOctetsContentOfOctetStringByChunks(BERBuffer::VISIBLESTRING_BERTYPE, value, OCTETSTRING_MAX_LENGTH);
+      _writeOctetsContentOfOctetStringByChunks(tagType, value, OCTETSTRING_MAX_LENGTH);
    }
 }
 

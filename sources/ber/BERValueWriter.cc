@@ -108,7 +108,7 @@ void BERValueWriter::writeOctetString(const OctetString& value, const OctetStrin
    if (_nestedWriter)
       _nestedWriter->writeOctetString(value, type);
    else
-      _doWriteOctetString(value, type);
+      _doWriteOctetString(value, BERBuffer::OCTETSTRING_BERTYPE, type);
 }
 
 // Writes VISIBLE STRING value
@@ -117,7 +117,16 @@ void BERValueWriter::writeVisibleString(const OctetString& value, const VisibleS
    if (_nestedWriter)
       _nestedWriter->writeVisibleString(value, type);
    else
-      _doWriteVisibleString(value, type);
+      _doWriteOctetString(value, BERBuffer::VISIBLESTRING_BERTYPE, type);
+}
+
+// Writes PRINTABLE STRING value
+void BERValueWriter::writePrintableString(const OctetString& value, const PrintableStringType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writePrintableString(value, type);
+   else
+      _doWriteOctetString(value, BERBuffer::PRINTABLESTRING_BERTYPE, type);
 }
 
 // Writes SEQUENCE value
@@ -206,21 +215,9 @@ BERValueWriter* BERValueWriter::_prototype() const
 }
 
 // Writes OCTET STRING value
-void BERValueWriter::_doWriteOctetString(const OctetString& value, const OctetStringType& type)
+void BERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type)
 {
-   _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : BERBuffer::OCTETSTRING_BERTYPE,
-      ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
-      type.tagClass());
-
-   // primitive encoding
-   _buffer.encodeLengthOctets(value.size());
-   _buffer.write(reinterpret_cast<const BERBuffer::ValueType*>(value.data()), value.size());
-}
-
-// Writes VISIBLE STRING value
-void BERValueWriter::_doWriteVisibleString(const OctetString& value, const VisibleStringType& type)
-{
-   _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : BERBuffer::VISIBLESTRING_BERTYPE,
+   _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : tagType,
       ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
       type.tagClass());
 

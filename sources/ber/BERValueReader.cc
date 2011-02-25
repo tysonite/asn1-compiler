@@ -140,6 +140,24 @@ void BERValueReader::readVisibleString(OctetString& value, const VisibleStringTy
    }
 }
 
+// Reads PRINTABLE STRING value
+void BERValueReader::readPrintableString(OctetString& value, const PrintableStringType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readPrintableString(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      _checkTagTagging(tag, cl, BERBuffer::PRINTABLESTRING_BERTYPE, type);
+
+      _readOctetStringOctets(value, type);
+   }
+}
+
 // Reads SEQUENCE value
 void BERValueReader::readSequenceBegin(const SequenceType& type)
 {

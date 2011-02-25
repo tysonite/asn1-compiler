@@ -35,6 +35,9 @@ public:
    // Reads VISIBLE STRING value
    void readVisibleString(OctetString& value, const VisibleStringType& type);
 
+   // Reads PRINTABLE STRING value
+   void readPrintableString(OctetString& value, const PrintableStringType& type);
+
    // Reads SEQUENCE value
    void readSequenceBegin(const SequenceType& type);
    bool isSequenceEnd(const SequenceType& type);

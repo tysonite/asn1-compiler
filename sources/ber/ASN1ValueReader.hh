@@ -28,6 +28,9 @@ public:
    // Reads VISIBLE STRING value
    virtual void readVisibleString(OctetString& value, const VisibleStringType& type) = 0;
 
+   // Reads PRINTABLE STRING value
+   virtual void readPrintableString(OctetString& value, const PrintableStringType& type) = 0;
+
    // Reads SEQUENCE value
    virtual void readSequenceBegin(const SequenceType& type) = 0;
    virtual bool isSequenceEnd(const SequenceType& type) = 0;

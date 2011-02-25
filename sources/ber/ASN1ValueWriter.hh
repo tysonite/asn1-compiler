@@ -28,6 +28,9 @@ public:
    // Writes VISIBLE STRING value
    virtual void writeVisibleString(const OctetString& value, const VisibleStringType& type) = 0;
 
+   // Writes PRINTABLE STRING value
+   virtual void writePrintableString(const OctetString& value, const PrintableStringType& type) = 0;
+
    // Writes SEQUENCE value
    virtual void writeSequenceBegin(const SequenceType& type) = 0;
    virtual void writeSequenceEnd() = 0;

@@ -37,6 +37,9 @@ public:
    // Writes VISIBLE STRING value
    void writeVisibleString(const OctetString& value, const VisibleStringType& type);
 
+   // Writes PRINTABLE STRING value
+   void writePrintableString(const OctetString& value, const PrintableStringType& type);
+
    // Writes SEQUENCE value
    void writeSequenceBegin(const SequenceType& type);
    void writeSequenceEnd();
@@ -63,10 +66,7 @@ protected:
    virtual BERValueWriter* _prototype() const;
 
    // Writes OCTET STRING value
-   virtual void _doWriteOctetString(const OctetString& value, const OctetStringType& type);
-
-   // Writes VISIBLE STRING value
-   virtual void _doWriteVisibleString(const OctetString& value, const VisibleStringType& type);
+   virtual void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
 
 private:
 

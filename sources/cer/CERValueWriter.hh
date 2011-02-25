@@ -18,10 +18,7 @@ protected:
    CERValueWriter* _prototype();
 
    // Writes OCTET STRING value
-   void _doWriteOctetString(const OctetString& value, const OctetStringType& type);
-
-   // Writes VISIBLE STRING value
-   void _doWriteVisibleString(const OctetString& value, const VisibleStringType& type);
+   void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
 
 private:
 

@@ -1,22 +1,22 @@
-#ifndef __VISIBLE_STRING_TYPE_HH
-#define __VISIBLE_STRING_TYPE_HH
+#ifndef __PRINTABLE_STRING_TYPE_HH
+#define __PRINTABLE_STRING_TYPE_HH
 
 #include <type/OctetStringType.hh>
 
 namespace asn1
 {
 
-class VisibleStringType : public OctetStringType
+class PrintableStringType : public OctetStringType
 {
 public:
 
    // Constructor
-   explicit VisibleStringType(const OctetString& defaultValue = "", bool hasDefault = false,
-                              int64_t minLength = -1, int64_t maxLength = -1)
+   explicit PrintableStringType(const OctetString& defaultValue = "", bool hasDefault = false,
+                                int64_t minLength = -1, int64_t maxLength = -1)
       : OctetStringType(defaultValue, hasDefault, minLength, maxLength) {}
 
    // Returns type identifier
-   TypeID typeID() const { return VISIBLE_STRING_TYPE; }
+   TypeID typeID() const { return PRINTABLE_STRING_TYPE; }
    
    // Checks type parameters for validness
    void checkType(const OctetString& value) const;
@@ -26,7 +26,7 @@ public:
    { 
       ValueRestorer<OctetString> restorer(value);
       
-      reader.readVisibleString(value, *this); 
+      reader.readPrintableString(value, *this); 
 
       restorer.restoreNotNeeded();
    }
@@ -34,14 +34,13 @@ public:
    // Writes the value
    void write(ASN1ValueWriter& writer, const OctetString& value) const
    {
-      writer.writeVisibleString(value, *this);
+      writer.writePrintableString(value, *this);
    }
 
 private:
    
-   DISALLOW_COPY_AND_ASSIGN(VisibleStringType);
+   DISALLOW_COPY_AND_ASSIGN(PrintableStringType);
 };
-
 }
 
-#endif // __VISIBLE_STRING_TYPE_HH
+#endif // __PRINTABLE_STRING_TYPE_HH

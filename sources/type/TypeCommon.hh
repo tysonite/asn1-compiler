@@ -26,6 +26,7 @@ class IntegerType;
 class BooleanType;
 class OctetStringType;
 class VisibleStringType;
+class PrintableStringType;
 class SequenceType;
 class ObjectIdentifierType;
 template <typename TypeItem, typename TypeItemType> class SequenceOfType;

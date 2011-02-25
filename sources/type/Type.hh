@@ -1,5 +1,5 @@
-#ifndef __ASN1_COMMON_HH
-#define __ASN1_COMMON_HH
+#ifndef __TYPE_HH
+#define __TYPE_HH
 
 #include <string>
 #include <limits>
@@ -22,6 +22,7 @@ enum TypeID
    OBJECT_IDENTIFIER_TYPE,
    OCTET_STRING_TYPE,
    VISIBLE_STRING_TYPE,
+   PRINTABLE_STRING_TYPE,
    SEQUENCE_TYPE,
    SEQUENCE_OF_TYPE
 };
@@ -146,4 +147,4 @@ private:
 
 }
 
-#endif // __ASN1_COMMON_HH
+#endif // __TYPE_HH
