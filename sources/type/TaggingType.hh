@@ -8,6 +8,11 @@
 namespace asn1
 {
 
+// Represents an ASN.1 tagged type.
+//
+// Consider the following examples:
+// Type1 ::= [1] INTEGER
+// Type2 ::= EXPLICIT VisibleString
 template <typename TypeItem, typename TypeItemType>
 class TaggingType : public Type
 {
