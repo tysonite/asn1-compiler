@@ -5,6 +5,7 @@
 #include <type/IntegerType.hh>
 #include <type/VisibleStringType.hh>
 #include <type/ObjectIdentifierType.hh>
+#include <type/SequenceType.hh>
 
 namespace asn1
 {
@@ -124,14 +125,18 @@ void BERValueWriter::writeVisibleString(const OctetString& value, const VisibleS
 }
 
 // Writes SEQUENCE value
-void BERValueWriter::writeSequenceBegin()
+void BERValueWriter::writeSequenceBegin(const SequenceType& type)
 {
    if (_nestedWriter)
-      _nestedWriter->writeSequenceBegin();
+      _nestedWriter->writeSequenceBegin(type);
    else
    {
       assert(_compositionStart == 0);
-      _compositionStart = _buffer.encodeIL(BERBuffer::SEQUENCE_BERTYPE, BERBuffer::CONSTRUCTED_OBJECTYPE);
+      //_compositionStart = _buffer.encodeIL(BERBuffer::SEQUENCE_BERTYPE, BERBuffer::CONSTRUCTED_OBJECTYPE);
+      _compositionStart = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::SEQUENCE_BERTYPE,
+         BERBuffer::CONSTRUCTED_OBJECTYPE,
+         type.tagClass());
+
       _nestedWriter = _prototype();
    }
 }
@@ -141,9 +146,9 @@ void BERValueWriter::writeSequenceEnd()
    _writeLastCompositionEnd();
 }
 
-void BERValueWriter::writeSequenceOfBegin()
+void BERValueWriter::writeSequenceOfBegin(const SequenceType& type)
 {
-   writeSequenceBegin();
+   writeSequenceBegin(type);
 }
 
 void BERValueWriter::writeSequenceOfEnd()

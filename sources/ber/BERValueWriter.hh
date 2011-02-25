@@ -38,11 +38,11 @@ public:
    void writeVisibleString(const OctetString& value, const VisibleStringType& type);
 
    // Writes SEQUENCE value
-   void writeSequenceBegin();
+   void writeSequenceBegin(const SequenceType& type);
    void writeSequenceEnd();
    
    // Writes SEQUENCE OF value (the same as SET)
-   void writeSequenceOfBegin();
+   void writeSequenceOfBegin(const SequenceType& type);
    void writeSequenceOfEnd();
 
    // Writes SET value

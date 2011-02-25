@@ -161,8 +161,8 @@ void BERValueReader::readSequenceBegin(const SequenceType& type)
       // save position of the sequence end
       _sequenceEndPos = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
 
-      if (tag != BERBuffer::SEQUENCE_BERTYPE)
-         throw BERBufferException("BER " + type.toString() + " is expected");
+      // check tag
+      _checkTagTagging(tag, cl, BERBuffer::SEQUENCE_BERTYPE, type);
       if (pc != BERBuffer::CONSTRUCTED_OBJECTYPE)
          throw BERBufferException("BER " + type.toString() + " must be CONSTRUCTED");
 

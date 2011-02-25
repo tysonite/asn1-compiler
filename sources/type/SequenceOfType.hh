@@ -76,7 +76,7 @@ void SequenceOfType<TypeItem, TypeItemType>::read(ASN1ValueReader& reader, std::
 template <class TypeItem, class TypeItemType>
 void SequenceOfType<TypeItem, TypeItemType>::write(ASN1ValueWriter& writer, const std::vector<TypeItem>& value) const
 {
-   writer.writeSequenceOfBegin();
+   writer.writeSequenceOfBegin(*this);
    for (typename std::vector<TypeItem>::const_iterator p = value.begin(); p != value.end(); ++p)
       _innerType->write(writer, *p);
    writer.writeSequenceOfEnd();

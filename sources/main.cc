@@ -20,7 +20,7 @@ int my_main()
    //outType2.setImplicit(true);
    //outType2.setTagNumber(2);
 
-   writer.writeSequenceBegin();
+//   writer.writeSequenceBegin();
    outType1.write(writer, 1);
    outType2.write(writer, 2);
    writer.writeSequenceEnd();

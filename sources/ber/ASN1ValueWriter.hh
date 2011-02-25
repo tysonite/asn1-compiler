@@ -29,11 +29,11 @@ public:
    virtual void writeVisibleString(const OctetString& value, const VisibleStringType& type) = 0;
 
    // Writes SEQUENCE value
-   virtual void writeSequenceBegin() = 0;
+   virtual void writeSequenceBegin(const SequenceType& type) = 0;
    virtual void writeSequenceEnd() = 0;
 
    // Writes SEQUENCE OF value (the same as SET)
-   virtual void writeSequenceOfBegin() = 0;
+   virtual void writeSequenceOfBegin(const SequenceType& type) = 0;
    virtual void writeSequenceOfEnd() = 0;
 
    // Writes SET value
