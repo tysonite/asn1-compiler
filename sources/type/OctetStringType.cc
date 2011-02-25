@@ -8,16 +8,19 @@ namespace asn1
 // Checks type parameters for validness
 void OctetStringType::checkType(const OctetString& value) const
 {
-   if (_minLength >= 0 && value.size() < _minLength)
+   for (SizesType::const_iterator p = _sizes.begin(); p != _sizes.end(); ++p)
    {
-      throw ASN1Exception(typeName() + " value '" + value + "' length is less than minimum length '" +
-         utils::ntos(_minLength) + "'");
-   }
+      if (value.size() < p->first)
+      {
+         throw ASN1Exception(typeName() + " value '" + value + "' length is less than minimum length '" +
+            utils::ntos(p->first) + "'");
+      }
 
-   if (_maxLength >= 0 && value.size() > _maxLength)
-   {
-      throw ASN1Exception(typeName() + " value '" + value + "' length is more than maximum length '" +
-         utils::ntos(_maxLength) + "'");
+      if (value.size() > p->second)
+      {
+         throw ASN1Exception(typeName() + " value '" + value + "' length is more than maximum length '" +
+            utils::ntos(p->second) + "'");
+      }
    }
 }
 

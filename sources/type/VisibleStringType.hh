@@ -11,9 +11,8 @@ class VisibleStringType : public OctetStringType
 public:
 
    // Constructor
-   explicit VisibleStringType(const OctetString& defaultValue = "", bool hasDefault = false,
-                              int64_t minLength = -1, int64_t maxLength = -1)
-      : OctetStringType(defaultValue, hasDefault, minLength, maxLength) {}
+   explicit VisibleStringType(const OctetString& defaultValue = "", bool hasDefault = false)
+      : OctetStringType(defaultValue, hasDefault) {}
 
    // Returns type identifier
    TypeID typeID() const { return VISIBLE_STRING_TYPE; }

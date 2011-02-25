@@ -13,19 +13,20 @@ namespace asn1
 class OctetStringType : public Type
 {
 public:
+
+   typedef std::pair<int64_t, int64_t> SizeMinMaxType;
+   typedef std::vector<SizeMinMaxType> SizesType;
    
    // Constructor
-   explicit OctetStringType(const OctetString& defaultValue = "", bool hasDefault = false,
-      int64_t minLength = -1, int64_t maxLength = -1)
-      : _defaultValue(defaultValue), _hasDefault(hasDefault), _minLength(minLength), _maxLength(maxLength) {}
+   explicit OctetStringType(const OctetString& defaultValue = "", bool hasDefault = false)
+      : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
 
    // Returns type identifier
    virtual TypeID typeID() const { return OCTET_STRING_TYPE; }
 
    const OctetString& defaultValue() const { return _defaultValue; }
    bool hasDefault() const { return _hasDefault; }
-   int64_t minLength() const { return _minLength; }
-   int64_t maxLength() const { return _maxLength; }
+   void addSize(int64_t minSize, int64_t maxSize) { _sizes.push_back(SizeMinMaxType(minSize, maxSize)); }
 
    // Checks type parameters for validness
    virtual void checkType(const OctetString& value) const;
@@ -50,7 +51,7 @@ protected:
 
    OctetString _defaultValue;
    bool        _hasDefault;
-   int64_t     _minLength, _maxLength;
+   SizesType   _sizes;
 
 private:
     

@@ -11,9 +11,8 @@ class PrintableStringType : public OctetStringType
 public:
 
    // Constructor
-   explicit PrintableStringType(const OctetString& defaultValue = "", bool hasDefault = false,
-                                int64_t minLength = -1, int64_t maxLength = -1)
-      : OctetStringType(defaultValue, hasDefault, minLength, maxLength) {}
+   explicit PrintableStringType(const OctetString& defaultValue = "", bool hasDefault = false)
+      : OctetStringType(defaultValue, hasDefault) {}
 
    // Returns type identifier
    TypeID typeID() const { return PRINTABLE_STRING_TYPE; }
