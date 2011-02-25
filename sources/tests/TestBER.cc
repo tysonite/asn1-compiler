@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_CASE(TestBERSequenceOf)
    asn1::BERBuffer outbuffer;
    asn1::BERValueWriter writer(outbuffer);
 
-   asn1::SequenceOfType<asn1::Integer, asn1::IntegerType> type(new asn1::IntegerType(0, false));
+   asn1::SequenceOfType<asn1::IntegerType> type(new asn1::IntegerType(0, false));
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
@@ -498,8 +498,8 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfSequenceOfInteger)
    asn1::BERBuffer outbuffer;
    asn1::BERValueWriter writer(outbuffer);
 
-   asn1::SequenceOfType<std::vector<asn1::Integer>, asn1::SequenceOfType<asn1::Integer, asn1::IntegerType> >
-      type(new asn1::SequenceOfType<asn1::Integer, asn1::IntegerType>(new asn1::IntegerType(0, false)));
+   asn1::SequenceOfType<asn1::SequenceOfType<asn1::IntegerType> >
+      type(new asn1::SequenceOfType<asn1::IntegerType>(new asn1::IntegerType(0, false)));
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
@@ -1241,10 +1241,10 @@ namespace sequence_of_integer
 // Type9 ::= [5] IMPLICIT SEQUENCE OF INTEGER
 // Type10 ::= [8] EXPLICIT SEQUENCE OF Type7
 
-class Type1 : public asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>
+class Type1 : public asn1::SequenceOfType<asn1::IntegerType>
 {
 public:
-   Type1() : asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>(new asn1::IntegerType) {}
+   Type1() : asn1::SequenceOfType<asn1::IntegerType>(new asn1::IntegerType) {}
 };
 
 class Type2 : public asn1::TaggingType<Type1>
@@ -1315,13 +1315,13 @@ public:
 };
 
 class Type8
-   : public asn1::TaggingType<asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType> >
+   : public asn1::TaggingType<asn1::SequenceOfType<asn1::IntegerType> >
 {
 public:
    Type8()
       : asn1::TaggingType<
-      asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>
-      >(new asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>(new asn1::IntegerType))
+      asn1::SequenceOfType<asn1::IntegerType>
+      >(new asn1::SequenceOfType<asn1::IntegerType>(new asn1::IntegerType))
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -1331,13 +1331,13 @@ public:
 
 class Type9
    : public asn1::TaggingType<
-   asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType> >
+   asn1::SequenceOfType<asn1::IntegerType> >
 {
 public:
    Type9()
       : asn1::TaggingType<
-      asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>
-      > (new asn1::SequenceOfType<asn1::IntegerType::ValueType, asn1::IntegerType>(new asn1::IntegerType))
+      asn1::SequenceOfType<asn1::IntegerType>
+      > (new asn1::SequenceOfType<asn1::IntegerType>(new asn1::IntegerType))
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -1345,14 +1345,14 @@ public:
    }
 };
 
-class Type10 : public asn1::TaggingType<asn1::SequenceOfType<Type7::ValueType, Type7> >
+class Type10 : public asn1::TaggingType<asn1::SequenceOfType<Type7> >
 {
 public:
    Type10()
       : asn1::TaggingType<
-      asn1::SequenceOfType<Type7::ValueType, Type7>
+      asn1::SequenceOfType<Type7>
       >
-      (new asn1::SequenceOfType<Type7::ValueType, Type7>(new Type7))
+      (new asn1::SequenceOfType<Type7>(new Type7))
    {
       setTagNumber(8);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);

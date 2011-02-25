@@ -29,7 +29,8 @@ class VisibleStringType;
 class PrintableStringType;
 class SequenceType;
 class ObjectIdentifierType;
-template <typename TypeItem, typename TypeItemType> class SequenceOfType;
+template <typename TypeItemType> class TaggingType;
+template <typename TypeItemType> class SequenceOfType;
 
 }
 

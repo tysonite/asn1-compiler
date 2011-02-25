@@ -10,12 +10,12 @@
 namespace asn1
 {
 
-template <typename TypeItem, typename TypeItemType>
+template <typename TypeItemType>
 class SequenceOfType : public SequenceType
 {
 public:
 
-   typedef typename std::vector<TypeItem> ValueType;
+   typedef std::vector<typename TypeItemType::ValueType> ValueType;
 
    // Constructor
    explicit SequenceOfType(const TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)
@@ -36,10 +36,10 @@ public:
    const TypeItemType& innerType() const { return *_innerType; }
 
    // Checks type parameters for validness
-   void checkType(const std::vector<TypeItem>& value) const;
+   void checkType(const ValueType& value) const;
 
-   void read(ASN1ValueReader& reader, std::vector<TypeItem>& value) const;
-   void write(ASN1ValueWriter& writer, const std::vector<TypeItem>& value) const;
+   void read(ASN1ValueReader& reader, ValueType& value) const;
+   void write(ASN1ValueWriter& writer, const ValueType& value) const;
 
 private:
 
@@ -48,25 +48,25 @@ private:
    DISALLOW_COPY_AND_ASSIGN(SequenceOfType);
 };
 
-template <typename TypeItem, typename TypeItemType>
-void SequenceOfType<TypeItem, TypeItemType>::checkType(const std::vector<TypeItem>& value) const
+template <typename TypeItemType>
+void SequenceOfType<TypeItemType>::checkType(const ValueType& value) const
 {
    checkSize(value.size());
-   for (std::vector<TypeItem>::const_iterator p = value.begin(); p != value.end(); ++p)
+   for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
       _innerType->checkType(*p);
 }
 
-template <class TypeItem, class TypeItemType>
-void SequenceOfType<TypeItem, TypeItemType>::read(ASN1ValueReader& reader, std::vector<TypeItem>& value) const
+template <typename TypeItemType>
+void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   ValueRestorer<std::vector<TypeItem> > restorer(value);
+   ValueRestorer<ValueType> restorer(value);
 
    value.clear();
    
    reader.readSequenceOfBegin(*this);
    while (!reader.isSequenceOfEnd(*this))
    {
-      TypeItem item;
+      typename TypeItemType::ValueType item;
       _innerType->read(reader, item);
       value.push_back(item);
    }
@@ -75,11 +75,11 @@ void SequenceOfType<TypeItem, TypeItemType>::read(ASN1ValueReader& reader, std::
    restorer.restoreNotNeeded();
 }
 
-template <class TypeItem, class TypeItemType>
-void SequenceOfType<TypeItem, TypeItemType>::write(ASN1ValueWriter& writer, const std::vector<TypeItem>& value) const
+template <typename TypeItemType>
+void SequenceOfType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    writer.writeSequenceOfBegin(*this);
-   for (typename std::vector<TypeItem>::const_iterator p = value.begin(); p != value.end(); ++p)
+   for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
       _innerType->write(writer, *p);
    writer.writeSequenceOfEnd();
 }
