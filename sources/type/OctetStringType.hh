@@ -2,6 +2,8 @@
 #define __OCTET_STRING_TYPE_HH
 
 #include <cstdint>
+#include <vector>
+#include <utility>
 
 #include <type/Type.hh>
 #include <ber/ASN1ValueReader.hh>

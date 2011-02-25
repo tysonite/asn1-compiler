@@ -10,15 +10,21 @@ void OctetStringType::checkType(const OctetString& value) const
 {
    for (SizesType::const_iterator p = _sizes.begin(); p != _sizes.end(); ++p)
    {
+      if (p->first == p->second && value.size() != p->first)
+      {
+         throw ASN1Exception(toString() + " value '" + value + "' size is not equal to size '" +
+            utils::ntos(p->first) + "'");
+      }
+
       if (value.size() < p->first)
       {
-         throw ASN1Exception(typeName() + " value '" + value + "' length is less than minimum length '" +
+         throw ASN1Exception(toString() + " value '" + value + "' size is less than minimum size '" +
             utils::ntos(p->first) + "'");
       }
 
       if (value.size() > p->second)
       {
-         throw ASN1Exception(typeName() + " value '" + value + "' length is more than maximum length '" +
+         throw ASN1Exception(toString() + " value '" + value + "' size is more than maximum size '" +
             utils::ntos(p->second) + "'");
       }
    }
