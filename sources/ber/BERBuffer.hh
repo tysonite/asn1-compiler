@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cassert>
+#include <cstring>
 
 #include <vector>
 #include <exception>
@@ -68,7 +69,7 @@ public:
       {
          SizeType currSize = _data.size();
          _data.resize(currSize + size);
-         ::memcpy(&_data[currSize], from, size);
+         std::memcpy(&_data[currSize], from, size);
       }
    }
    void write(SizeType pos, const BERBuffer& from) { write(pos, from.data(), from.size()); }
@@ -77,7 +78,7 @@ public:
       if (size)
       {
          extend(pos, size);
-         ::memcpy(&_data[pos], from, size);
+         std::memcpy(&_data[pos], from, size);
       }
    }
    void read(BERBuffer& to, SizeType size)
@@ -96,7 +97,7 @@ public:
       {
          if (_current + size > (_end ? _end : _data.size()))
             throw BERBufferException("Unexpected end of BER buffer");
-         ::memcpy(to, &_data[_current], size);
+         std::memcpy(to, &_data[_current], size);
          _current += size;
       }
    }
@@ -127,14 +128,14 @@ public:
       if (delta < 0)
       {
          // remove space from buffer [pos, pos - delta)
-         ::memcpy(&_data[pos], &_data[pos - delta], _data.size() + delta - pos);
+         std::memcpy(&_data[pos], &_data[pos - delta], _data.size() + delta - pos);
          _data.resize(_data.size() + delta);
       }
       else if (delta > 0)
       {
          // insert space to buffer [pos, pos + delta)
          _data.resize(_data.size() + delta);
-         ::memmove(&_data[pos + delta], &_data[pos], _data.size() - delta - pos);
+         std::memmove(&_data[pos + delta], &_data[pos], _data.size() - delta - pos);
       }
    }
 
@@ -313,8 +314,8 @@ public:
          BERBuffer tmp;
          tmp.encodeLengthOctets(length);
          _data.resize(_data.size() + tmp.size() - 1);
-         ::memmove(&_data[position + tmp.size()], &_data[position + 1], static_cast<size_t>(length));
-         ::memcpy(&_data[position], tmp.data(), tmp.size());
+         std::memmove(&_data[position + tmp.size()], &_data[position + 1], static_cast<size_t>(length));
+         std::memcpy(&_data[position], tmp.data(), tmp.size());
       }
    }
 

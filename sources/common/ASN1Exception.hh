@@ -11,10 +11,17 @@ class ASN1Exception : public std::exception
 {
 public:
 
-   explicit ASN1Exception(const char* msg)
-      : std::exception(msg) {}
-   explicit ASN1Exception(const std::string& msg)
-      : std::exception(msg.c_str()) {}
+   explicit ASN1Exception(const char* msg) throw()
+      : _message(msg) {}
+   explicit ASN1Exception(const std::string& msg) throw()
+      : _message(msg) {}
+   ~ASN1Exception() throw() {}
+
+   const char* what() const throw() { return _message.c_str(); }
+
+private:
+
+   std::string _message;
 };
 
 }
