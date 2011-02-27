@@ -276,9 +276,7 @@ public:
    // Decodes length octets
    void decodeLengthOctets(int64_t& length)
    {
-      ValueType h, x;
-
-      h = get();
+      ValueType h = get();
       if (0 == (0x80 & h)) // definite short form
       {
          length = h;
@@ -293,8 +291,9 @@ public:
       }
 
       length = 0;
-      while (h-- > 0) {
-         x = get();
+      while (h-- > 0)
+      {
+         ValueType x = get();
          length = (length << 8) | (0x00FF & x);
       }
    }
@@ -361,10 +360,10 @@ public:
       PCType pc;
       CLType cl;
       decodeIdentifierOctets(tag, pc, cl);
-      
+
       int64_t length;
       decodeLengthOctets(length);
-      
+
       return _current + static_cast<SizeType>(length);
    }
 
