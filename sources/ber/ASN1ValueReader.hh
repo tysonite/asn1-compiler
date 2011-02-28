@@ -49,6 +49,9 @@ public:
    virtual void readSetOfBegin() = 0;
    virtual void readSetOfEnd() = 0;
 
+   // Reads CHOICE value
+   virtual void readChoice(const ChoiceType& type, Type** choosenType) = 0;
+
    // Reads EXPLICIT tag
    virtual void readExplicitBegin(const Type& type) = 0;
    virtual void readExplicitEnd(const Type& type) = 0;

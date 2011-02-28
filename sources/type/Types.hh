@@ -11,5 +11,6 @@
 #include <type/SequenceOfType.hh>
 #include <type/SequenceType.hh>
 #include <type/TaggingType.hh>
+#include <type/ChoiceType.hh>
 
 #endif // __TYPES_HH

@@ -56,6 +56,9 @@ public:
    void readSetOfBegin();
    void readSetOfEnd();
 
+   // Reads CHOICE value
+   void readChoice(const ChoiceType& type, Type** choosenType);
+
    // Reads EXPLICIT tag
    void readExplicitBegin(const Type& type);
    void readExplicitEnd(const Type& type);

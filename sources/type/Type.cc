@@ -24,6 +24,8 @@ std::string Type::typeName() const
       return "VISIBLE STRING";
    case PRINTABLE_STRING_TYPE:
       return "PRINTABLE STRING";
+   case CHOICE_TYPE:
+      return "CHOICE";
    case SEQUENCE_TYPE:
       return "SEQUENCE";
    case SEQUENCE_OF_TYPE:

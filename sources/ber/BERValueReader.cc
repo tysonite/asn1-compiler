@@ -273,6 +273,32 @@ void BERValueReader::readSetOfEnd()
 {
 }
 
+// Reads CHOICE value
+void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
+{
+   if (_nestedReader)
+      _nestedReader->readChoice(type, choosenType);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.lookupIndentifierOctets(tag, pc, cl);
+
+      const ChoiceType::ChoicesType& types = type.getChoices();
+      for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)
+      {
+         if ((*p)->tagClass() == cl && (*p)->tagNumber() == tag)
+         {
+            *choosenType = *p;
+            return;
+         }
+      }
+
+      throw BERBufferException("BER " + type.toString() + " is expected");
+   }
+}
+
 // Reads EXPLICIT tag
 void BERValueReader::readExplicitBegin(const Type& type)
 {

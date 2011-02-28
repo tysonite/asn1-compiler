@@ -2760,6 +2760,54 @@ BOOST_AUTO_TEST_CASE(TestBerBooleanType9)
 
 }
 
+namespace choice_type
+{
+
+union IBChoice_IB
+{
+   asn1::Integer i;
+   asn1::Boolean b;
+};
+
+class IBChoiceType : public asn1::ChoiceType
+{
+public:
+
+   IBChoiceType()
+   {
+      addChoice(&_integerType);
+      addChoice(&_booleanType);
+   }
+
+   void read(asn1::ASN1ValueReader& reader, IBChoice_IB& value)
+   {
+      asn1::Type* choosenType = NULL;
+      reader.readChoice(*this, &choosenType);
+
+      if (choosenType == &_integerType)
+         _integerType.read(reader, value.i);
+      else if (choosenType == &_booleanType)
+         _booleanType.read(reader, value.b);
+   }
+
+   void write(asn1::ASN1ValueWriter& writer, const IBChoice_IB& value)
+   {
+      //writer.writeChoice(*this);
+   }
+
+private:
+
+   asn1::IntegerType _integerType;
+   asn1::BooleanType _booleanType;
+};
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceType)
+{
+
+}
+
+}
+
 /*ut::test_suite* init_unit_test_suite(int argc, char* argv[])
 {
    ut::test_suite* test = BOOST_TEST_SUITE("BER encoding/decoding test suite");

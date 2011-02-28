@@ -25,11 +25,12 @@ class Type;
 class NullType;
 class IntegerType;
 class BooleanType;
+class ObjectIdentifierType;
 class OctetStringType;
 class VisibleStringType;
 class PrintableStringType;
 class SequenceType;
-class ObjectIdentifierType;
+class ChoiceType;
 template <typename TypeItemType> class TaggingType;
 template <typename TypeItemType> class SequenceOfType;
 
