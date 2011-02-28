@@ -83,6 +83,37 @@ void BERValueReader::readInteger(Integer& value, const IntegerType& type)
 // Reads OBJECT IDENTIFIER value
 void BERValueReader::readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type)
 {
+   if (_nestedReader)
+      _nestedReader->readObjectIdentifier(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      int64_t length;
+      _buffer.setEnd(_buffer.decodeIL(tag, pc, cl, length));
+
+      _checkTagIsCorrect(pc, type);
+      _checkTagTagging(tag, cl, BERBuffer::OBJECTID_BERTYPE, type);
+
+      if (length < 1)
+         throw BERBufferException("Illegal BER " + type.toString() + " length");
+
+      value.push_back(static_cast<ObjectIdentifier::value_type>(_buffer.get()));
+      if (value[0] < 0 || value[0] > 119)
+         throw BERBufferException("BER " + type.toString() + " must be in interval [0, 119]");
+
+      value.push_back(value[0] % 40);
+      value[0] /= 40;
+
+      while (_buffer.current() < _buffer.end())
+         value.push_back(static_cast<ObjectIdentifier::value_type>(_buffer.decodeInteger()));
+
+      _buffer.clearEnd();
+
+      // check received data
+      type.checkType(value);
+   }
 }
 
 // Reads NULL value
@@ -90,6 +121,7 @@ void BERValueReader::readNull()
 {
    if (_nestedReader)
       _nestedReader->readNull();
+   else
    {
       TagType tag;
       PCType pc;

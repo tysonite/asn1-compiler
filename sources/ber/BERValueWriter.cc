@@ -13,15 +13,9 @@ void BERValueWriter::writeBoolean(const Boolean& value, const BooleanType& type)
       _nestedWriter->writeBoolean(value, type);
    else
    {
-      if (type.hasImplicitTagging() && type.hasTagNumber())
-         _buffer.encodeIdentifierOctets(type.tagNumber(), BERBuffer::PRIMITIVE_OBJECTYPE, BERBuffer::CONTEXT_CLASSTYPE);
-      else if (type.hasEmptyTagging() || type.hasExplicitTagging())
-         _buffer.encodeIdentifierOctets(BERBuffer::BOOLEAN_BERTYPE);
-      else
-      {
-         // TODO: implement other cases
-         assert(0);
-      }
+      _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::BOOLEAN_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         type.tagClass());
 
       _buffer.encodeLengthOctets(1);
       _buffer.put(value ? 0xFF : 0);
@@ -82,9 +76,7 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
 
       _buffer.put((value[0] * 40 + value[1]) & 0x00FF);
       for (ObjectIdentifier::size_type i = 2; i < value.size(); ++i)
-      {
-
-      }
+         _buffer.encodeInteger(value[i]);
 
       _buffer.updateLengthOctets(position);
    }

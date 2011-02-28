@@ -208,6 +208,37 @@ public:
       BMPSTRING_BERTYPE        = 0x1E, // string type
    };
 
+   // Encodes integer value
+   void encodeInteger(int64_t number)
+   {
+      int len;
+      int64_t tmpNumber;
+      for (len = 1, tmpNumber = number >> 7; tmpNumber; tmpNumber >>= 7)
+         ++len;
+
+      // Resize buffer to store tag bytes
+      SizeType bufferSize = size();
+      resize(size() + (len - 1));
+
+      for (tmpNumber = number >> 7; len > 1; tmpNumber >>= 7)
+         put(bufferSize + (--len) - 1, (tmpNumber & 0x7f) | 0x80);
+      put(number & 0x7f);
+   }
+   
+   // Decodes integer value
+   int64_t decodeInteger()
+   {
+      int64_t number = 0;
+      ValueType b;
+      do
+      {
+         b = get();
+         number = (number << 7) | (b & 0x7F);
+      } while (b & 0x80);
+
+      return number;
+   }
+
    // Encodes indentifier octets
    void encodeIdentifierOctets(TagType tag, PCType pc = PRIMITIVE_OBJECTYPE, CLType cl = UNIVERSAL_CLASSTYPE)
    {
@@ -216,19 +247,7 @@ public:
       else // Tag long form
       {
          put((cl & 0xC0) | (pc & 0x20) | 0x1F);
-         
-         int len;
-         TagType tmpTag;
-         for (len = 1, tmpTag = tag >> 7; tmpTag; tmpTag >>= 7)
-            ++len;
-         
-         // Resize buffer to store tag bytes
-         SizeType bufferSize = size();
-         resize(size() + (len - 1));
-
-         for (tmpTag = tag >> 7; len > 1; tmpTag >>= 7)
-            put(bufferSize + (--len) - 1, ((tmpTag) & 0x7f) | 0x80);
-         put(tag & 0x7f);
+         encodeInteger(tag);
       }
    }
 
@@ -238,15 +257,7 @@ public:
       ValueType h = get();
       tag = h & 0x1F;
       if (tag == 0x1F) // Multi-byte type
-      {
-         tag = 0;
-         ValueType x;
-         do
-         {
-            x = get();
-            tag = (tag << 7) | (0x7F & x);
-         } while (x & 0x80);
-      }
+         tag = decodeInteger();
 
       pc = h & 0x20;
       cl = h & 0xC0;
