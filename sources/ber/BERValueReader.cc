@@ -283,7 +283,7 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
       TagType tag;
       PCType pc;
       CLType cl;
-      _buffer.lookupIndentifierOctets(tag, pc, cl);
+      _buffer.lookupIdentifierOctets(tag, pc, cl);
 
       const ChoiceType::ChoicesType& types = type.getChoices();
       for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)

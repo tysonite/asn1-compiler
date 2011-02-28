@@ -264,7 +264,7 @@ public:
    }
 
    // Lookups identifiers octets (position of cursor inside BER buffer is not changed)
-   void lookupIndentifierOctets(TagType& tag, PCType& pc, CLType& cl)
+   void lookupIdentifierOctets(TagType& tag, PCType& pc, CLType& cl)
    {
       SizeType currPos = _current;
       decodeIdentifierOctets(tag, pc, cl);
