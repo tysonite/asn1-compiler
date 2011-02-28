@@ -14,7 +14,7 @@ public:
 
    typedef Boolean ValueType;
 
-   explicit BooleanType(const Boolean& defaultValue = false, bool hasDefault = false)
+   explicit BooleanType(const ValueType& defaultValue = false, bool hasDefault = false)
       : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
 
    // Returns type identifier
@@ -22,9 +22,6 @@ public:
 
    const Boolean& defaultValue() const { return _defaultValue; }
    bool hasDefault() const { return _hasDefault; }
-
-   // Checks type parameters for validness
-   void checkType(const Boolean&) const {}
 
    // Reads the value
    void read(ASN1ValueReader& reader, ValueType& value) const
@@ -44,7 +41,7 @@ public:
 
 private:
 
-   Boolean _defaultValue;
+   ValueType _defaultValue;
    bool    _hasDefault;
 
 private:

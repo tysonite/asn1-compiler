@@ -2408,6 +2408,358 @@ BOOST_AUTO_TEST_CASE(TestBerNullType9)
 
 }
 
+namespace boolean_type_tests
+{
+
+// ASN.1 (EXPLICIT environment):
+// Type1 ::= BOOLEAN
+// Type2 ::= [APPLICATION 3] IMPLICIT Type1
+// Type3 ::= [2] Type2
+// Type4 ::= [APPLICATION 7] IMPLICIT Type3
+// Type5 ::= [2] IMPLICIT Type2
+// Type6 ::= [3] Type3
+// Type7 ::= [4] IMPLICIT Type6
+// Type8 ::= [5] BOOLEAN
+// Type9 ::= [5] IMPLICIT BOOLEAN 
+
+class Type1 : public asn1::BooleanType
+{
+};
+
+class Type2 : public asn1::TaggingType<Type1>
+{
+public:
+   Type2() : asn1::TaggingType<Type1>(new Type1)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type3 : public asn1::TaggingType<Type2>
+{
+public:
+   Type3() : asn1::TaggingType<Type2>(new Type2)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type4 : public asn1::TaggingType<Type3>
+{
+public:
+   Type4() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(7);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type5 : public asn1::TaggingType<Type2>
+{
+public:
+   Type5() : asn1::TaggingType<Type2>(new Type2)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+
+class Type6 : public asn1::TaggingType<Type3>
+{
+public:
+   Type6() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type7 : public asn1::TaggingType<Type6>
+{
+public:
+   Type7() : asn1::TaggingType<Type6>(new Type6)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(4);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type8 : public asn1::TaggingType<asn1::BooleanType>
+{
+public:
+   Type8() : asn1::TaggingType<asn1::BooleanType>(new asn1::BooleanType)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+   }
+};
+
+class Type9 : public asn1::TaggingType<asn1::BooleanType>
+{
+public:
+   Type9() : asn1::TaggingType<asn1::BooleanType>(new asn1::BooleanType)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+   }
+};
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType1)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type1 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType2)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type2 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x43, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType3)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type3 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x03, 0x43, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType4)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type4 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x67, 0x03, 0x43, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType5)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type5 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x82, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType6)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type6 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA3, 0x05, 0xA2, 0x03, 0x43, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType7)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type7 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA4, 0x05, 0xA2, 0x03, 0x43, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType8)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type8 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x03, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType9)
+{
+   asn1::Boolean vToWrite = true, vToRead = false;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type9 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x85, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+}
+
 /*ut::test_suite* init_unit_test_suite(int argc, char* argv[])
 {
    ut::test_suite* test = BOOST_TEST_SUITE("BER encoding/decoding test suite");

@@ -13,7 +13,7 @@ void BERValueWriter::writeBoolean(const Boolean& value, const BooleanType& type)
       _nestedWriter->writeBoolean(value, type);
    else
    {
-      _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::BOOLEAN_BERTYPE,
+      _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : BERBuffer::BOOLEAN_BERTYPE,
          ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
          type.tagClass());
 
