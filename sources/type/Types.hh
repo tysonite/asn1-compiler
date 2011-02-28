@@ -1,6 +1,7 @@
 #ifndef __TYPES_HH
 #define __TYPES_HH
 
+#include <type/NullType.hh>
 #include <type/BooleanType.hh>
 #include <type/IntegerType.hh>
 #include <type/ObjectIdentifierType.hh>

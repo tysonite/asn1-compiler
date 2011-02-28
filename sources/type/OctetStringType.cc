@@ -6,7 +6,7 @@ namespace asn1
 {
 
 // Checks type parameters for validness
-void OctetStringType::checkType(const OctetString& value) const
+void OctetStringType::checkType(const ValueType& value) const
 {
    for (SizesType::const_iterator p = _sizes.begin(); p != _sizes.end(); ++p)
    {

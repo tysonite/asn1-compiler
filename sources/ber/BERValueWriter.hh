@@ -29,7 +29,7 @@ public:
    void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type);
 
    // Writes NULL value
-   void writeNull();
+   void writeNull(const NullType& type);
 
    // Writes OCTET STRING value
    void writeOctetString(const OctetString& value, const OctetStringType& type);

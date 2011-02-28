@@ -27,7 +27,7 @@ public:
    void checkType(const Boolean&) const {}
 
    // Reads the value
-   void read(ASN1ValueReader& reader, Boolean& value) const
+   void read(ASN1ValueReader& reader, ValueType& value) const
    { 
       ValueRestorer<Boolean> restorer(value);
       
@@ -37,7 +37,7 @@ public:
    }
 
    // Writes the value
-   void write(ASN1ValueWriter& writer, const Boolean& value) const
+   void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
       writer.writeBoolean(value, *this);
    }

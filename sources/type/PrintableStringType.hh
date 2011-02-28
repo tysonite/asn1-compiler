@@ -11,7 +11,7 @@ class PrintableStringType : public OctetStringType
 public:
 
    // Constructor
-   explicit PrintableStringType(const OctetString& defaultValue = "", bool hasDefault = false)
+   explicit PrintableStringType(const ValueType& defaultValue = "", bool hasDefault = false)
       : OctetStringType(defaultValue, hasDefault) {}
 
    // Returns type identifier
@@ -21,7 +21,7 @@ public:
    void checkType(const OctetString& value) const;
 
    // Reads the value
-   void read(ASN1ValueReader& reader, OctetString& value) const
+   void read(ASN1ValueReader& reader, ValueType& value) const
    { 
       ValueRestorer<OctetString> restorer(value);
       
@@ -31,7 +31,7 @@ public:
    }
 
    // Writes the value
-   void write(ASN1ValueWriter& writer, const OctetString& value) const
+   void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
       writer.writePrintableString(value, *this);
    }

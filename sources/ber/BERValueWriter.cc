@@ -84,13 +84,15 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
 }
 
 // Writes NULL value
-void BERValueWriter::writeNull()
+void BERValueWriter::writeNull(const NullType& type)
 {
    if (_nestedWriter)
-      _nestedWriter->writeNull();
+      _nestedWriter->writeNull(type);
    else
    {
-      _buffer.encodeIdentifierOctets(BERBuffer::NULL_BERTYPE);
+      _buffer.encodeIdentifierOctets(type.hasTagNumber() ? type.tagNumber() : BERBuffer::NULL_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         type.tagClass());
       _buffer.encodeLengthOctets(0);
    }
 }

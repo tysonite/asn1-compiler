@@ -16,7 +16,7 @@ public:
 
    typedef Integer ValueType;
    
-   explicit IntegerType(const Integer& defaultValue = 0, bool hasDefault = false)
+   explicit IntegerType(const ValueType& defaultValue = 0, bool hasDefault = false)
       : _defaultValue(defaultValue), _hasDefault(hasDefault), _minValue(0),
       _maxValue(0), _hasMinMax(false) {}
 
@@ -33,10 +33,10 @@ public:
    Integer maxValue() const { return _maxValue; }
 
    // Checks type parameters for validness
-   void checkType(const Integer& value) const;
+   void checkType(const ValueType& value) const;
 
    // Reads the value
-   void read(ASN1ValueReader& reader, Integer& value) const
+   void read(ASN1ValueReader& reader, ValueType& value) const
    { 
       ValueRestorer<Integer> restorer(value);
       
@@ -46,18 +46,18 @@ public:
    }
 
    // Writes the value
-   void write(ASN1ValueWriter& writer, const Integer& value) const
+   void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
       writer.writeInteger(value, *this);
    }
 
 private:
 
-   Integer _defaultValue;
-   bool    _hasDefault;
+   ValueType _defaultValue;
+   bool      _hasDefault;
 
-   Integer _minValue, _maxValue;
-   bool    _hasMinMax;
+   ValueType _minValue, _maxValue;
+   bool      _hasMinMax;
 
 private:
     

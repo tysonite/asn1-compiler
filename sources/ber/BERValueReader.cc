@@ -117,10 +117,10 @@ void BERValueReader::readObjectIdentifier(ObjectIdentifier& value, const ObjectI
 }
 
 // Reads NULL value
-void BERValueReader::readNull()
+void BERValueReader::readNull(const NullType& type)
 {
    if (_nestedReader)
-      _nestedReader->readNull();
+      _nestedReader->readNull(type);
    else
    {
       TagType tag;
@@ -129,10 +129,11 @@ void BERValueReader::readNull()
       int64_t length;
       _buffer.decodeIL(tag, pc, cl, length);
 
-      if (tag != BERBuffer::NULL_BERTYPE)
-         throw BERBufferException("BER NULL is expected");
+      _checkTagIsCorrect(pc, type);
+      _checkTagTagging(tag, cl, BERBuffer::NULL_BERTYPE, type);
+
       if (length != 0)
-         throw BERBufferException("Length of BER NULL is expected to be equal to 0");
+         throw BERBufferException("BER " + type.toString() + " length is expected to be equal to 0");
    }
 }
 

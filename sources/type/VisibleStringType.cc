@@ -5,7 +5,7 @@ namespace asn1
 {
 
 // Checks type parameters for validness
-void VisibleStringType::checkType(const OctetString& value) const
+void VisibleStringType::checkType(const ValueType& value) const
 {
    OctetStringType::checkType(value);
 

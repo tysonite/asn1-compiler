@@ -23,7 +23,7 @@ public:
    void checkType(const ObjectIdentifier&) const {}
 
    // Reads the value
-   void read(ASN1ValueReader& reader, ObjectIdentifier& value) const
+   void read(ASN1ValueReader& reader, ValueType& value) const
    { 
       ValueRestorer<ObjectIdentifier> restorer(value);
       
@@ -33,7 +33,7 @@ public:
    }
 
    // Writes the value
-   void write(ASN1ValueWriter& writer, const ObjectIdentifier& value) const
+   void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
       writer.writeObjectIdentifier(value, *this);
    }

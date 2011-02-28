@@ -6,7 +6,7 @@ namespace asn1
 {
 
 // Checks type parameters for validness
-void IntegerType::checkType(const Integer& value) const
+void IntegerType::checkType(const ValueType& value) const
 {
    if (_hasMinMax && value < _minValue)
    {

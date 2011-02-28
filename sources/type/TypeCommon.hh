@@ -22,6 +22,7 @@ typedef std::vector<uint16_t> ObjectIdentifier;
 
 // Types of ASN.1 value type representation
 class Type;
+class NullType;
 class IntegerType;
 class BooleanType;
 class OctetStringType;

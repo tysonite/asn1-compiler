@@ -20,7 +20,7 @@ public:
    virtual void readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type) = 0;
 
    // Reads NULL value
-   virtual void readNull() = 0;
+   virtual void readNull(const NullType& type) = 0;
 
    // Reads OCTET STRING value
    virtual void readOctetString(OctetString& value, const OctetStringType& type) = 0;

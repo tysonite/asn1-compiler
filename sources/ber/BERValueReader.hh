@@ -27,7 +27,7 @@ public:
    void readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type);
 
    // Reads NULL value
-   void readNull();
+   void readNull(const NullType& type);
 
    // Reads OCTET STRING value
    void readOctetString(OctetString& value, const OctetStringType& type);

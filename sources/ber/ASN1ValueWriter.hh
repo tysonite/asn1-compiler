@@ -20,7 +20,7 @@ public:
    virtual void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type) = 0;
 
    // Writes NULL value
-   virtual void writeNull() = 0;
+   virtual void writeNull(const NullType& type) = 0;
 
    // Writes OCTET STRING value
    virtual void writeOctetString(const OctetString& value, const OctetStringType& type) = 0;

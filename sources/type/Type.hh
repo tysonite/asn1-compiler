@@ -17,6 +17,7 @@ class ASN1ValueWriter;
 
 enum TypeID
 {
+   NULL_TYPE,
    INTEGER_TYPE,
    BOOLEAN_TYPE,
    OBJECT_IDENTIFIER_TYPE,

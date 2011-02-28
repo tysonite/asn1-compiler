@@ -10,6 +10,8 @@ std::string Type::typeName() const
 {
    switch (typeID())
    {
+   case NULL_TYPE:
+      return "NULL";
    case INTEGER_TYPE:
       return "INTEGER";
    case BOOLEAN_TYPE:
