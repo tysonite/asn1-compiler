@@ -74,6 +74,7 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
       if (value.size() < 2)
          return;
 
+      _buffer.reserve(_buffer.size() + value.size());
       _buffer.put((value[0] * 40 + value[1]) & 0x00FF);
       for (ObjectIdentifier::size_type i = 2; i < value.size(); ++i)
          _buffer.encodeInteger(value[i]);
@@ -215,6 +216,7 @@ void BERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuff
 
    // primitive encoding
    _buffer.encodeLengthOctets(value.size());
+   _buffer.reserve(_buffer.size() + value.size());
    _buffer.write(reinterpret_cast<const BERBuffer::ValueType*>(value.data()), value.size());
 }
 
