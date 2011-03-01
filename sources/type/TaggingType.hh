@@ -36,52 +36,9 @@ public:
    // Returns reference to inner type
    const TypeItemType& innerType() const { return *_innerType; }
 
-   void read(ASN1ValueReader& reader, ValueType& value) const
-   {
-      if (hasExplicitTagging() || hasEmptyTagging())
-         reader.readExplicitBegin(*this);
-
-      _innerType->read(reader, value);
-
-      if (hasExplicitTagging() || hasEmptyTagging())
-         reader.readExplicitEnd(*this);
-   }
-
-   void write(ASN1ValueWriter& writer, const ValueType& value) const
-   {
-      if (hasImplicitTagging())
-      {
-         // override inner type definition
-         ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagType> > > tagRestorer(
-            std::bind1st(std::mem_fun(&Type::setTagNumber), const_cast<TaggingType<TypeItemType>*>(this)),
-            tagNumber());
-
-         const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
-
-         ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
-            std::bind1st(std::mem_fun(&Type::setTagClass), const_cast<TaggingType<TypeItemType>*>(this)),
-            tagClass());
-
-         const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
-
-         ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
-            std::bind1st(std::mem_fun(&Type::setTagging), const_cast<TaggingType<TypeItemType>*>(this)),
-            tagging());
-
-         if (!_innerType->hasExplicitTagging())
-            const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
-         else
-            taggingRestorer.restoreNotNeeded();
-
-         _innerType->write(writer, value);
-      }
-      else if (hasExplicitTagging() || hasEmptyTagging())
-      {
-         writer.writeExplicitBegin(*this);
-         _innerType->write(writer, value);
-         writer.writeExplicitEnd(*this);
-      }
-   }
+   // Reads/Writes the value
+   void read(ASN1ValueReader& reader, ValueType& value) const;
+   void write(ASN1ValueWriter& writer, const ValueType& value) const;
 
 private:
 
@@ -89,6 +46,55 @@ private:
 
    DISALLOW_COPY_AND_ASSIGN(TaggingType);
 };
+
+template <typename TypeItemType>
+void TaggingType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) const
+{
+   if (hasExplicitTagging() || hasEmptyTagging())
+      reader.readExplicitBegin(*this);
+
+   _innerType->read(reader, value);
+
+   if (hasExplicitTagging() || hasEmptyTagging())
+      reader.readExplicitEnd(*this);
+}
+
+template <typename TypeItemType>
+void TaggingType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& value) const
+{
+   if (hasImplicitTagging())
+   {
+      // override inner type definition
+      ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagType> > > tagRestorer(
+         std::bind1st(std::mem_fun(&Type::setTagNumber), const_cast<TaggingType<TypeItemType>*>(this)),
+         tagNumber());
+
+      const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
+
+      ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
+         std::bind1st(std::mem_fun(&Type::setTagClass), const_cast<TaggingType<TypeItemType>*>(this)),
+         tagClass());
+
+      const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
+
+      ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
+         std::bind1st(std::mem_fun(&Type::setTagging), const_cast<TaggingType<TypeItemType>*>(this)),
+         tagging());
+
+      if (!_innerType->hasExplicitTagging())
+         const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
+      else
+         taggingRestorer.restoreNotNeeded();
+
+      _innerType->write(writer, value);
+   }
+   else if (hasExplicitTagging() || hasEmptyTagging())
+   {
+      writer.writeExplicitBegin(*this);
+      _innerType->write(writer, value);
+      writer.writeExplicitEnd(*this);
+   }
+}
 
 }
 

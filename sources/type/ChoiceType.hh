@@ -23,6 +23,12 @@ public:
    // Returns string representation of type
    std::string toString() const;
 
+   void setTagging(TaggingType tagging)
+   {
+      assert(tagging != IMPLICIT_TAGGING); // do not allow IMPLICT tag for CHOICE type
+      Type::setTagging(tagging);
+   }
+
    // Returns possible choices
    const ChoicesType& getChoices() const { return _choices; }
 

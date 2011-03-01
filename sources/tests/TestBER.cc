@@ -2470,7 +2470,6 @@ public:
    }
 };
 
-
 class Type6 : public asn1::TaggingType<Type3>
 {
 public:
@@ -2766,7 +2765,12 @@ namespace choice_type
 // ASN.1 (EXPLICIT environment):
 // TypeChoice ::= CHOICE { i INTEGER, b BOOLEAN }
 // Type1 ::= TypeChoice
+// -- IMPLICIT tag is not allowed for CHOICE type -- Type2 ::= [APPLICATION 3] IMPLICIT Type1
 // Type3 ::= [2] Type1
+// Type4 ::= [APPLICATION 7] IMPLICIT Type3
+// Type6 ::= [3] Type3
+// Type7 ::= [4] IMPLICIT Type6
+// Type8 ::= [5] TypeChoice
 
 class ChoiceValue_IB_TypeChoice
 {
@@ -2869,6 +2873,50 @@ public:
    }
 };
 
+class Type4 : public asn1::TaggingType<Type3>
+{
+public:
+   Type4() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(7);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type6 : public asn1::TaggingType<Type3>
+{
+public:
+   Type6() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type7 : public asn1::TaggingType<Type6>
+{
+public:
+   Type7() : asn1::TaggingType<Type6>(new Type6)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(4);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type8 : public asn1::TaggingType<TypeChoice>
+{
+public:
+   Type8() : asn1::TaggingType<TypeChoice>(new TypeChoice)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+   }
+};
+
 BOOST_AUTO_TEST_CASE(TestBerChoiceTypeChoice)
 {
    ChoiceValue_IB_TypeChoice vToWrite, vToRead;
@@ -2889,6 +2937,10 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceTypeChoice)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
 
    // decoding
    asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
@@ -2922,6 +2974,158 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType3)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x03, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceType4)
+{
+   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+
+   vToWrite.setB(true);
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   Type4 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x67, 0x03, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceType6)
+{
+   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+
+   vToWrite.setB(true);
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   Type6 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA3, 0x05, 0xA2, 0x03, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceType7)
+{
+   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+
+   vToWrite.setB(true);
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   Type7 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA4, 0x05, 0xA2, 0x03, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceType8)
+{
+   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+
+   vToWrite.setB(true);
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   Type8 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x03, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
 
    // decoding
    asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());

@@ -66,7 +66,7 @@ public:
    bool hasExplicitTagging() const { return _taggingType == EXPLICIT_TAGGING; }
    bool hasEmptyTagging() const { return _taggingType == EMPTY_TAGGING; }
    TaggingType tagging() const { return _taggingType; }
-   void setTagging(TaggingType tagging) { _taggingType = tagging; }
+   virtual void setTagging(TaggingType tagging) { _taggingType = tagging; }
 
    enum TagClass
    {
