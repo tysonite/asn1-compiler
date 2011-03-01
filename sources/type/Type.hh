@@ -37,8 +37,8 @@ public:
    explicit Type()
       : _taggingType(EMPTY_TAGGING), _tagClass(UNIVERSAL), _tagNumber(-1LL) {}
    
-   // Destructor
-   virtual ~Type() {}
+   // Destructor (do not allow instantiation)
+   virtual ~Type() = 0;
 
    // Returns type identifier
    virtual TypeID typeID() const = 0;

@@ -2765,6 +2765,8 @@ namespace choice_type
 
 // ASN.1 (EXPLICIT environment):
 // TypeChoice ::= CHOICE { i INTEGER, b BOOLEAN }
+// Type1 ::= TypeChoice
+// Type3 ::= [2] Type1
 
 class ChoiceValue_IB_TypeChoice
 {
@@ -2808,11 +2810,11 @@ public:
 
    explicit TypeChoice()
    {
-      addChoice(&_integerType);
-      addChoice(&_booleanType);
+      _addChoice(&_integerType);
+      _addChoice(&_booleanType);
    }
 
-   void read(asn1::ASN1ValueReader& reader, ChoiceValue_IB_TypeChoice& value)
+   void read(asn1::ASN1ValueReader& reader, ChoiceValue_IB_TypeChoice& value) const
    {
       asn1::Type* choosenType = NULL;
       reader.readChoice(*this, &choosenType);
@@ -2836,7 +2838,7 @@ public:
       }
    }
 
-   void write(asn1::ASN1ValueWriter& writer, const ChoiceValue_IB_TypeChoice& value)
+   void write(asn1::ASN1ValueWriter& writer, const ChoiceValue_IB_TypeChoice& value) const
    {
       if (value.hasIChoosen())
          _integerType.write(writer, value.getI());
@@ -2850,7 +2852,22 @@ private:
    asn1::BooleanType _booleanType;
 };
 
-BOOST_AUTO_TEST_CASE(TestBerChoiceType)
+class Type1 : public TypeChoice
+{
+};
+
+class Type3 : public asn1::TaggingType<Type1>
+{
+public:
+   Type3() : asn1::TaggingType<Type1>(new Type1)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceTypeChoice)
 {
    ChoiceValue_IB_TypeChoice vToWrite, vToRead;
 
@@ -2863,6 +2880,39 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType)
    BOOST_CHECK_EQUAL(vToWrite.getB(), true);
 
    TypeChoice type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceType3)
+{
+   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+
+   vToWrite.setB(true);
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   Type3 type;
 
    // encoding
    asn1::BERBuffer outbuffer;

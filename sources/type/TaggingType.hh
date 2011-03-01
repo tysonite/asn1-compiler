@@ -31,10 +31,7 @@ public:
    TypeID typeID() const { return _innerType->typeID(); }
 
    // Returns string representation of type
-   std::string toString() const
-   {
-      return _innerType->toString();
-   }
+   std::string toString() const { return _innerType->toString(); }
 
    // Returns reference to inner type
    const TypeItemType& innerType() const { return *_innerType; }

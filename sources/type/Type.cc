@@ -5,6 +5,11 @@
 namespace asn1
 {
 
+// Destructor (do not allow instantiation)
+Type::~Type()
+{
+}
+   
 // Returns string representation of type identifier
 std::string Type::typeName() const
 {

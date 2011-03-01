@@ -20,13 +20,16 @@ public:
    // Returns type identifier
    TypeID typeID() const { return CHOICE_TYPE; }
 
+   // Returns string representation of type
+   std::string toString() const;
+
    // Returns possible choices
    const ChoicesType& getChoices() const { return _choices; }
 
 protected:
 
    // Adds type to the list
-   void addChoice(Type* type) { _choices.push_back(type); }
+   void _addChoice(Type* type) { _choices.push_back(type); }
 
 private:
 
