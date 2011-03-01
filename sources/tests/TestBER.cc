@@ -2840,6 +2840,8 @@ public:
 
    void write(asn1::ASN1ValueWriter& writer, const ChoiceValue_IB_TypeChoice& value) const
    {
+      assert(value.hasIChoosen() || value.hasBChoosen());
+
       if (value.hasIChoosen())
          _integerType.write(writer, value.getI());
       else if (value.hasBChoosen())
