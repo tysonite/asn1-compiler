@@ -2763,36 +2763,85 @@ BOOST_AUTO_TEST_CASE(TestBerBooleanType9)
 namespace choice_type
 {
 
-union IBChoice_IB
-{
-   asn1::Integer i;
-   asn1::Boolean b;
-};
+// ASN.1 (EXPLICIT environment):
+// TypeChoice ::= CHOICE { i INTEGER, b BOOLEAN }
 
-class IBChoiceType : public asn1::ChoiceType
+class ChoiceValue_IB_TypeChoice
 {
 public:
 
-   IBChoiceType()
+   explicit ChoiceValue_IB_TypeChoice() : id(__VALUE_TYPE_NOT_DEFINED__) {}
+
+   void setI(const asn1::IntegerType::ValueType& v) { value.i = v; id = I; }
+   void setB(const asn1::BooleanType::ValueType& v) { value.b = v; id = B; }
+
+   bool hasIChoosen() const { return id == I; }
+   bool hasBChoosen() const { return id == B; }
+
+   const asn1::IntegerType::ValueType& getI() const { return value.i; }
+   const asn1::BooleanType::ValueType& getB() const { return value.b; }
+
+private:
+
+   enum ChoiceValue_identifier
+   {
+      I = 1,
+      B = 2,
+      __VALUE_TYPE_NOT_DEFINED__ = -1
+   };
+
+   union ChoiceValue_value
+   {
+      asn1::IntegerType::ValueType i;
+      asn1::BooleanType::ValueType b;
+   };
+
+   ChoiceValue_identifier id;
+   ChoiceValue_value      value;
+};
+
+class TypeChoice : public asn1::ChoiceType
+{
+public:
+
+   typedef ChoiceValue_IB_TypeChoice ValueType;
+
+   explicit TypeChoice()
    {
       addChoice(&_integerType);
       addChoice(&_booleanType);
    }
 
-   void read(asn1::ASN1ValueReader& reader, IBChoice_IB& value)
+   void read(asn1::ASN1ValueReader& reader, ChoiceValue_IB_TypeChoice& value)
    {
       asn1::Type* choosenType = NULL;
       reader.readChoice(*this, &choosenType);
 
       if (choosenType == &_integerType)
-         _integerType.read(reader, value.i);
+      {
+         asn1::IntegerType::ValueType v;
+         _integerType.read(reader, v);
+         value.setI(v);
+      }
       else if (choosenType == &_booleanType)
-         _booleanType.read(reader, value.b);
+      {
+         asn1::BooleanType::ValueType v;
+         _booleanType.read(reader, v);
+         value.setB(v);
+      }
+      else
+      {
+         throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
+            _integerType.toString() + ", " + _booleanType.toString());
+      }
    }
 
-   void write(asn1::ASN1ValueWriter& writer, const IBChoice_IB& value)
+   void write(asn1::ASN1ValueWriter& writer, const ChoiceValue_IB_TypeChoice& value)
    {
-      //writer.writeChoice(*this);
+      if (value.hasIChoosen())
+         _integerType.write(writer, value.getI());
+      else if (value.hasBChoosen())
+         _booleanType.write(writer, value.getB());
    }
 
 private:
@@ -2803,7 +2852,35 @@ private:
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceType)
 {
+   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
 
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+
+   vToWrite.setB(true);
+
+   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   TypeChoice type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
 }
 
 }

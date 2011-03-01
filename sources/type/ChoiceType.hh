@@ -1,7 +1,7 @@
 #ifndef __CHOICE_TYPE_HH
 #define __CHOICE_TYPE_HH
 
-#include <list>
+#include <vector>
 
 #include <type/Type.hh>
 
@@ -12,7 +12,7 @@ class ChoiceType : public Type
 {
 public:
 
-   typedef std::list<Type*> ChoicesType;
+   typedef std::vector<Type*> ChoicesType;
 
    // Constructor
    explicit ChoiceType() {}

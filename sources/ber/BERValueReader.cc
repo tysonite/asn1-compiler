@@ -288,9 +288,10 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
       const ChoiceType::ChoicesType& types = type.getChoices();
       for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)
       {
-         if ((*p)->tagClass() == cl && (*p)->tagNumber() == tag)
+         Type* t = *p;
+         if (t->tagClass() == cl && ((t->hasTagNumber() && t->tagNumber() == tag) || (!t->hasTagNumber() && t->typeID() == tag)))
          {
-            *choosenType = *p;
+            *choosenType = t;
             return;
          }
       }
