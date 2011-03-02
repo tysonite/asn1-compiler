@@ -3155,6 +3155,7 @@ namespace sequence_type
 // Type7 ::= [4] IMPLICIT Type6
 // Type8 ::= [5] TypeSequence
 // Type9 ::= [5] IMPLICIT TypeSequence
+// Type10 ::= SEQUENCE OF Type9
 
 class SequenceValue_IB_TypeSequence
 {
@@ -3304,6 +3305,12 @@ public:
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
       setTagging(asn1::Type::IMPLICIT_TAGGING);
    }
+};
+
+class Type10 : public asn1::SequenceOfType<Type9>
+{
+public:
+   Type10() : asn1::SequenceOfType<Type9>(new Type9) {}
 };
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceTypeSequence)
@@ -3644,6 +3651,59 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
 
    BOOST_CHECK_EQUAL(vToRead.getI(), -1);
    BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
+{
+   SequenceValue_IB_TypeSequence vToWrite;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   std::vector<SequenceValue_IB_TypeSequence> outValues;
+   outValues.push_back(vToWrite);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   vToWrite.setI(1);
+   vToWrite.setB(true);
+   outValues.push_back(vToWrite);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), 1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+
+   Type10 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, outValues));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x30, 0x10, 0xA5, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00, 0xA5, 0x06, 0x02, 0x01, 0x01, 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   std::vector<SequenceValue_IB_TypeSequence> inValues;
+   BOOST_CHECK_NO_THROW(type.read(reader, inValues));
+   BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
+   
+   BOOST_REQUIRE_EQUAL(outValues.size(), inValues.size());
+
+   SequenceValue_IB_TypeSequence vToRead = inValues[0];
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+
+   vToRead = inValues[1];
+   BOOST_CHECK_EQUAL(vToRead.getI(), 1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), true);
 }
 
 }
