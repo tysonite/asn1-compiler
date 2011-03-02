@@ -9,7 +9,7 @@ namespace asn1
 class SequenceType : public Type
 {
 public:
-   explicit SequenceType(uint64_t minSize = 0, uint64_t maxSize = 0)
+   explicit SequenceType(uint64_t minSize = -1, uint64_t maxSize = -1)
       : _minSize(minSize), _hasMinSize(false), _maxSize(maxSize), _hasMaxSize(false) {}
 
    virtual TypeID typeID() const { return SEQUENCE_TYPE; }

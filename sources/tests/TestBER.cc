@@ -3141,6 +3141,513 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType8)
 
 }
 
+namespace sequence_type
+{
+
+// ASN.1 (EXPLICIT environment):
+// TypeSequence ::= SEQUENCE { i INTEGER, b BOOLEAN }
+// Type1 ::= TypeSequence
+// Type2 ::= [APPLICATION 3] IMPLICIT Type1
+// Type3 ::= [2] Type2
+// Type4 ::= [APPLICATION 7] IMPLICIT Type3
+// Type5 ::= [2] IMPLICIT Type2
+// Type6 ::= [3] Type3
+// Type7 ::= [4] IMPLICIT Type6
+// Type8 ::= [5] TypeSequence
+// Type9 ::= [5] IMPLICIT TypeSequence
+
+class SequenceValue_IB_TypeSequence
+{
+public:
+
+   explicit SequenceValue_IB_TypeSequence() {}
+
+   void setI(const asn1::IntegerType::ValueType& v) { i = v; }
+   void setB(const asn1::BooleanType::ValueType& v) { b = v; }
+
+   const asn1::IntegerType::ValueType& getI() const { return i; }
+   const asn1::BooleanType::ValueType& getB() const { return b; }
+
+private:
+
+   asn1::IntegerType::ValueType i;
+   asn1::BooleanType::ValueType b;
+};
+
+class TypeSequence : public asn1::SequenceType
+{
+public:
+
+   typedef SequenceValue_IB_TypeSequence ValueType;
+
+   explicit TypeSequence() {}
+
+   void read(asn1::ASN1ValueReader& reader, SequenceValue_IB_TypeSequence& value) const
+   {
+      reader.readSequenceBegin(*this);
+
+      {
+         asn1::IntegerType::ValueType v;
+         _IType.read(reader, v);
+         value.setI(v);
+      }
+      {
+         asn1::BooleanType::ValueType v;
+         _BType.read(reader, v);
+         value.setB(v);
+      }
+
+      reader.readSequenceEnd(*this);
+   }
+
+   void write(asn1::ASN1ValueWriter& writer, const SequenceValue_IB_TypeSequence& value) const
+   {
+      writer.writeSequenceBegin(*this);
+      _IType.write(writer, value.getI());
+      _BType.write(writer, value.getB());
+      writer.writeSequenceEnd();
+   }
+
+private:
+
+   asn1::IntegerType _IType;
+   asn1::BooleanType _BType;
+};
+
+class Type1 : public TypeSequence
+{
+};
+
+class Type2 : public asn1::TaggingType<Type1>
+{
+public:
+   Type2() : asn1::TaggingType<Type1>(new Type1)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type3 : public asn1::TaggingType<Type2>
+{
+public:
+   Type3() : asn1::TaggingType<Type2>(new Type2)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type4 : public asn1::TaggingType<Type3>
+{
+public:
+   Type4() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(7);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type5 : public asn1::TaggingType<Type2>
+{
+public:
+   Type5() : asn1::TaggingType<Type2>(new Type2)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type6 : public asn1::TaggingType<Type3>
+{
+public:
+   Type6() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type7 : public asn1::TaggingType<Type6>
+{
+public:
+   Type7() : asn1::TaggingType<Type6>(new Type6)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(4);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type8 : public asn1::TaggingType<TypeSequence>
+{
+public:
+   Type8() : asn1::TaggingType<TypeSequence>(new TypeSequence)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+   }
+};
+
+class Type9 : public asn1::TaggingType<TypeSequence>
+{
+public:
+   Type9() : asn1::TaggingType<TypeSequence>(new TypeSequence)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+   }
+};
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceTypeSequence)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   TypeSequence type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x30, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType1)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type1 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x30, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType2)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type2 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x63, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType3)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type3 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x08, 0x63, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType4)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type4 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x67, 0x08, 0x63, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType5)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type5 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType6)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type6 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA3, 0x0A, 0xA2, 0x08, 0x63, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType7)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type7 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA4, 0x0A, 0xA2, 0x08, 0x63, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType8)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type8 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x08, 0x30, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
+{
+   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+
+   vToWrite.setI(-1);
+   vToWrite.setB(false);
+
+   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+
+   Type9 type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
+   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+}
+
+}
+
 /*ut::test_suite* init_unit_test_suite(int argc, char* argv[])
 {
    ut::test_suite* test = BOOST_TEST_SUITE("BER encoding/decoding test suite");
