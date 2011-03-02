@@ -198,7 +198,7 @@ void BERValueWriter::writeExplicitBegin(const Type& type)
    }
 }
 
-void BERValueWriter::writeExplicitEnd(const Type& type)
+void BERValueWriter::writeExplicitEnd()
 {
    _writeLastCompositionEnd();
 }

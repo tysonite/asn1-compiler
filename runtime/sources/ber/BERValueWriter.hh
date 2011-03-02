@@ -58,7 +58,7 @@ public:
 
    // Writes EXPLICIT tag
    void writeExplicitBegin(const Type& type);
-   void writeExplicitEnd(const Type& type);
+   void writeExplicitEnd();
 
 protected:
    

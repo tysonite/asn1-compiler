@@ -92,7 +92,7 @@ void TaggingType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& 
    {
       writer.writeExplicitBegin(*this);
       _innerType->write(writer, value);
-      writer.writeExplicitEnd(*this);
+      writer.writeExplicitEnd();
    }
 }
 

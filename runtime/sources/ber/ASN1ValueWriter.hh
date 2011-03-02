@@ -49,7 +49,7 @@ public:
 
    // Writes EXPLICIT tag
    virtual void writeExplicitBegin(const Type& type) = 0;
-   virtual void writeExplicitEnd(const Type& type) = 0;
+   virtual void writeExplicitEnd() = 0;
 };
 
 }
