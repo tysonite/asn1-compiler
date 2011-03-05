@@ -2776,16 +2776,16 @@ class ChoiceValue_IB_TypeChoice
 {
 public:
 
-   explicit ChoiceValue_IB_TypeChoice() : id(__VALUE_TYPE_NOT_DEFINED__) {}
+   explicit ChoiceValue_IB_TypeChoice() : _id(__VALUE_TYPE_NOT_DEFINED__) {}
 
-   void setI(const asn1::IntegerType::ValueType& v) { value.i = v; id = I; }
-   void setB(const asn1::BooleanType::ValueType& v) { value.b = v; id = B; }
+   void setI(const asn1::IntegerType::ValueType& v) { _value.i = v; _id = I; }
+   void setB(const asn1::BooleanType::ValueType& v) { _value.b = v; _id = B; }
 
-   bool hasIChoosen() const { return id == I; }
-   bool hasBChoosen() const { return id == B; }
+   bool hasIChoosen() const { return _id == I; }
+   bool hasBChoosen() const { return _id == B; }
 
-   const asn1::IntegerType::ValueType& getI() const { return value.i; }
-   const asn1::BooleanType::ValueType& getB() const { return value.b; }
+   const asn1::IntegerType::ValueType& getI() const { return _value.i; }
+   const asn1::BooleanType::ValueType& getB() const { return _value.b; }
 
 private:
 
@@ -2802,8 +2802,8 @@ private:
       asn1::BooleanType::ValueType b;
    };
 
-   ChoiceValue_identifier id;
-   ChoiceValue_value      value;
+   ChoiceValue_identifier _id;
+   ChoiceValue_value      _value;
 };
 
 class TypeChoice : public asn1::ChoiceType
@@ -2812,7 +2812,7 @@ public:
 
    typedef ChoiceValue_IB_TypeChoice ValueType;
 
-   explicit TypeChoice()
+   explicit TypeChoice() : asn1::ChoiceType()
    {
       _addChoice(&_integerType);
       _addChoice(&_booleanType);
@@ -3163,16 +3163,16 @@ public:
 
    explicit SequenceValue_IB_TypeSequence() {}
 
-   void setI(const asn1::IntegerType::ValueType& v) { i = v; }
-   void setB(const asn1::BooleanType::ValueType& v) { b = v; }
+   void set_i(const asn1::IntegerType::ValueType& v) { _i = v; }
+   void set_b(const asn1::BooleanType::ValueType& v) { _b = v; }
 
-   const asn1::IntegerType::ValueType& getI() const { return i; }
-   const asn1::BooleanType::ValueType& getB() const { return b; }
+   const asn1::IntegerType::ValueType& get_i() const { return _i; }
+   const asn1::BooleanType::ValueType& get_b() const { return _b; }
 
 private:
 
-   asn1::IntegerType::ValueType i;
-   asn1::BooleanType::ValueType b;
+   asn1::IntegerType::ValueType _i;
+   asn1::BooleanType::ValueType _b;
 };
 
 class TypeSequence : public asn1::SequenceType
@@ -3181,7 +3181,7 @@ public:
 
    typedef SequenceValue_IB_TypeSequence ValueType;
 
-   explicit TypeSequence() {}
+   explicit TypeSequence() : asn1::SequenceType() {}
 
    void read(asn1::ASN1ValueReader& reader, SequenceValue_IB_TypeSequence& value) const
    {
@@ -3190,12 +3190,12 @@ public:
       {
          asn1::IntegerType::ValueType v;
          _IType.read(reader, v);
-         value.setI(v);
+         value.set_i(v);
       }
       {
          asn1::BooleanType::ValueType v;
          _BType.read(reader, v);
-         value.setB(v);
+         value.set_b(v);
       }
 
       reader.readSequenceEnd(*this);
@@ -3204,8 +3204,8 @@ public:
    void write(asn1::ASN1ValueWriter& writer, const SequenceValue_IB_TypeSequence& value) const
    {
       writer.writeSequenceBegin(*this);
-      _IType.write(writer, value.getI());
-      _BType.write(writer, value.getB());
+      _IType.write(writer, value.get_i());
+      _BType.write(writer, value.get_b());
       writer.writeSequenceEnd();
    }
 
@@ -3317,11 +3317,11 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceTypeSequence)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    TypeSequence type;
 
@@ -3343,19 +3343,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceTypeSequence)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType1)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type1 type;
 
@@ -3377,19 +3377,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType1)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType2)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type2 type;
 
@@ -3411,19 +3411,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType2)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType3)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type3 type;
 
@@ -3445,19 +3445,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType3)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType4)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type4 type;
 
@@ -3479,19 +3479,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType4)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType5)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type5 type;
 
@@ -3513,19 +3513,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType5)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType6)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type6 type;
 
@@ -3547,19 +3547,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType6)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType7)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type7 type;
 
@@ -3581,19 +3581,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType7)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType8)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type8 type;
 
@@ -3615,19 +3615,19 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType8)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
 {
    SequenceValue_IB_TypeSequence vToWrite, vToRead;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
    Type9 type;
 
@@ -3649,29 +3649,29 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
 {
    SequenceValue_IB_TypeSequence vToWrite;
 
-   vToWrite.setI(-1);
-   vToWrite.setB(false);
+   vToWrite.set_i(-1);
+   vToWrite.set_b(false);
 
    std::vector<SequenceValue_IB_TypeSequence> outValues;
    outValues.push_back(vToWrite);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), -1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), false);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
-   vToWrite.setI(1);
-   vToWrite.setB(true);
+   vToWrite.set_i(1);
+   vToWrite.set_b(true);
    outValues.push_back(vToWrite);
 
-   BOOST_CHECK_EQUAL(vToWrite.getI(), 1);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_i(), 1);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    Type10 type;
 
@@ -3698,12 +3698,12 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
    BOOST_REQUIRE_EQUAL(outValues.size(), inValues.size());
 
    SequenceValue_IB_TypeSequence vToRead = inValues[0];
-   BOOST_CHECK_EQUAL(vToRead.getI(), -1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 
    vToRead = inValues[1];
-   BOOST_CHECK_EQUAL(vToRead.getI(), 1);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_i(), 1);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 }
