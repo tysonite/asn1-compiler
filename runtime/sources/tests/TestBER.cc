@@ -2772,45 +2772,9 @@ namespace choice_type
 // Type7 ::= [4] IMPLICIT Type6
 // Type8 ::= [5] TypeChoice
 
-class ChoiceValue_IB_TypeChoice
-{
-public:
-
-   explicit ChoiceValue_IB_TypeChoice() : _id(__VALUE_TYPE_NOT_DEFINED__) {}
-
-   void setI(const asn1::IntegerType::ValueType& v) { _value.i = v; _id = I; }
-   void setB(const asn1::BooleanType::ValueType& v) { _value.b = v; _id = B; }
-
-   bool hasIChoosen() const { return _id == I; }
-   bool hasBChoosen() const { return _id == B; }
-
-   const asn1::IntegerType::ValueType& getI() const { return _value.i; }
-   const asn1::BooleanType::ValueType& getB() const { return _value.b; }
-
-private:
-
-   enum ChoiceValue_identifier
-   {
-      I = 1,
-      B = 2,
-      __VALUE_TYPE_NOT_DEFINED__ = -1
-   };
-
-   union ChoiceValue_value
-   {
-      asn1::IntegerType::ValueType i;
-      asn1::BooleanType::ValueType b;
-   };
-
-   ChoiceValue_identifier _id;
-   ChoiceValue_value      _value;
-};
-
 class TypeChoice : public asn1::ChoiceType
 {
 public:
-
-   typedef ChoiceValue_IB_TypeChoice ValueType;
 
    explicit TypeChoice() : asn1::ChoiceType()
    {
@@ -2818,7 +2782,42 @@ public:
       _addChoice(&_booleanType);
    }
 
-   void read(asn1::ASN1ValueReader& reader, ChoiceValue_IB_TypeChoice& value) const
+   class TypeChoice_Value
+   {
+   public:
+
+      explicit TypeChoice_Value() : _id(__VALUE_TYPE_NOT_DEFINED__) {}
+
+      void set_i(const asn1::IntegerType::ValueType& v) { _value.i = v; _id = i_ID; }
+      const asn1::IntegerType::ValueType& get_i() const { return _value.i; }
+      bool has_i_Choosen() const { return _id == i_ID; }
+
+      void set_b(const asn1::BooleanType::ValueType& v) { _value.b = v; _id = b_ID; }
+      const asn1::BooleanType::ValueType& get_b() const { return _value.b; }
+      bool has_b_Choosen() const { return _id == b_ID; }
+
+   private:
+
+      enum ChoiceValue_identifier
+      {
+         i_ID = 1,
+         b_ID = 2,
+         __VALUE_TYPE_NOT_DEFINED__ = -1
+      };
+
+      union ChoiceValue_value
+      {
+         asn1::IntegerType::ValueType i;
+         asn1::BooleanType::ValueType b;
+      };
+
+      ChoiceValue_identifier _id;
+      ChoiceValue_value      _value;
+   };
+
+   typedef TypeChoice_Value ValueType;
+
+   void read(asn1::ASN1ValueReader& reader, TypeChoice_Value& value) const
    {
       asn1::Type* choosenType = NULL;
       reader.readChoice(*this, &choosenType);
@@ -2827,13 +2826,13 @@ public:
       {
          asn1::IntegerType::ValueType v;
          _integerType.read(reader, v);
-         value.setI(v);
+         value.set_i(v);
       }
       else if (choosenType == &_booleanType)
       {
          asn1::BooleanType::ValueType v;
          _booleanType.read(reader, v);
-         value.setB(v);
+         value.set_b(v);
       }
       else
       {
@@ -2842,14 +2841,14 @@ public:
       }
    }
 
-   void write(asn1::ASN1ValueWriter& writer, const ChoiceValue_IB_TypeChoice& value) const
+   void write(asn1::ASN1ValueWriter& writer, const TypeChoice_Value& value) const
    {
-      assert(value.hasIChoosen() || value.hasBChoosen());
+      assert(value.has_i_Choosen() || value.has_b_Choosen());
 
-      if (value.hasIChoosen())
-         _integerType.write(writer, value.getI());
-      else if (value.hasBChoosen())
-         _booleanType.write(writer, value.getB());
+      if (value.has_i_Choosen())
+         _integerType.write(writer, value.get_i());
+      else if (value.has_b_Choosen())
+         _booleanType.write(writer, value.get_b());
    }
 
 private:
@@ -2919,15 +2918,15 @@ public:
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceTypeChoice)
 {
-   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+   TypeChoice::ValueType vToWrite, vToRead;
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
 
-   vToWrite.setB(true);
+   vToWrite.set_b(true);
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    TypeChoice type;
 
@@ -2949,22 +2948,22 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceTypeChoice)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceType3)
 {
-   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+   TypeChoice::ValueType vToWrite, vToRead;
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
 
-   vToWrite.setB(true);
+   vToWrite.set_b(true);
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    Type3 type;
 
@@ -2986,22 +2985,22 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType3)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceType4)
 {
-   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+   TypeChoice::ValueType vToWrite, vToRead;
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
 
-   vToWrite.setB(true);
+   vToWrite.set_b(true);
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    Type4 type;
 
@@ -3023,22 +3022,22 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType4)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceType6)
 {
-   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+   TypeChoice::ValueType vToWrite, vToRead;
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
 
-   vToWrite.setB(true);
+   vToWrite.set_b(true);
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    Type6 type;
 
@@ -3060,22 +3059,22 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType6)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceType7)
 {
-   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+   TypeChoice::ValueType vToWrite, vToRead;
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
 
-   vToWrite.setB(true);
+   vToWrite.set_b(true);
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    Type7 type;
 
@@ -3097,22 +3096,22 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType7)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerChoiceType8)
 {
-   ChoiceValue_IB_TypeChoice vToWrite, vToRead;
+   TypeChoice::ValueType vToWrite, vToRead;
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.hasIChoosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
 
-   vToWrite.setB(true);
+   vToWrite.set_b(true);
 
-   BOOST_CHECK_EQUAL(vToWrite.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.getB(), true);
+   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
 
    Type8 type;
 
@@ -3134,9 +3133,9 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType8)
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
-   BOOST_CHECK_EQUAL(vToRead.hasIChoosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.hasBChoosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.getB(), true);
+   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
 }
 
 }
