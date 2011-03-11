@@ -1,6 +1,7 @@
 package gen.visitor;
 
 import gen.*;
+import gen.utils.*;
 import parser.*;
 
 public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
@@ -16,33 +17,13 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
-      {
-         final SetOrSequenceTypeName visitor = new SetOrSequenceTypeName();
-         node.jjtAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
+      VisitorUtils.visitNodeAndAccept(builder, node, new SetOrSequenceTypeName());
 
       builder.append("(new ");
 
-      {
-         final SetOrSequenceConstructorDeclaration visitor = new SetOrSequenceConstructorDeclaration();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-
-      }
-
-      {
-         final BuiltInTypeName visitor = new BuiltInTypeName();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
-
-      {
-         final DefinedTypeName visitor = new DefinedTypeName();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
+      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
 
       builder.append(")");
 

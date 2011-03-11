@@ -1,6 +1,7 @@
 package gen.visitor;
 
 import gen.*;
+import gen.utils.*;
 import parser.*;
 
 public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implements ContentProvider {
@@ -22,28 +23,13 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      TaggedTypeName taggedTypeNameVisitor = new TaggedTypeName();
-      node.jjtAccept(taggedTypeNameVisitor, data);
-      builder.append(taggedTypeNameVisitor.getContent());
-
-      DefinedTypeName definedTypeNameVisitor = new DefinedTypeName();
-      node.jjtAccept(definedTypeNameVisitor, data);
-      builder.append(definedTypeNameVisitor.getContent());
+      VisitorUtils.visitNodeAndAccept(builder, node, new TaggedTypeName());
+      VisitorUtils.visitNodeAndAccept(builder, node, new DefinedTypeName());
 
       builder.append("(new ");
 
-      {
-         BuiltInTypeName visitor = new BuiltInTypeName();
-         node.childrenAccept(visitor, data);
-         builder.append(visitor.getContent());
-      }
-
-      {
-         final SetOrSequenceConstructorDeclaration visitor =
-                 new SetOrSequenceConstructorDeclaration();
-         node.childrenAccept(visitor, data);
-         builder.append(visitor.getContent());
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
 
       node.childrenAccept(this, data);
 

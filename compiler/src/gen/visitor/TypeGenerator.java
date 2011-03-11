@@ -1,6 +1,7 @@
 package gen.visitor;
 
 import gen.*;
+import gen.utils.*;
 import parser.*;
 
 public class TypeGenerator extends DoNothingASTVisitor implements Generator {
@@ -19,23 +20,10 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       builder.append("class ").append(typeName).append(" : public ");
 
       // base type of the class
-      {
-         final BuiltInTypeName builtInTypeVisitor = new BuiltInTypeName();
-         node.childrenAccept(builtInTypeVisitor, null);
-         builder.append(builtInTypeVisitor.getContent());
-
-         final SetOrSequenceTypeName setOrSequenceTypeVisitor = new SetOrSequenceTypeName();
-         node.childrenAccept(setOrSequenceTypeVisitor, null);
-         builder.append(setOrSequenceTypeVisitor.getContent());
-
-         final TaggedTypeName taggedTypeVisitor = new TaggedTypeName();
-         node.childrenAccept(taggedTypeVisitor, null);
-         builder.append(taggedTypeVisitor.getContent());
-
-         final DefinedTypeName definedTypeVisitor = new DefinedTypeName();
-         node.childrenAccept(definedTypeVisitor, null);
-         builder.append(definedTypeVisitor.getContent());
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
 
       // body of the class
       builder.newLine();
@@ -44,44 +32,20 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       builder.append(1, typeName).append("()");
 
       /* check whether it is needed to add " : public " */
-      {
-         final AddColonIfNeeded visitor = new AddColonIfNeeded();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
+      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDeclaration());
 
-      {
-         final SetOrSequenceConstructorDeclaration visitor =
-                 new SetOrSequenceConstructorDeclaration();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
-
-      {
-         final TaggedTypeConstructorDeclaration visitor = new TaggedTypeConstructorDeclaration();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
-
+      // constructor body
       builder.newLine();
       builder.append(1, "{").newLine();
 
-      {
-         TaggedTypeConstructorDefinition visitor = new TaggedTypeConstructorDefinition();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition());
 
       builder.append(1, "}").newLine();
 
-      {
-         NamedIntegerValueType visitor = new NamedIntegerValueType(typeName);
-         node.childrenAccept(visitor, null);
-
-         if (visitor.hasValuableContent()) {
-            builder.append(visitor.getContent());
-         }
-      }
+      // body of the class
+      VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerValueType(typeName));
 
       builder.newLine();
       builder.append("};").newLine().newLine();

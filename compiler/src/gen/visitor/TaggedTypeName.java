@@ -1,6 +1,7 @@
 package gen.visitor;
 
 import gen.*;
+import gen.utils.*;
 import parser.*;
 
 public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvider {
@@ -16,23 +17,10 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
    public Object visit(ASTTaggedType node, Object data) {
       builder.append("TaggingType<");
 
-      {
-         final BuiltInTypeName visitor = new BuiltInTypeName();
-         node.childrenAccept(visitor, data);
-         builder.append(visitor.getContent());
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
 
-      {
-         final SetOrSequenceTypeName visitor = new SetOrSequenceTypeName();
-         node.childrenAccept(visitor, data);
-         builder.append(visitor.getContent());
-      }
-
-      {
-         final DefinedTypeName visitor = new DefinedTypeName();
-         node.childrenAccept(visitor, data);
-         builder.append(visitor.getContent());
-      }
 
       builder.append(">");
       return data;

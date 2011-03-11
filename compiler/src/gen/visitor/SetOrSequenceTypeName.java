@@ -1,6 +1,7 @@
 package gen.visitor;
 
 import gen.*;
+import gen.utils.*;
 import parser.*;
 
 public class SetOrSequenceTypeName extends DoNothingASTVisitor implements ContentProvider {
@@ -25,17 +26,8 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       builder.append("SequenceOfType<");
 
-      {
-         final BuiltInTypeName visitor = new BuiltInTypeName();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
-
-      {
-         final SetOrSequenceTypeName visitor = new SetOrSequenceTypeName();
-         node.childrenAccept(visitor, null);
-         builder.append(visitor.getContent());
-      }
+      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
 
       builder.append(">");
       return data;
