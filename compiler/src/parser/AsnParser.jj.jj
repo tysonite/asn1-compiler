@@ -24,7 +24,7 @@ DEBUG_TOKEN_MANAGER=false;
            
              
                      
-OUTPUT_DIRECTORY="D:\\mak\\projects\\asn1\\compiler\\src\\parser";
+OUTPUT_DIRECTORY="..\\src\\parser";
                       
 }
 
@@ -1458,23 +1458,35 @@ void NamedNumber() : {/*@bgen(jjtree) NamedNumber */
 /*@egen*/ 
 }
 
-void SignedNumber() : {/*@bgen(jjtree) SignedNumber */
-  ASTSignedNumber jjtn000 = new ASTSignedNumber(JJTSIGNEDNUMBER);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-  jjtreeOpenNodeScope(jjtn000);
-/*@egen*/ } 
+void SignedNumber() :
+{/*@bgen(jjtree) SignedNumber */
+   ASTSignedNumber jjtn000 = new ASTSignedNumber(JJTSIGNEDNUMBER);
+   boolean jjtc000 = true;
+   jjtree.openNodeScope(jjtn000);
+   jjtreeOpenNodeScope(jjtn000);
+/*@egen*/
+   Token m = null, n = null;
+} 
 {/*@bgen(jjtree) SignedNumber */
   try {
 /*@egen*/ 
-  [<MINUS_TKN>  ] ( <NUMBER_TKN> | <NUMBER_ERANGE_TKN> )/*@bgen(jjtree)*/
+  [ m = <MINUS_TKN> ] ( n = <NUMBER_TKN> | n = <NUMBER_ERANGE_TKN> )/*@bgen(jjtree)*/
+  {
+    jjtree.closeNodeScope(jjtn000, true);
+    jjtc000 = false;
+    jjtreeCloseNodeScope(jjtn000);
+  }
+/*@egen*/
+  {
+     jjtn000.setNumber(Integer.valueOf(((null != m) ? m.toString() : "") + n.toString()).intValue());
+  }/*@bgen(jjtree)*/
   } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
       jjtreeCloseNodeScope(jjtn000);
     }
   }
-/*@egen*/ 
+/*@egen*/
 }
 
 /*

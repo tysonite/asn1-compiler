@@ -100,7 +100,7 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
 
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
-      builder.append(node.getFirstToken().toString()).append(" };").newLine();
+      builder.append(String.valueOf(node.getNumber())).append(" };").newLine();
       return data;
    }
 
