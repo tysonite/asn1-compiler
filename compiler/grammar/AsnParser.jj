@@ -1,0 +1,944 @@
+/*
+ *
+ *  ASN.1 grammar  for JavaCC
+ *
+ *  Contributed by Helena Sarin (hsarin@lucent.com)
+ *
+ *  Derived in part from the following work: snacc - a freeware ASN.1 to C or C++ compiler, v 1.3,
+ *  yacc/lex source code ( parse-asn1.y, lex-asn1.l), 
+ *  the free software, which is covered by GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or later
+ *
+ *  I tested it against several ASN.1 files used by CMIP;
+ *  Additional work is reguired to fully support SNMP MIBs parsing
+ *   
+ *  Please let me know if you use this grammar: i'm using it to develop ASN.1/IDL compiler
+ *  
+ */
+
+options {
+SANITY_CHECK=true;
+DEBUG_PARSER=false;
+DEBUG_TOKEN_MANAGER=false;
+MULTI=true;
+VISITOR=true;
+NODE_SCOPE_HOOK=true;
+OUTPUT_DIRECTORY="..\\src\\parser";
+NODE_PACKAGE="parser";
+}
+
+PARSER_BEGIN(AsnParser)
+package parser;
+
+import java.io.*;
+import java.util.*;
+import gen.*;
+
+public class AsnParser
+{
+	/**
+	 * The base package name for the generated classes.
+	 *<p>
+	 * This package is prepended to the module name to get the final package
+	 * name for the generated classes.
+	 *<p>
+	 * For example, if "-p foo.bar" is given on the command line, the classes
+	 * generated from the module X509 will be in the package foo.bar.x509.
+	 */
+	public static String outputPackage;
+
+	/**
+	 * The name of the directory to create for the package.
+	 */
+	public static String packageDirectory;
+
+	/**
+	 * The name of the final output directory.
+	 *
+	 * This is the base output directory plus the package name.
+	 */
+	public static String outputDirectory;
+
+	/**
+	 * The directory where the classes are created.
+	 *<p>
+	 * This is the top level directory. Each of the directories necessary
+	 * for the packages are created under this directory.
+	 *<p>
+	 * The default is the current directory.
+	 */
+	public static String directory;
+
+	public static void main(String args[]) throws ParseException
+	{
+		boolean showUsage = true;
+
+		AsnParser parser;
+		try
+		{
+			int i;
+			for(i = 0; i < args.length; i++)
+			{
+				if(args[i].equals("-p"))
+				{
+					i++;
+					if(i >= args.length)
+					{
+						usage();
+						System.exit(1);
+					}
+
+					outputPackage = args[i];
+					continue;
+				}
+
+				if(args[i].equals("-d"))
+				{
+					i++;
+					if(i >= args.length)
+					{
+						usage();
+						System.exit(1);
+					}
+
+					directory = args[i];
+					continue;
+				}
+
+				parser = new AsnParser(new FileInputStream(args[i]));
+				parser.Input();
+				System.out.println("ASN.1 file parsed successfully.");
+
+				if(directory != null)
+				{
+					File outputDir = new File(directory);
+					if(outputDir.exists() == true)
+					{
+						if(outputDir.isDirectory() != true)
+						{
+							System.err.println(directory + " is not a directory, cannot continue");
+							System.exit(1);
+						}
+					}
+					else
+					{
+						boolean x = outputDir.mkdirs();
+						if(x != true)
+						{
+							System.err.println("could not create directory " + directory + ", cannot continue");
+							System.exit(1);
+						}
+					}
+				}
+
+				if(outputPackage != null)
+				{
+					packageDirectory = new String(outputPackage);
+					String fileSeparator = System.getProperty("file.separator");
+					char[] fileSepArray = fileSeparator.toCharArray();
+					if(fileSepArray.length == 1)
+						packageDirectory = packageDirectory.replace('.', fileSepArray[0]);
+					//else
+						// don't know what to do in this case!
+
+					outputDirectory = new String(directory + fileSeparator + packageDirectory);
+					File f = new File(outputDirectory);
+					boolean x = f.mkdirs();
+					if(x != true)
+					{
+						System.err.println("could not create directory " + outputDirectory + ", cannot continue");
+						System.exit(1);
+					}
+				}
+				else
+					outputDirectory = directory;
+
+				SimpleNode root = (SimpleNode)jjtree.rootNode();
+				root.dump("\t");
+
+            CPPCodeGenerator generator = new CPPCodeGenerator(root, outputDirectory);
+            generator.generate();
+
+				showUsage = false;
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		if(showUsage == true)
+		{
+			usage();
+			System.exit(1);
+		}
+	}
+
+	static void
+	usage()
+	{
+		System.out.println("arc - ASN.1 compiler");
+		System.out.println("Copyright 1999 FORGE Research Pty Ltd\n");
+		System.out.println("usage: java AsnParser [-d directory] [-p package] source files...");
+	}
+
+   static void lookForAssignment(Node n) {
+      int numChildren = n.jjtGetNumChildren();
+      for (int i = 0; i < numChildren; i++) {
+         SimpleNode node = (SimpleNode) n.jjtGetChild(i);
+         if (node instanceof ASTTypeAssignment) {
+            //new TypeGenerator().generate((ASTTypeAssignment) node);
+         } else {
+            lookForAssignment(node);
+         }
+      }
+   }
+
+	static String
+	returnRecursive(Node n)
+	{
+		String s = new String("");
+		return s;
+	}
+
+   public static void jjtreeOpenNodeScope(Node n) {
+      ((SimpleNode) n).setFirstToken(getToken(1));
+   }
+
+   public static void jjtreeCloseNodeScope(Node n) {
+      ((SimpleNode) n).setLastToken(getToken(0));
+   }
+
+	private static String usefulTypes[] = {
+		"GraphicString",  "NumericString", "PrintableString",
+		"TeletexString", "T61String", "VideotexString", "IA5String",
+		"VisibleString", "ISO646String", "GeneralizedTime", "UniversalString", "BMPString" };
+}
+
+PARSER_END(AsnParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+SPECIAL_TOKEN :
+{
+  "--" : WithinASNComment
+}
+
+<WithinASNComment> SPECIAL_TOKEN :
+{
+  <("--" | "\n" | "\r" | "\r\n" )> : DEFAULT
+}
+
+<WithinASNComment> MORE :
+{
+  <~[]>
+}
+
+TOKEN : 
+{
+ <OBJECT_IDENTIFIER_TKN: "OBJECT" ([" ","\n","\t","\r"])? "IDENTIFIER">
+}
+
+TOKEN : 
+{
+ <BSTRING_TKN: "\'" (["0"-"1"])* "\'B">
+}
+
+TOKEN : 
+{
+ <HSTRING_TKN: "\'" (["0"-"9","A"-"F","a"-"f"])* "\'H">
+}
+
+TOKEN : 
+{
+ <CSTRING_TKN: "\"" ( ~["\""] )* "\"" >
+}
+
+TOKEN : 
+{
+ <NUMBER_ERANGE_TKN: ["1"-"9"](["0"-"9"])*>
+}
+
+TOKEN : 
+{
+ <NUMBER_TKN: "0">
+}
+
+TOKEN :
+{
+  <DOT_TKN: ".">
+| <COMMA_TKN: ",">
+| <LEFTBRACE_TKN: "{">
+| <RIGHTBRACE_TKN: "}">
+| <LEFTPAREN_TKN: "(">
+| <RIGHTPAREN_TKN: ")">
+| <LEFTBRACKET_TKN: "[">
+| <RIGHTBRACKET_TKN: "]">
+| <LESSTHAN_TKN: "<">
+| <MINUS_TKN: "-">
+| <GETS_TKN: "::=">
+| <BAR_TKN: "|">
+| <SEMI_COLON_TKN: ";">
+| <SELECTOR_TKN: ":">
+| <TAGS_TKN: "TAGS">
+| <BOOLEAN_TKN: "BOOLEAN">
+| <INTEGER_TKN: "INTEGER">
+| <BIT_TKN: "BIT">
+| <STRING_TKN: "STRING">
+| <OCTET_TKN: "OCTET">
+| <NULL_TKN: "NULL">
+| <SEQUENCE_TKN: "SEQUENCE">
+| <OF_TKN: "OF">
+| <SET_TKN: "SET">
+| <IMPLICIT_TKN: "IMPLICIT">
+| <CHOICE_TKN: "CHOICE">
+| <ANY_TKN: "ANY">
+| <OPTIONAL_TKN: "OPTIONAL">
+| <DEFAULT_TKN: "DEFAULT">
+| <COMPONENTS_TKN: "COMPONENTS">
+| <UNIVERSAL_TKN: "UNIVERSAL">
+| <APPLICATION_TKN: "APPLICATION">
+| <PRIVATE_TKN: "PRIVATE">
+| <TRUE_TKN: "TRUE">
+| <FALSE_TKN: "FALSE">
+| <BEGIN_TKN: "BEGIN">
+| <END_TKN: "END">
+| <DEFINITIONS_TKN: "DEFINITIONS">
+| <EXPLICIT_TKN: "EXPLICIT">
+| <ENUMERATED_TKN: "ENUMERATED">
+| <EXTERNAL_TKN: "EXTERNAL">
+| <EXPORTS_TKN: "EXPORTS">
+| <IMPORTS_TKN: "IMPORTS">
+| <REAL_TKN: "REAL">
+| <INCLUDES_TKN: "INCLUDES">
+| <MIN_TKN: "MIN">
+| <MAX_TKN: "MAX">
+| <SIZE_TKN: "SIZE">
+| <FROM_TKN: "FROM">
+| <WITH_TKN: "WITH">
+| <COMPONENT_TKN: "COMPONENT">
+| <PRESENT_TKN: "PRESENT">
+| <ABSENT_TKN: "ABSENT">
+| <DEFINED_TKN: "DEFINED">
+| <BY_TKN: "BY">
+| <PLUS_INFINITY_TKN: "PLUS-INFINITY">
+| <MINUS_INFINITY_TKN: "MINUS-INFINITY">
+| <OBJECTTYPE_TKN: "OBJECT-TYPE">
+| <SYNTAX_TKN: "SYNTAX">
+| <ACCESS_TKN: "ACCESS">
+| <STATUS_TKN: "STATUS">
+| <DESCRIPTION_TKN: "DESCRIPTION">
+| <REFERENCE_TKN: "REFERENCE">
+| <INDEX_TKN: "INDEX">
+| <DEFVAL_TKN: "DEFVAL">
+| <DHINT: "DISPLAY-HINT">
+| <TC_TKN: "TEXTUAL-CONVENTION"> 
+| <MACRO_TKN: "MACRO"> 
+}
+
+TOKEN : 
+{
+ <LCASEFIRST_IDENT_TKN: ["a"-"z"] (("-"["a"-"z","A"-"Z","0"-"9"])|["a"-"z","A"-"Z","0"-"9"])*>
+}
+
+
+TOKEN : 
+{
+ <UCASEFIRST_IDENT_TKN: ["A"-"Z"](("-"["a"-"z","A"-"Z","0"-"9"])|["a"-"z","A"-"Z","0"-"9"])*>
+}
+
+void Input() : {} 
+{ 
+ (ModuleDefinition())*
+}
+
+void ModuleDefinition() : {} 
+{ 
+  ModuleIdentifier() <DEFINITIONS_TKN> [TagDefault()] <GETS_TKN> <BEGIN_TKN> ModuleBody() <END_TKN> 
+}
+
+void TagDefault() : {} 
+{ 	
+   (<EXPLICIT_TKN> |  <IMPLICIT_TKN> ) <TAGS_TKN> 
+}
+
+void ModuleIdentifier() : {  } 
+{ 
+   modulereference() [AssignedIdentifier()]
+}
+
+void AssignedIdentifier() : {} 
+{ 
+   ObjectIdentifierValue() 
+}
+
+void ModuleBody() : {} 
+{ 
+  [Exports()] [Imports()] [AssignmentList()] 
+}
+
+void Exports() : {} 
+{ 
+  <EXPORTS_TKN> [SymbolsExported()] <SEMI_COLON_TKN> 
+}
+
+void SymbolsExported() : {} 
+{ 
+   ExportSymbolList() 
+}
+
+void ExportSymbolList() : {} 
+{ 
+   Symbol() (<COMMA_TKN> Symbol())*
+}
+
+void Imports() : {} 
+{ 
+   <IMPORTS_TKN> [SymbolsImported()] <SEMI_COLON_TKN> 
+}
+
+void SymbolsImported() : {} 
+{ 
+   SymbolsFromModuleList() 
+}
+
+void SymbolsFromModuleList() : {} 
+{ 
+   SymbolsFromModule() (SymbolsFromModule())*
+}
+
+void SymbolsFromModule() : { String module; } 
+{ 
+   SymbolList() <FROM_TKN>  ModuleIdentifier() 
+}
+
+void SymbolList() : {} 
+{ 
+   Symbol() (<COMMA_TKN> Symbol())* 
+}
+
+void Symbol() : {} 
+{ 
+   typereference()
+ | identifier() 
+ | DefinedMacroName() 
+}
+
+void AssignmentList() : {} 
+{ 
+  Assignment() [<SEMI_COLON_TKN>] ( Assignment() [<SEMI_COLON_TKN>] )*
+}
+
+void Assignment() #void: {} 
+{ 
+   LOOKAHEAD(2)  MacroDefinition() |  TypeAssignment() |  ValueAssignment()
+}
+
+void MacroDefinition() : { } 
+{
+   (<TC_TKN> | <OBJECTTYPE_TKN> | typereference()) <MACRO_TKN> <GETS_TKN> 
+	<BEGIN_TKN>  MacroBody() <END_TKN>
+}
+
+JAVACODE
+void MacroBody() {	
+  Token tok;
+  int nesting = 1;
+  while (true) {
+    tok = getToken(1);
+    if (tok.kind == END_TKN) {
+	break;	
+    }
+    tok = getNextToken();
+  }
+}
+
+void MacroReference() : {} 
+{ 
+   typereference() | DefinedMacroName() 
+}
+
+void TypeAssignment() :
+{
+   int type;
+}
+{
+   typereference() <GETS_TKN>
+   (
+      type = GlobalType()
+      {
+         jjtThis.setAssignment(type);
+      }
+   )
+}
+
+int GlobalType() #void:
+{
+   int type = -1;
+}
+{
+   (type = Type() | DefinedMacroType())
+   {
+      return type;
+   }
+}
+
+int Type() #void: { int type = -1; }
+{ 
+   (LOOKAHEAD(2)
+      BuiltinType()
+      {
+         type = ASTTypeAssignment.BUILTIN_ASSIGNMENT;
+      }
+      |
+      DefinedType()
+      {
+         type = ASTTypeAssignment.DEFINED_ASSIGNMENT;
+      }
+   ) [LOOKAHEAD(2) SubtypeSpec()]
+   { return type; }
+}
+
+void DefinedType() : { } 
+{  
+  [LOOKAHEAD(2) modulereference() <DOT_TKN>]  typereference() 
+}
+
+void BuiltinType() : { int x; } 
+{ 
+  IntegerType() { jjtThis.setType(0); }
+| BitStringType()  { jjtThis.setType(1); }
+| LOOKAHEAD(2) x = SetOrSequenceType() { jjtThis.setType(x); }
+| x = SetOrSequenceOfType() { jjtThis.setType(x); }
+| ChoiceType() { jjtThis.setType(6); }
+| SelectionType() { jjtThis.setType(7); }
+| TaggedType() { jjtThis.setType(8); }
+| AnyType() { jjtThis.setType(9); }
+| EnumeratedType() { jjtThis.setType(10); }
+| OctetStringType() { jjtThis.setType(11); }
+| ObjectIdentifierType() { jjtThis.setType(12); }
+| <REAL_TKN> { jjtThis.setType(13); }
+| BooleanType() { jjtThis.setType(14); }
+| NullType() { jjtThis.setType(15); }
+| <EXTERNAL_TKN> { jjtThis.setType(16); }
+}
+
+void NullType() : {}
+{
+	<NULL_TKN>
+}
+
+void BooleanType() : {}
+{
+	<BOOLEAN_TKN>
+}
+
+void ObjectIdentifierType() : {}
+{
+	<OBJECT_IDENTIFIER_TKN>
+}
+
+void OctetStringType() : {}
+{
+	<OCTET_TKN> <STRING_TKN>
+}
+
+void EnumeratedType() : {} 
+{ 
+   <ENUMERATED_TKN> <LEFTBRACE_TKN> NamedNumberList() <RIGHTBRACE_TKN> 
+}
+
+void IntegerType() : {} 
+{ 
+ <INTEGER_TKN> [ <LEFTBRACE_TKN> NamedNumberList() <RIGHTBRACE_TKN> ]
+}
+
+void BitStringType() : {} 
+{ 
+  <BIT_TKN> <STRING_TKN> [ <LEFTBRACE_TKN> NamedNumberList()  <RIGHTBRACE_TKN> ] 
+}
+
+void NamedNumberList() : {  } 
+{ 
+  NamedNumber() (<COMMA_TKN> NamedNumber())*
+}
+
+void NamedNumber() : { } 
+{ 
+  identifier() <LEFTPAREN_TKN> ( SignedNumber() | DefinedValue()) 
+                            <RIGHTPAREN_TKN> 
+}
+
+void SignedNumber() : { } 
+{ 
+  [<MINUS_TKN>  ] ( <NUMBER_TKN> | <NUMBER_ERANGE_TKN> ) 
+}
+
+/*
+ * modified to return an integer differentiating sets and sequences
+ */
+int SetOrSequenceOfType() : { int rc; }
+{ 
+   ( ( <SET_TKN> { rc = 4; }
+     | <SEQUENCE_TKN> { rc = 5; } ) [[<LEFTPAREN_TKN>] SizeConstraint() [<RIGHTPAREN_TKN>]] <OF_TKN> )
+    Type() { return rc; }
+}
+
+/*
+ * modified to return an integer differentiating sets of and sequences of
+ */
+int SetOrSequenceType() : { int rc; } 
+{ 
+  ( ( <SET_TKN> { jjtThis.setType(ASTSetOrSequenceType.SET); rc = 2; }
+    | <SEQUENCE_TKN> { jjtThis.setType(ASTSetOrSequenceType.SEQUENCE); rc = 3; }
+    ) <LEFTBRACE_TKN> [ ElementTypeList() ] <RIGHTBRACE_TKN> ) { return rc; }
+}
+
+void ChoiceType() : { } 
+{ 
+   <CHOICE_TKN> <LEFTBRACE_TKN> ElementTypeList() <RIGHTBRACE_TKN> 
+}
+
+void ElementTypeList() #void: {} 
+{ 
+   ElementType() (<COMMA_TKN> ElementType())*
+}
+
+void ElementType() : {}
+{ 
+  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtThis.setOptional(true); }  ) | ( <DEFAULT_TKN> NamedValue() ) ] )
+
+| ComponentsType()
+}
+
+void ComponentsType() : {  }
+{
+  <COMPONENTS_TKN> <OF_TKN>  Type() 
+
+}
+
+void NamedType() #void: { } 
+{ 
+  [LOOKAHEAD(2) identifier()]  Type() 
+}
+
+void SelectionType() : {} 
+{ 
+   identifier() <LESSTHAN_TKN> Type() 
+}
+
+void TaggedType() : { } 
+{ 
+  Tag() [ <EXPLICIT_TKN> { jjtThis.setTaggingMethod(ASTTaggedType.EXPLICIT); } | <IMPLICIT_TKN> { jjtThis.setTaggingMethod(ASTTaggedType.IMPLICIT); } ] Type() 
+}
+
+void Tag() : {} 
+{ 
+   <LEFTBRACKET_TKN> [Class()] ClassNumber() <RIGHTBRACKET_TKN> 
+}
+
+void ClassNumber() : { int x; } 
+{ 
+   x = number() { jjtThis.setTagNumber(x); } | DefinedValue()
+}
+
+void Class() : {}
+{ 
+     <UNIVERSAL_TKN> { jjtThis.setTagClass(ASTTaggedType.UNIVERSAL); }
+   | <APPLICATION_TKN> { jjtThis.setTagClass(ASTTaggedType.APPLICATION); }
+   | <PRIVATE_TKN> { jjtThis.setTagClass(ASTTaggedType.PRIVATE); }
+}
+
+void AnyType() : {} 
+{ 
+  <ANY_TKN> 
+  [ <DEFINED_TKN> <BY_TKN> identifier()   ]
+}
+
+void SubtypeSpec() : {} 
+{ 
+   <LEFTPAREN_TKN> SubtypeValueSetList() <RIGHTPAREN_TKN> 
+}
+
+void SubtypeValueSetList() : {} 
+{ 
+   SubtypeValueSet() (<BAR_TKN> SubtypeValueSet())* 
+}
+
+void SubtypeValueSet() : {} 
+{ 
+ (
+  ValueRange() | ContainedSubtype() | PermittedAlphabet() | SizeConstraint() | InnerTypeConstraints() )
+}
+
+
+void ContainedSubtype() : {} 
+{ 
+   <INCLUDES_TKN> Type() 
+}
+
+void SingleValue() : {} 
+{ 
+   Value() 
+}
+
+void ValueRange() : {} 
+{ 
+ ( Value() | <MIN_TKN> ) [ [ <LESSTHAN_TKN> ]  <DOT_TKN> <DOT_TKN> [ <LESSTHAN_TKN> ] (Value() | <MAX_TKN> ) ]
+}
+
+void SizeConstraint() : {} 
+{ 
+   <SIZE_TKN> SubtypeSpec() 
+}
+
+void PermittedAlphabet() : {} 
+{ 
+   <FROM_TKN> SubtypeSpec() 
+}
+
+void InnerTypeConstraints() : {} 
+{ 
+  <WITH_TKN> ((<COMPONENT_TKN> SingleTypeConstraint() ) | ( <COMPONENTS_TKN>  MultipleTypeConstraints()))
+}
+
+void SingleTypeConstraint() : {} 
+{ 
+   SubtypeSpec() 
+}
+
+void MultipleTypeConstraints() : {} 
+{ 
+  <LEFTBRACE_TKN> [ <DOT_TKN> <DOT_TKN> <DOT_TKN> <COMMA_TKN> ] TypeConstraints() <RIGHTBRACE_TKN> 
+}
+
+void TypeConstraints() : {} 
+{ 
+   NamedConstraint() (<COMMA_TKN> NamedConstraint())*
+}
+
+void NamedConstraint() : {} 
+{ 
+    [identifier() ] Constraint() 
+}
+
+void Constraint() : {} 
+{ 
+  [ValueConstraint()] [PresenceConstraint()] 
+}
+
+void ValueConstraint() : {} 
+{ 
+   SubtypeSpec() 
+}
+
+void PresenceConstraint() : {} 
+{ 
+   <PRESENT_TKN> | <ABSENT_TKN> | <OPTIONAL_TKN> 
+}
+
+
+
+void ValueAssignment() : { } 
+{     
+    identifier() 
+    GlobalType() <GETS_TKN> [ LOOKAHEAD(2) identifier() [<SELECTOR_TKN>] ] [  BuiltinValue() ]
+   
+}
+
+void Value() : {} 
+{ 
+   LOOKAHEAD(2) BuiltinValue() | DefinedValue() 
+}
+
+void DefinedValue() : {} 
+{ 
+ [ modulereference() <DOT_TKN> ] identifier()
+}
+
+void BuiltinValue() : {} 
+{ 
+   BooleanValue() 
+| NullValue() 
+| SpecialRealValue() 
+| SignedNumber() 
+| HexString() 
+| BinaryString() 
+| CharString() 
+| CompoundValue()
+}
+
+void CompoundValue() : {}
+{
+   <LEFTBRACE_TKN> ( ObjIdComponentList() | skip_to_matching_brace() ) <RIGHTBRACE_TKN> 
+}
+
+JAVACODE
+void skip_to_matching_brace() {
+  Token tok;
+  int nesting = 1;
+  while (true) {
+    tok = getToken(1);
+    if (tok.kind == LEFTBRACE_TKN) nesting++;
+    if (tok.kind == RIGHTBRACE_TKN) {
+      nesting--;
+         if (nesting == 0) break;
+    }
+    tok = getNextToken();
+  }
+}
+
+void BooleanValue() : {} 
+{ 
+   <TRUE_TKN> | <FALSE_TKN> 
+}
+
+void SpecialRealValue() : {} 
+{ 
+   <PLUS_INFINITY_TKN> | <MINUS_INFINITY_TKN> 
+}
+
+void NullValue() : {} 
+{ 
+   <NULL_TKN> 
+}
+
+void NamedValue() : {} 
+{ 
+  [ LOOKAHEAD(2) identifier() ] Value() 
+}
+
+void ObjectIdentifierValue() : {} 
+{ 
+   <LEFTBRACE_TKN> ObjIdComponentList() <RIGHTBRACE_TKN> 
+}
+
+void ObjIdComponentList() : {} 
+{ 
+   ObjIdComponent() (ObjIdComponent())*
+}
+
+void ObjIdComponent() : {} 
+{ 
+  ( NumberForm() |   NameAndNumberForm())
+}
+
+void NumberForm() : {} 
+{ 
+   number() 
+}
+
+
+void NameAndNumberForm() : {} 
+{ 
+  identifier() [<LEFTPAREN_TKN> (NumberForm() | DefinedValue()) <RIGHTPAREN_TKN>] 
+}
+
+void BinaryString() : {} 
+{ 
+   <BSTRING_TKN> 
+}
+
+void HexString() : {} 
+{ 
+   <HSTRING_TKN> 
+}
+
+void CharString() : {} 
+{ 
+   <CSTRING_TKN> 
+}
+
+int number() : {}
+{ 
+   <NUMBER_TKN> { return 0; } | <NUMBER_ERANGE_TKN> { return Integer.parseInt(token.image); }
+}
+
+void identifier() : {} 
+{ 
+   <LCASEFIRST_IDENT_TKN> 
+}
+
+void modulereference() : {} 
+{ 
+   <UCASEFIRST_IDENT_TKN> 
+}
+
+void typereference() : {} 
+{ 
+   <UCASEFIRST_IDENT_TKN>
+}
+
+void DefinedMacroType() : {} 
+{ 
+  TextualConventionMacroType() 
+| SnmpObjectTypeMacroType()
+}
+
+void DefinedMacroName() : {} 
+{ 
+  <OBJECTTYPE_TKN> 
+| <TC_TKN>
+}
+
+void SnmpObjectTypeMacroType() : {} 
+{ 
+   <OBJECTTYPE_TKN> <SYNTAX_TKN> Type() <ACCESS_TKN> SnmpAccess() <STATUS_TKN> SnmpStatus() [SnmpDescrPart()] [SnmpReferPart()] 
+       [SnmpIndexPart()] [SnmpDefValPart()] 
+}
+
+void SnmpAccess() : {} 
+{ 
+   identifier() 
+}
+
+void SnmpStatus() : {} 
+{ 
+  identifier() 
+}
+
+void SnmpDescrPart() : {} 
+{ 
+   <DESCRIPTION_TKN> <CSTRING_TKN>
+}
+
+void SnmpReferPart() : {} 
+{ 
+   <REFERENCE_TKN> <CSTRING_TKN>
+}
+
+void SnmpIndexPart() : {} 
+{ 
+   <INDEX_TKN> <LEFTBRACE_TKN> TypeOrValueList() <RIGHTBRACE_TKN> 
+}
+
+void TypeOrValueList() : {} 
+{ 
+  TypeOrValue() (<COMMA_TKN> TypeOrValue())*
+}
+
+void TypeOrValue() : {} 
+{ 
+  LOOKAHEAD(3) Type() | Value()
+}
+
+void SnmpDefValPart() : {} 
+{ 
+   <DEFVAL_TKN> <LEFTBRACE_TKN> Value() <RIGHTBRACE_TKN> 
+}
+
+void TextualConventionMacroType() : {}
+{
+   <TC_TKN> [DisplayHint()] <STATUS_TKN> SnmpStatus() [SnmpDescrPart()] [SnmpReferPart()] <SYNTAX_TKN> Type()
+}
+
+void DisplayHint() : {}
+{
+  <DHINT> <CSTRING_TKN>
+}
