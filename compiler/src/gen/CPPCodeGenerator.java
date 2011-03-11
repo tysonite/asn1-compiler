@@ -34,10 +34,25 @@ public class CPPCodeGenerator implements Generator {
     * Generates CPP code.
     */
    public final void generate() {
+
       /* traverse over nodes recursivly */
       generateCode(node);
 
-      System.out.println(builder.toString());
+      /* dump generated content to file */
+      FileWriter writer = null;
+      try {
+         writer = new FileWriter(outputDirectory + "/ASN1Types.hh");
+         writer.write(builder.toString());
+         writer.close();
+      } catch (IOException e) {
+         System.err.println("Error : " + e);
+      } finally {
+         try {
+            writer.close();
+            writer = null;
+         } catch (IOException e) {
+         }
+      }
    }
 
    public String getContent() {
