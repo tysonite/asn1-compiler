@@ -886,7 +886,8 @@ namespace integer
 // Type6 ::= [3] Type3
 // Type7 ::= [4] IMPLICIT Type6
 // Type8 ::= [5] INTEGER
-// Type9 ::= [5] IMPLICIT INTEGER 
+// Type9 ::= [5] IMPLICIT INTEGER
+// Type10 ::= INTEGER { C1(1), C2(2) }
 
 class Type1 : public asn1::IntegerType
 {
@@ -981,9 +982,25 @@ public:
    }
 };
 
+class Type10 : public asn1::IntegerType
+{
+public:
+
+   Type10()
+   {
+   }
+
+   enum Type10_Value
+   {
+      C1 = 1,
+      C2 = 2,
+   };
+};
+
+
 BOOST_AUTO_TEST_CASE(TestBerIntegerType1)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type1::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1010,7 +1027,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType1)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType2)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type2::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1037,7 +1054,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType2)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType3)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type3::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1064,7 +1081,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType3)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType4)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type4::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1091,7 +1108,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType4)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType5)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type5::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1118,7 +1135,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType5)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType6)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type6::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1145,7 +1162,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType6)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType7)
 {
-   asn1::Integer vToWrite = 1, vToRead =  ~vToWrite;
+   Type7::ValueType vToWrite = 1, vToRead =  ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1172,7 +1189,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType7)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType8)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type8::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1199,7 +1216,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType8)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType9)
 {
-   asn1::Integer vToWrite = 1, vToRead = ~vToWrite;
+   Type9::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1222,6 +1239,34 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType9)
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
    BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerIntegerType10)
+{
+   Type10::ValueType vToWrite = Type10::C1, vToRead = Type10::C2;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type10 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x02, 0x01, 0x01 };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+   BOOST_CHECK_EQUAL(vToWrite, Type10::C1);
 }
 
 }
