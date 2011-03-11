@@ -78,6 +78,27 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
    }
 
    @Override
+   public Object visit(ASTBinaryString node, Object data) {
+      final String value = node.getFirstToken().toString();
+
+      for (int i = 0; i <= (value.length() / 4) - 2; ++i) {
+         String binNumber = String.copyValueOf(value.toCharArray(),
+                 (i * 8) + 1, (((i * 8) + 8 + 1 < value.length() - 2) ? 8
+                 : value.length() - 2 - (i * 8 + 1)));
+         for (int j = binNumber.length(); j < 8; ++j) {
+            binNumber += "0";
+         }
+         final String octalNumber = Integer.toOctalString(Integer.valueOf(binNumber, 2));
+
+         builder.append("\\");
+         builder.append(octalNumber);
+      }
+      builder.append("\"");
+      builder.newLine();
+      return data;
+   }
+
+   @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(node.getFirstToken().toString()).append(" };").newLine();
       return data;
