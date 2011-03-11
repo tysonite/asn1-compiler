@@ -22,17 +22,24 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      builder.append(" : public ");
-
       DefinedOrTaggedTypeName taggedTypeNameVisitor = new DefinedOrTaggedTypeName();
       node.jjtAccept(taggedTypeNameVisitor, data);
       builder.append(taggedTypeNameVisitor.getContent());
 
       builder.append("(new ");
 
-      BuiltInTypeName builtInTypeNameVisitor = new BuiltInTypeName();
-      node.childrenAccept(builtInTypeNameVisitor, data);
-      builder.append(builtInTypeNameVisitor.getContent());
+      {
+         BuiltInTypeName visitor = new BuiltInTypeName();
+         node.childrenAccept(visitor, data);
+         builder.append(visitor.getContent());
+      }
+
+      {
+         final SetOrSequenceConstructorDeclaration visitor =
+                 new SetOrSequenceConstructorDeclaration();
+         node.childrenAccept(visitor, data);
+         builder.append(visitor.getContent());
+      }
 
       node.childrenAccept(this, data);
 

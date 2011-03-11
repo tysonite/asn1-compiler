@@ -24,6 +24,10 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
          node.childrenAccept(builtInTypeVisitor, null);
          builder.append(builtInTypeVisitor.getContent());
 
+         final SetOrSequenceTypeName setOrSequenceTypeVisitor = new SetOrSequenceTypeName();
+         node.childrenAccept(setOrSequenceTypeVisitor, null);
+         builder.append(setOrSequenceTypeVisitor.getContent());
+
          final DefinedOrTaggedTypeName taggedTypeVisitor = new DefinedOrTaggedTypeName();
          node.childrenAccept(taggedTypeVisitor, null);
          builder.append(taggedTypeVisitor.getContent());
@@ -34,6 +38,20 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       builder.append("{").newLine();
       builder.append("public:").newLine();
       builder.append(1, typeName).append("()");
+
+      /* check whether it is needed to add " : public " */
+      {
+         final AddColonIfNeeded visitor = new AddColonIfNeeded();
+         node.childrenAccept(visitor, null);
+         builder.append(visitor.getContent());
+      }
+
+      {
+         final SetOrSequenceConstructorDeclaration visitor =
+                 new SetOrSequenceConstructorDeclaration();
+         node.childrenAccept(visitor, null);
+         builder.append(visitor.getContent());
+      }
 
       {
          final TaggedTypeConstructorDeclaration visitor = new TaggedTypeConstructorDeclaration();
