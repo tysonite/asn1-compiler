@@ -3,19 +3,13 @@ package gen.visitor;
 import gen.*;
 import parser.*;
 
-public class DefinedOrTaggedTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
       return node.childrenAccept(this, data);
-   }
-
-   @Override
-   public Object visit(ASTDefinedType node, Object data) {
-      builder.append(node.getFirstToken().toString());
-      return data;
    }
 
    @Override
@@ -34,7 +28,11 @@ public class DefinedOrTaggedTypeName extends DoNothingASTVisitor implements Cont
          builder.append(visitor.getContent());
       }
 
-      node.childrenAccept(this, data);
+      {
+         final DefinedTypeName visitor = new DefinedTypeName();
+         node.childrenAccept(visitor, data);
+         builder.append(visitor.getContent());
+      }
 
       builder.append(">");
       return data;

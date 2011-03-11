@@ -28,9 +28,13 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
          node.childrenAccept(setOrSequenceTypeVisitor, null);
          builder.append(setOrSequenceTypeVisitor.getContent());
 
-         final DefinedOrTaggedTypeName taggedTypeVisitor = new DefinedOrTaggedTypeName();
+         final TaggedTypeName taggedTypeVisitor = new TaggedTypeName();
          node.childrenAccept(taggedTypeVisitor, null);
          builder.append(taggedTypeVisitor.getContent());
+
+         final DefinedTypeName definedTypeVisitor = new DefinedTypeName();
+         node.childrenAccept(definedTypeVisitor, null);
+         builder.append(definedTypeVisitor.getContent());
       }
 
       // body of the class
