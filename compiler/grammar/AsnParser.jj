@@ -575,9 +575,15 @@ void NamedNumber() : { }
                             <RIGHTPAREN_TKN> 
 }
 
-void SignedNumber() : { } 
+void SignedNumber() :
+{
+   Token m = null, n = null;
+} 
 { 
-  [<MINUS_TKN>  ] ( <NUMBER_TKN> | <NUMBER_ERANGE_TKN> ) 
+  [ m = <MINUS_TKN> ] ( n = <NUMBER_TKN> | n = <NUMBER_ERANGE_TKN> )
+  {
+     jjtThis.setNumber(Integer.valueOf(((null != m) ? m.toString() : "") + n.toString()).intValue());
+  }
 }
 
 /*
