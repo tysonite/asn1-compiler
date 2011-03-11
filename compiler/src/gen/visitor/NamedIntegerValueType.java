@@ -18,6 +18,7 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
       return node.childrenAccept(this, data);
    }
 
+   @Override
    public Object visit(ASTIntegerType node, Object data) {
       builder.newLine();
 
@@ -30,24 +31,26 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
       builder.append(1, "};").newLine();
 
       builder.newLine();
-      builder.append(1, "typedef ").append(typeValueName).append(" ValueType;");
-      builder.newLine();
       return data;
    }
 
+   @Override
    public Object visit(ASTNamedNumberList node, Object data) {
       return node.childrenAccept(this, data);
    }
 
+   @Override
    public Object visit(ASTNamedNumber node, Object data) {
       return node.childrenAccept(this, data);
    }
 
+   @Override
    public Object visit(ASTidentifier node, Object data) {
       builder.append(2, node.getFirstToken().toString()).append(" = ");
       return data;
    }
 
+   @Override
    public Object visit(ASTDefinedValue node, Object data) {
       if (node.jjtGetParent() instanceof ASTNamedNumber) {
          builder.append(node.getFirstToken().toString()).append(",");
@@ -58,6 +61,7 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
       return data;
    }
 
+   @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(node.getFirstToken().toString()).append(",");
       builder.newLine();
