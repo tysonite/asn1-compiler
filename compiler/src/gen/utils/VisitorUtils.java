@@ -56,15 +56,42 @@ public final class VisitorUtils {
       final CodeBuilder builder = new CodeBuilder();
       final ASTTypeAssignment newType = new ASTTypeAssignment(0);
       newType.setFirstToken(new Token(0, typeName));
-      for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
-         newType.jjtAddChild(node.jjtGetChild(i), i);
+
+      if (node instanceof ASTTaggedType) {
+         for (int i = 0, j = 0; i < node.jjtGetNumChildren(); ++i, ++j) {
+            if (!(node.jjtGetChild(i) instanceof ASTBuiltinType)) {
+               --j;
+               continue;
+            }
+            newType.jjtAddChild(node.jjtGetChild(i), j);
+         }
+      } else {
+         for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            newType.jjtAddChild(node.jjtGetChild(i), i);
+         }
       }
 
-      TypeGenerator gen = new TypeGenerator(newType);
+      final TypeGenerator gen = new TypeGenerator(newType);
       gen.generate(context);
 
       builder.append(gen.getContent());
       return builder;
+   }
+
+   public static String queueGeneratedCode(final SimpleNode node, final GeneratorContext context) {
+      final CodeBuilder uniqueName = new CodeBuilder();
+      VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+
+      if (!context.hasExternalized(uniqueName.toString())) {
+         /* indicate that generator know this type */
+         context.addExternalTypeName(uniqueName.toString());
+
+         /* generate code for a new type */
+         context.addExternalContent(VisitorUtils.generateCodeAsForTypeAssignment(node,
+                 uniqueName.toString(), context));
+      }
+
+      return uniqueName.toString();
    }
 
    /*

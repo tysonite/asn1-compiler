@@ -31,25 +31,9 @@ public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements Co
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       builder.append("SequenceOfType<");
 
-      boolean isTypeFound = VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new SetOfOrSequenceOfTypeName(context));
-
-      if (!isTypeFound) {
-         final CodeBuilder uniqueName = new CodeBuilder();
-         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
-
-         if (!context.hasExternalized(uniqueName.toString())) {
-            builder.append(uniqueName.toString());
-
-            /* indicate that generator know this type */
-            context.addExternalTypeName(uniqueName.toString());
-
-            /* generate code for a new type */
-            context.addExternalContent(VisitorUtils.generateCodeAsForTypeAssignment(node,
-                    uniqueName.toString(), context));
-         } else {
-            builder.append(uniqueName.toString());
-         }
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+              new SetOfOrSequenceOfTypeName(context))) {
+         builder.append(VisitorUtils.queueGeneratedCode(node, context));
       }
 
       builder.append(">");

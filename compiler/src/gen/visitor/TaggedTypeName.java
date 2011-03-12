@@ -22,10 +22,10 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
    public Object visit(ASTTaggedType node, Object data) {
       builder.append("TaggingType<");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfTypeName(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
-
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+              new SetOfOrSequenceOfTypeName(context), new DefinedTypeName())) {
+         builder.append(VisitorUtils.queueGeneratedCode(node, context));
+      }
 
       builder.append(">");
       return data;

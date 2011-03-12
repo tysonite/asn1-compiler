@@ -21,22 +21,21 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       builder.append("class ").append(typeName).append(" : public ");
 
       // base type of the class
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfTypeName(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeName(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+              new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
+              new DefinedTypeName(), new SetOrSequenceTypeName());
 
       // body of the class
       builder.newLine();
       builder.append("{").newLine();
-      builder.append("public:").newLine();
-      builder.append(1, typeName).append("()");
+      builder.append("public:").newLine().newLine();
+      builder.append(1, "explicit ").append(typeName).append("()");
 
       /* check whether it is needed to add " : public " */
       VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
 
       VisitorUtils.visitChildsAndAccept(builder, node,
-              new SetOrSequenceConstructorDeclaration(context));
+              new SetOfOrSequenceOfConstructorDeclaration(context));
       VisitorUtils.visitChildsAndAccept(builder, node,
               new TaggedTypeConstructorDeclaration(context));
 
@@ -51,6 +50,7 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
 
       // body of the class
       VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerValueType(typeName));
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeBody(context));
 
       builder.newLine();
       builder.append("};").newLine().newLine();

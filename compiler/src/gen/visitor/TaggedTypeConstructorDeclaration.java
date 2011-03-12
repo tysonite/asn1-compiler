@@ -19,25 +19,16 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
    }
 
    @Override
-   public Object visit(ASTDefinedType node, Object data) {
-      if (node.jjtGetParent() instanceof ASTTaggedType) {
-         builder.append(node.getFirstToken().toString());
-      }
-      return data;
-   }
-
-   @Override
    public Object visit(ASTTaggedType node, Object data) {
       VisitorUtils.visitNodeAndAccept(builder, node, new TaggedTypeName(context));
       VisitorUtils.visitNodeAndAccept(builder, node, new DefinedTypeName());
 
       builder.append("(new ");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node,
-              new SetOrSequenceConstructorDeclaration(context));
-
-      node.childrenAccept(this, data);
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+              new SetOfOrSequenceOfConstructorDeclaration(context), new DefinedTypeName())) {
+         builder.append(VisitorUtils.queueGeneratedCode(node, context));
+      }
 
       builder.append(")");
       return data;

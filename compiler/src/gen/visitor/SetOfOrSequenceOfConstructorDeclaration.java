@@ -4,13 +4,13 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
+public class SetOfOrSequenceOfConstructorDeclaration extends DoNothingASTVisitor
         implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
-   public SetOrSequenceConstructorDeclaration(final GeneratorContext context) {
+   public SetOfOrSequenceOfConstructorDeclaration(final GeneratorContext context) {
       this.context = context;
    }
 
@@ -26,21 +26,13 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
 
       builder.append("(new ");
 
-      final boolean isTypeFound = VisitorUtils.visitChildsAndAccept(builder, node,
-              new SetOrSequenceConstructorDeclaration(context), new SimpleTypeName(),
-              new DefinedTypeName());
-
-      if (!isTypeFound) {
-         final CodeBuilder uniqueName = new CodeBuilder();
-         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
-
-         if (context.hasExternalized(uniqueName.toString())) {
-            builder.append(uniqueName.toString());
-         }
+      if (!VisitorUtils.visitChildsAndAccept(builder, node,
+              new SetOfOrSequenceOfConstructorDeclaration(context), new SimpleTypeName(),
+              new DefinedTypeName())) {
+         builder.append(VisitorUtils.queueGeneratedCode(node, context));
       }
 
       builder.append(")");
-
       return data;
    }
 

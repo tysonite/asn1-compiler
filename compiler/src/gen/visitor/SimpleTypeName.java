@@ -44,6 +44,12 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
       return data;
    }
 
+//   @Override
+//   public Object visit(ASTSetOrSequenceType node, Object data) {
+//      builder.append("SequenceType");
+//      return data;
+//   }
+
    public String getContent() {
       return builder.toString();
    }
