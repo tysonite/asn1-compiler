@@ -8,6 +8,11 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
         implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
+
+   public SetOrSequenceConstructorDeclaration(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -17,13 +22,22 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
-      VisitorUtils.visitNodeAndAccept(builder, node, new SetOrSequenceTypeName());
+      VisitorUtils.visitNodeAndAccept(builder, node, new SetOrSequenceTypeName(context));
 
       builder.append("(new ");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
+      final boolean isTypeFound = VisitorUtils.visitChildsAndAccept(builder, node,
+              new SetOrSequenceConstructorDeclaration(context), new SimpleTypeName(),
+              new DefinedTypeName());
+
+      if (!isTypeFound) {
+         final CodeBuilder uniqueName = new CodeBuilder();
+         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+
+         if (context.hasExternalized(uniqueName.toString())) {
+            builder.append(uniqueName.toString());
+         }
+      }
 
       builder.append(")");
 
@@ -35,6 +49,6 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
    }
 
    public boolean hasValuableContent() {
-      return true;
+      return !builder.toString().isEmpty();
    }
 }

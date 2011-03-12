@@ -49,6 +49,6 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
    }
 
    public boolean hasValuableContent() {
-      return true;
+      return !builder.toString().isEmpty();
    }
 }

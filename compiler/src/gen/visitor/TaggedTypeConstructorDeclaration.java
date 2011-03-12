@@ -7,6 +7,11 @@ import parser.*;
 public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
+
+   public TaggedTypeConstructorDeclaration(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -23,13 +28,14 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      VisitorUtils.visitNodeAndAccept(builder, node, new TaggedTypeName());
+      VisitorUtils.visitNodeAndAccept(builder, node, new TaggedTypeName(context));
       VisitorUtils.visitNodeAndAccept(builder, node, new DefinedTypeName());
 
       builder.append("(new ");
 
       VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new SetOrSequenceConstructorDeclaration(context));
 
       node.childrenAccept(this, data);
 

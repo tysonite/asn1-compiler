@@ -7,6 +7,11 @@ import parser.*;
 public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
+
+   public TaggedTypeName(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -18,7 +23,7 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
       builder.append("TaggingType<");
 
       VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
 
 

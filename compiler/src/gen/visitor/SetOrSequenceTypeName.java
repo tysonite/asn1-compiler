@@ -7,6 +7,11 @@ import parser.*;
 public class SetOrSequenceTypeName extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
+
+   public SetOrSequenceTypeName(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -26,8 +31,26 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       builder.append("SequenceOfType<");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
+      boolean isTypeFound = VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+              new SetOrSequenceTypeName(context));
+
+      if (!isTypeFound) {
+         final CodeBuilder uniqueName = new CodeBuilder();
+         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+
+         if (!context.hasExternalized(uniqueName.toString())) {
+            builder.append(uniqueName.toString());
+
+            /* indicate that generator know this type */
+            context.addExternalTypeName(uniqueName.toString());
+
+            /* generate code for a new type */
+            context.addExternalContent(VisitorUtils.generateCodeAsForTypeAssignment(node,
+                    uniqueName.toString(), context));
+         } else {
+            builder.append(uniqueName.toString());
+         }
+      }
 
       builder.append(">");
       return data;
@@ -38,6 +61,6 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
    }
 
    public boolean hasValuableContent() {
-      return true;
+      return !builder.toString().isEmpty();
    }
 }

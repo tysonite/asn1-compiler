@@ -22,8 +22,8 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
 
       // base type of the class
       VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
-      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeName(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
 
       // body of the class
@@ -35,8 +35,10 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       /* check whether it is needed to add " : public " */
       VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
-      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDeclaration());
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new SetOrSequenceConstructorDeclaration(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new TaggedTypeConstructorDeclaration(context));
 
       // constructor body
       builder.newLine();

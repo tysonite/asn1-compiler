@@ -94,6 +94,7 @@ public class CPPCodeGenerator implements Generator {
          if (child instanceof ASTTypeAssignment) {
             final TypeGenerator generator = new TypeGenerator((ASTTypeAssignment) child);
             generator.generate(context);
+            context.dumpExternalContent(builder);
             builder.append(generator.getContent());
          } else if (child instanceof ASTValueAssignment) {
             final ValueGenerator generator = new ValueGenerator((ASTValueAssignment) child);

@@ -19,6 +19,6 @@ public class DefinedTypeName extends DoNothingASTVisitor implements ContentProvi
    }
 
    public boolean hasValuableContent() {
-      return true;
+      return !builder.toString().isEmpty();
    }
 }
