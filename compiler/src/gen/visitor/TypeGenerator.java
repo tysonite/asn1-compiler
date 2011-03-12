@@ -9,11 +9,11 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
    private ASTTypeAssignment node = null;
    private CodeBuilder builder = new CodeBuilder();
 
-   public TypeGenerator(ASTTypeAssignment node) {
+   public TypeGenerator(final ASTTypeAssignment node) {
       this.node = node;
    }
 
-   public void generate() {
+   public void generate(final GeneratorContext context) {
       final String typeName = node.getFirstToken().toString();
 
       // C++ class declaration
@@ -33,6 +33,7 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
 
       /* check whether it is needed to add " : public " */
       VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
+
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
       VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDeclaration());
 
@@ -40,7 +41,7 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       builder.newLine();
       builder.append(1, "{").newLine();
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition());
+      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition(context));
 
       builder.append(1, "}").newLine();
 

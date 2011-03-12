@@ -4,13 +4,21 @@ package parser;
 
 public class ASTTaggedType extends SimpleNode {
 
+   /**
+    * Tagging type of the type.
+    */
    public static final int IMPLICIT = 0;
    public static final int EXPLICIT = 1;
+   public static final int NO_TAGGING = 2;
+   /**
+    * Tag class of the type.
+    */
    public static final int CONTEXT = 0;
    public static final int UNIVERSAL = 1;
    public static final int APPLICATION = 2;
    public static final int PRIVATE = 3;
-   private int tm = EXPLICIT;
+   /* type tagging type */
+   private int tm = NO_TAGGING;
 
    public ASTTaggedType(int id) {
       super(id);
@@ -32,7 +40,12 @@ public class ASTTaggedType extends SimpleNode {
       return tm == EXPLICIT;
    }
 
+   public boolean isNoTagging() {
+      return tm == NO_TAGGING;
+   }
+
    /** Accept the visitor. **/
+   @Override
    public Object jjtAccept(AsnParserVisitor visitor, Object data) {
       return visitor.visit(this, data);
    }

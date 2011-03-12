@@ -8,6 +8,11 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    private CodeBuilder builder = new CodeBuilder();
    private boolean wasTagClass = false;
+   private final GeneratorContext context;
+
+   public TaggedTypeConstructorDefinition(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -16,7 +21,13 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      if (node.isExplicitTagging()) {
+      if (node.isNoTagging()) {
+         if (context.isExplicitModule()) {
+            builder.append(2, "setTagging(Type::EXPLICIT_TAGGING);").newLine();
+         } else if (context.isImplicitModule()) {
+            builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
+         }
+      } else if (node.isExplicitTagging()) {
          builder.append(2, "setTagging(Type::EXPLICIT_TAGGING);").newLine();
       } else if (node.isImplicitTagging()) {
          builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();

@@ -10,10 +10,12 @@ public class CPPCodeGenerator implements Generator {
 
    /* root ASN.1 node */
    SimpleNode node = null;
+   /* the context of the code generator */
+   final GeneratorContext context = new GeneratorContext();
    /* output directory path */
    String outputDirectory = null;
    /* C++ code */
-   CodeBuilder builder = new CodeBuilder();
+   final CodeBuilder builder = new CodeBuilder();
 
    /**
     * Constructs CPP code generator
@@ -34,10 +36,16 @@ public class CPPCodeGenerator implements Generator {
    /**
     * Generates CPP code.
     */
-   public final void generate() {
+   public final void generate(final GeneratorContext context) {
+
+      builder.append("namespace asn1").newLine();
+      builder.append("{").newLine();
+      builder.newLine();
 
       /* traverse over nodes recursivly */
       generateCode(node);
+
+      builder.append("}").newLine();
 
       /* dump generated content to file */
       FileWriter writer = null;
@@ -66,6 +74,7 @@ public class CPPCodeGenerator implements Generator {
 
    /**
     * Generates C++ code for a specified type.
+    *
     * @param node type to generate C++ code for
     */
    private void generateCode(final SimpleNode node) {
@@ -73,12 +82,17 @@ public class CPPCodeGenerator implements Generator {
          final SimpleNode child = (SimpleNode) node.jjtGetChild(i);
          if (child instanceof ASTTypeAssignment) {
             final TypeGenerator generator = new TypeGenerator((ASTTypeAssignment) child);
-            generator.generate();
+            generator.generate(context);
             builder.append(generator.getContent());
          } else if (child instanceof ASTValueAssignment) {
             final ValueGenerator generator = new ValueGenerator((ASTValueAssignment) child);
-            generator.generate();
+            generator.generate(context);
             builder.append(generator.getContent());
+         } else if (child instanceof ASTModuleDefinition) {
+            final ASTModuleDefinition moduleDef = (ASTModuleDefinition) child;
+            context.setModuleTag(moduleDef.getTag());
+
+            generateCode(child);
          } else {
             generateCode(child);
          }

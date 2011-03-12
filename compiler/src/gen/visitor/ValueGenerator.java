@@ -9,7 +9,7 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
    private ASTValueAssignment node = null;
    private final CodeBuilder builder = new CodeBuilder();
 
-   public ValueGenerator(ASTValueAssignment node) {
+   public ValueGenerator(final ASTValueAssignment node) {
       this.node = node;
    }
 
@@ -105,7 +105,7 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
       return data;
    }
 
-   public void generate() {
+   public void generate(final GeneratorContext context) {
       builder.append("// ValueAssignment for ASN.1 value: ").append(node.getFirstToken().toString());
       builder.newLine();
 
