@@ -22,7 +22,7 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
-      VisitorUtils.visitNodeAndAccept(builder, node, new SetOrSequenceTypeName(context));
+      VisitorUtils.visitNodeAndAccept(builder, node, new SetOfOrSequenceOfTypeName(context));
 
       builder.append("(new ");
 

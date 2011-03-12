@@ -4,12 +4,12 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class SetOrSequenceTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
-   public SetOrSequenceTypeName(final GeneratorContext context) {
+   public SetOfOrSequenceOfTypeName(final GeneratorContext context) {
       this.context = context;
    }
 
@@ -32,7 +32,7 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
       builder.append("SequenceOfType<");
 
       boolean isTypeFound = VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new SetOrSequenceTypeName(context));
+              new SetOfOrSequenceOfTypeName(context));
 
       if (!isTypeFound) {
          final CodeBuilder uniqueName = new CodeBuilder();
