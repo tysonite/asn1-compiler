@@ -28,7 +28,7 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
 
       builder.append("(new ");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
 
       node.childrenAccept(this, data);

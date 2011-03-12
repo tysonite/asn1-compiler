@@ -26,7 +26,7 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       builder.append("SequenceOfType<");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
 
       builder.append(">");

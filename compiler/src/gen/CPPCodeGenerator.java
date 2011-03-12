@@ -56,7 +56,7 @@ public class CPPCodeGenerator implements Generator {
       builder.append("}").newLine();
       builder.newLine();
 
-      builder.append("#endif").newLine();
+      builder.append("#endif // __ASN1_TYPES_HH").newLine();
 
       /* dump generated content to file */
       FileWriter writer = null;

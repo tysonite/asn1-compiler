@@ -22,7 +22,7 @@ public class SetOrSequenceConstructorDeclaration extends DoNothingASTVisitor
       builder.append("(new ");
 
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceConstructorDeclaration());
-      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
       VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());
 
       builder.append(")");

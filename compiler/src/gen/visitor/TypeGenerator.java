@@ -17,10 +17,11 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
       final String typeName = node.getFirstToken().toString();
 
       // C++ class declaration
+      builder.append("// TypeAssignment for ASN.1 type: ").append(typeName).newLine();
       builder.append("class ").append(typeName).append(" : public ");
 
       // base type of the class
-      VisitorUtils.visitChildsAndAccept(builder, node, new BuiltInTypeName());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName());
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeName());
       VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeName());
       VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeName());

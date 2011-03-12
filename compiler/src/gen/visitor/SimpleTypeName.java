@@ -4,7 +4,7 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class BuiltInTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
 
