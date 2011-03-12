@@ -157,7 +157,7 @@ public class AsnParser
 				root.dump("\t");
 
             CPPCodeGenerator generator = new CPPCodeGenerator(root, outputDirectory);
-            generator.generate();
+            generator.generate(null);
 
 				showUsage = false;
 			}
@@ -358,14 +358,35 @@ void Input() : {}
  (ModuleDefinition())*
 }
 
-void ModuleDefinition() : {} 
+void ModuleDefinition() :
+{
+   int tag;
+} 
 { 
-  ModuleIdentifier() <DEFINITIONS_TKN> [TagDefault()] <GETS_TKN> <BEGIN_TKN> ModuleBody() <END_TKN> 
+   ModuleIdentifier() <DEFINITIONS_TKN>
+   [
+      tag = TagDefault()
+      {
+         jjtThis.setTag(tag);
+      }
+   ]
+   <GETS_TKN> <BEGIN_TKN> ModuleBody() <END_TKN>
 }
 
-void TagDefault() : {} 
+int TagDefault() :
+{
+   int tag;
+}
 { 	
-   (<EXPLICIT_TKN> |  <IMPLICIT_TKN> ) <TAGS_TKN> 
+   (
+    <EXPLICIT_TKN> { tag = ASTModuleDefinition.EXPLICIT; }
+    |
+    <IMPLICIT_TKN> { tag = ASTModuleDefinition.IMPLICIT; }
+   )
+   <TAGS_TKN>
+   {
+      return tag;
+   }
 }
 
 void ModuleIdentifier() : {  } 
