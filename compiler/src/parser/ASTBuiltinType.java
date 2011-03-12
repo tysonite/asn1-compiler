@@ -23,6 +23,7 @@ public class ASTBuiltinType extends SimpleNode {
    }
 
    /** Accept the visitor. **/
+   @Override
    public Object jjtAccept(AsnParserVisitor visitor, Object data) {
       return visitor.visit(this, data);
    }
