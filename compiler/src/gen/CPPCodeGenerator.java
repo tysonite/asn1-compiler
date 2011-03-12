@@ -38,6 +38,14 @@ public class CPPCodeGenerator implements Generator {
     */
    public final void generate(final GeneratorContext context) {
 
+      builder.append("#ifndef __ASN1_TYPES_HH").newLine();
+      builder.append("#define __ASN1_TYPES_HH 1").newLine();
+      builder.newLine();
+
+      // add include
+      builder.append("#include <type/Types.hh>").newLine();
+      builder.newLine();
+
       builder.append("namespace asn1").newLine();
       builder.append("{").newLine();
       builder.newLine();
@@ -46,6 +54,9 @@ public class CPPCodeGenerator implements Generator {
       generateCode(node);
 
       builder.append("}").newLine();
+      builder.newLine();
+
+      builder.append("#endif").newLine();
 
       /* dump generated content to file */
       FileWriter writer = null;
