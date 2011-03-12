@@ -3,6 +3,7 @@ package gen;
 import java.io.*;
 
 import gen.visitor.*;
+import gen.utils.*;
 import parser.*;
 
 public class CPPCodeGenerator implements Generator {

@@ -1,4 +1,4 @@
-package gen;
+package gen.utils;
 
 public class CodeBuilder {
 

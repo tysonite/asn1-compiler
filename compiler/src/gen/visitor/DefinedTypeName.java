@@ -1,6 +1,7 @@
 package gen.visitor;
 
 import gen.*;
+import gen.utils.*;
 import parser.*;
 
 public class DefinedTypeName extends DoNothingASTVisitor implements ContentProvider {
