@@ -45,6 +45,7 @@ public class TypeGenerator extends DoNothingASTVisitor implements Generator {
 
       VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeConstructorDefinition(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfConstructorDefinition());
 
       builder.append(1, "}").newLine();
 

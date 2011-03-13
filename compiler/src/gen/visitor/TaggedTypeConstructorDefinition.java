@@ -16,7 +16,13 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
-      return node.childrenAccept(this, data);
+      if (!(node.jjtGetParent() instanceof ASTTaggedType)) {
+         return node.childrenAccept(this, data);
+      } else {
+         VisitorUtils.visitNodeAndAccept(builder, node,
+                 new SetOfOrSequenceOfConstructorDefinition());
+         return data;
+      }
    }
 
    @Override
