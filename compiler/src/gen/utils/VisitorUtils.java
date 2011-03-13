@@ -57,7 +57,7 @@ public final class VisitorUtils {
       final ASTTypeAssignment newType = new ASTTypeAssignment(0);
       newType.setFirstToken(new Token(0, typeName));
 
-      if (node instanceof ASTTaggedType) {
+      if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType) {
          for (int i = 0, j = 0; i < node.jjtGetNumChildren(); ++i, ++j) {
             if (!(node.jjtGetChild(i) instanceof ASTBuiltinType)) {
                --j;
