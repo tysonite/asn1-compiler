@@ -101,67 +101,71 @@ public interface AsnParserConstants {
   /** RegularExpression Id. */
   int EXPLICIT_TKN = 52;
   /** RegularExpression Id. */
-  int ENUMERATED_TKN = 53;
+  int AUTOMATIC_TKN = 53;
   /** RegularExpression Id. */
-  int EXTERNAL_TKN = 54;
+  int ENUMERATED_TKN = 54;
   /** RegularExpression Id. */
-  int EXPORTS_TKN = 55;
+  int EXTERNAL_TKN = 55;
   /** RegularExpression Id. */
-  int IMPORTS_TKN = 56;
+  int EXPORTS_TKN = 56;
   /** RegularExpression Id. */
-  int REAL_TKN = 57;
+  int IMPORTS_TKN = 57;
   /** RegularExpression Id. */
-  int INCLUDES_TKN = 58;
+  int REAL_TKN = 58;
   /** RegularExpression Id. */
-  int MIN_TKN = 59;
+  int INCLUDES_TKN = 59;
   /** RegularExpression Id. */
-  int MAX_TKN = 60;
+  int CONTAINING_TKN = 60;
   /** RegularExpression Id. */
-  int SIZE_TKN = 61;
+  int MIN_TKN = 61;
   /** RegularExpression Id. */
-  int FROM_TKN = 62;
+  int MAX_TKN = 62;
   /** RegularExpression Id. */
-  int WITH_TKN = 63;
+  int SIZE_TKN = 63;
   /** RegularExpression Id. */
-  int COMPONENT_TKN = 64;
+  int FROM_TKN = 64;
   /** RegularExpression Id. */
-  int PRESENT_TKN = 65;
+  int WITH_TKN = 65;
   /** RegularExpression Id. */
-  int ABSENT_TKN = 66;
+  int COMPONENT_TKN = 66;
   /** RegularExpression Id. */
-  int DEFINED_TKN = 67;
+  int PRESENT_TKN = 67;
   /** RegularExpression Id. */
-  int BY_TKN = 68;
+  int ABSENT_TKN = 68;
   /** RegularExpression Id. */
-  int PLUS_INFINITY_TKN = 69;
+  int DEFINED_TKN = 69;
   /** RegularExpression Id. */
-  int MINUS_INFINITY_TKN = 70;
+  int BY_TKN = 70;
   /** RegularExpression Id. */
-  int OBJECTTYPE_TKN = 71;
+  int PLUS_INFINITY_TKN = 71;
   /** RegularExpression Id. */
-  int SYNTAX_TKN = 72;
+  int MINUS_INFINITY_TKN = 72;
   /** RegularExpression Id. */
-  int ACCESS_TKN = 73;
+  int OBJECTTYPE_TKN = 73;
   /** RegularExpression Id. */
-  int STATUS_TKN = 74;
+  int SYNTAX_TKN = 74;
   /** RegularExpression Id. */
-  int DESCRIPTION_TKN = 75;
+  int ACCESS_TKN = 75;
   /** RegularExpression Id. */
-  int REFERENCE_TKN = 76;
+  int STATUS_TKN = 76;
   /** RegularExpression Id. */
-  int INDEX_TKN = 77;
+  int DESCRIPTION_TKN = 77;
   /** RegularExpression Id. */
-  int DEFVAL_TKN = 78;
+  int REFERENCE_TKN = 78;
   /** RegularExpression Id. */
-  int DHINT = 79;
+  int INDEX_TKN = 79;
   /** RegularExpression Id. */
-  int TC_TKN = 80;
+  int DEFVAL_TKN = 80;
   /** RegularExpression Id. */
-  int MACRO_TKN = 81;
+  int DHINT = 81;
   /** RegularExpression Id. */
-  int LCASEFIRST_IDENT_TKN = 82;
+  int TC_TKN = 82;
   /** RegularExpression Id. */
-  int UCASEFIRST_IDENT_TKN = 83;
+  int MACRO_TKN = 83;
+  /** RegularExpression Id. */
+  int LCASEFIRST_IDENT_TKN = 84;
+  /** RegularExpression Id. */
+  int UCASEFIRST_IDENT_TKN = 85;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -223,12 +227,14 @@ public interface AsnParserConstants {
     "\"END\"",
     "\"DEFINITIONS\"",
     "\"EXPLICIT\"",
+    "\"AUTOMATIC\"",
     "\"ENUMERATED\"",
     "\"EXTERNAL\"",
     "\"EXPORTS\"",
     "\"IMPORTS\"",
     "\"REAL\"",
     "\"INCLUDES\"",
+    "\"CONTAINING\"",
     "\"MIN\"",
     "\"MAX\"",
     "\"SIZE\"",

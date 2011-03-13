@@ -6,6 +6,7 @@ public class ASTModuleDefinition extends SimpleNode {
 
    public static int EXPLICIT = 1;
    public static int IMPLICIT = 2;
+   public static int AUTOMATIC = 3;
    private int tag = EXPLICIT;
 
    public ASTModuleDefinition(int id) {
@@ -25,6 +26,7 @@ public class ASTModuleDefinition extends SimpleNode {
    }
 
    /** Accept the visitor. **/
+   @Override
    public Object jjtAccept(AsnParserVisitor visitor, Object data) {
       return visitor.visit(this, data);
    }

@@ -4,7 +4,7 @@ package parser;
 
 public class ASTSignedNumber extends SimpleNode {
 
-   private int n = 0;
+   private long n = 0;
 
    public ASTSignedNumber(int id) {
       super(id);
@@ -14,15 +14,16 @@ public class ASTSignedNumber extends SimpleNode {
       super(p, id);
    }
 
-   public void setNumber(int n) {
+   public void setNumber(long n) {
       this.n = n;
    }
 
-   public int getNumber() {
+   public long getNumber() {
       return n;
    }
 
    /** Accept the visitor. **/
+   @Override
    public Object jjtAccept(AsnParserVisitor visitor, Object data) {
       return visitor.visit(this, data);
    }

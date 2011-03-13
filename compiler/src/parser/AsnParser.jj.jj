@@ -315,12 +315,14 @@ TOKEN :
 | <END_TKN: "END">
 | <DEFINITIONS_TKN: "DEFINITIONS">
 | <EXPLICIT_TKN: "EXPLICIT">
+| <AUTOMATIC_TKN: "AUTOMATIC">
 | <ENUMERATED_TKN: "ENUMERATED">
 | <EXTERNAL_TKN: "EXTERNAL">
 | <EXPORTS_TKN: "EXPORTS">
 | <IMPORTS_TKN: "IMPORTS">
 | <REAL_TKN: "REAL">
 | <INCLUDES_TKN: "INCLUDES">
+| <CONTAINING_TKN: "CONTAINING">
 | <MIN_TKN: "MIN">
 | <MAX_TKN: "MAX">
 | <SIZE_TKN: "SIZE">
@@ -449,6 +451,8 @@ int TagDefault() :
     <EXPLICIT_TKN> { tag = ASTModuleDefinition.EXPLICIT; }
     |
     <IMPLICIT_TKN> { tag = ASTModuleDefinition.IMPLICIT; }
+    |
+    <AUTOMATIC_TKN> { tag = ASTModuleDefinition.AUTOMATIC; }
    )
    <TAGS_TKN>/*@bgen(jjtree)*/
    {
@@ -1349,7 +1353,7 @@ void EnumeratedType() : {/*@bgen(jjtree) EnumeratedType */
        jjtreeCloseNodeScope(jjtn000);
      }
    }
-/*@egen*/ 
+/*@egen*/
 }
 
 void IntegerType() : {/*@bgen(jjtree) IntegerType */
@@ -1460,8 +1464,8 @@ void NamedNumber() : {/*@bgen(jjtree) NamedNumber */
 {/*@bgen(jjtree) NamedNumber */
   try {
 /*@egen*/ 
-  identifier() <LEFTPAREN_TKN> ( SignedNumber() | DefinedValue()) 
-                            <RIGHTPAREN_TKN>/*@bgen(jjtree)*/
+  identifier() [<LEFTPAREN_TKN> ( SignedNumber() | DefinedValue())
+                            <RIGHTPAREN_TKN>]/*@bgen(jjtree)*/
   } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -1482,7 +1486,7 @@ void NamedNumber() : {/*@bgen(jjtree) NamedNumber */
       jjtreeCloseNodeScope(jjtn000);
     }
   }
-/*@egen*/ 
+/*@egen*/
 }
 
 void SignedNumber() :
@@ -1505,7 +1509,7 @@ void SignedNumber() :
   }
 /*@egen*/
   {
-     jjtn000.setNumber(Integer.valueOf(((null != m) ? m.toString() : "") + n.toString()).intValue());
+     jjtn000.setNumber(Long.valueOf(((null != m) ? m.toString() : "") + n.toString()).longValue());
   }/*@bgen(jjtree)*/
   } finally {
     if (jjtc000) {
@@ -1651,7 +1655,7 @@ void ElementType() : {/*@bgen(jjtree) ElementType */
 {/*@bgen(jjtree) ElementType */
   try {
 /*@egen*/ 
-  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtn000.setOptional(true); }  ) | ( <DEFAULT_TKN> NamedValue() ) ] )
+  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtn000.setOptional(true); }  ) | ( <DEFAULT_TKN> Value() ) ] )
 
 | ComponentsType()/*@bgen(jjtree)*/
   } catch (Throwable jjte000) {
@@ -1993,6 +1997,9 @@ void SubtypeValueSetList() : {/*@bgen(jjtree) SubtypeValueSetList */
 /*@egen*/ 
 }
 
+/**
+ * TODO: implement CONTAINING token
+ */
 void SubtypeValueSet() : {/*@bgen(jjtree) SubtypeValueSet */
   ASTSubtypeValueSet jjtn000 = new ASTSubtypeValueSet(JJTSUBTYPEVALUESET);
   boolean jjtc000 = true;
@@ -2000,33 +2007,34 @@ void SubtypeValueSet() : {/*@bgen(jjtree) SubtypeValueSet */
   jjtreeOpenNodeScope(jjtn000);
 /*@egen*/} 
 {/*@bgen(jjtree) SubtypeValueSet */
- try {
+   try {
 /*@egen*/ 
- (
-  ValueRange() | ContainedSubtype() | PermittedAlphabet() | SizeConstraint() | InnerTypeConstraints() )/*@bgen(jjtree)*/
- } catch (Throwable jjte000) {
-   if (jjtc000) {
-     jjtree.clearNodeScope(jjtn000);
-     jjtc000 = false;
-   } else {
-     jjtree.popNode();
+   (
+      ValueRange() | <CONTAINING_TKN> <UCASEFIRST_IDENT_TKN> | ContainedSubtype() | PermittedAlphabet()
+      | SizeConstraint() | InnerTypeConstraints()
+   )/*@bgen(jjtree)*/
+   } catch (Throwable jjte000) {
+     if (jjtc000) {
+       jjtree.clearNodeScope(jjtn000);
+       jjtc000 = false;
+     } else {
+       jjtree.popNode();
+     }
+     if (jjte000 instanceof RuntimeException) {
+       throw (RuntimeException)jjte000;
+     }
+     if (jjte000 instanceof ParseException) {
+       throw (ParseException)jjte000;
+     }
+     throw (Error)jjte000;
+   } finally {
+     if (jjtc000) {
+       jjtree.closeNodeScope(jjtn000, true);
+       jjtreeCloseNodeScope(jjtn000);
+     }
    }
-   if (jjte000 instanceof RuntimeException) {
-     throw (RuntimeException)jjte000;
-   }
-   if (jjte000 instanceof ParseException) {
-     throw (ParseException)jjte000;
-   }
-   throw (Error)jjte000;
- } finally {
-   if (jjtc000) {
-     jjtree.closeNodeScope(jjtn000, true);
-     jjtreeCloseNodeScope(jjtn000);
-   }
- }
 /*@egen*/
 }
-
 
 void ContainedSubtype() : {/*@bgen(jjtree) ContainedSubtype */
   ASTContainedSubtype jjtn000 = new ASTContainedSubtype(JJTCONTAINEDSUBTYPE);
