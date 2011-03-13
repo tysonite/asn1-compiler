@@ -311,12 +311,14 @@ TOKEN :
 | <END_TKN: "END">
 | <DEFINITIONS_TKN: "DEFINITIONS">
 | <EXPLICIT_TKN: "EXPLICIT">
+| <AUTOMATIC_TKN: "AUTOMATIC">
 | <ENUMERATED_TKN: "ENUMERATED">
 | <EXTERNAL_TKN: "EXTERNAL">
 | <EXPORTS_TKN: "EXPORTS">
 | <IMPORTS_TKN: "IMPORTS">
 | <REAL_TKN: "REAL">
 | <INCLUDES_TKN: "INCLUDES">
+| <CONTAINING_TKN: "CONTAINING">
 | <MIN_TKN: "MIN">
 | <MAX_TKN: "MAX">
 | <SIZE_TKN: "SIZE">
@@ -382,6 +384,8 @@ int TagDefault() :
     <EXPLICIT_TKN> { tag = ASTModuleDefinition.EXPLICIT; }
     |
     <IMPLICIT_TKN> { tag = ASTModuleDefinition.IMPLICIT; }
+    |
+    <AUTOMATIC_TKN> { tag = ASTModuleDefinition.AUTOMATIC; }
    )
    <TAGS_TKN>
    {
@@ -572,7 +576,7 @@ void OctetStringType() : {}
 
 void EnumeratedType() : {} 
 { 
-   <ENUMERATED_TKN> <LEFTBRACE_TKN> NamedNumberList() <RIGHTBRACE_TKN> 
+   <ENUMERATED_TKN> <LEFTBRACE_TKN> NamedNumberList() <RIGHTBRACE_TKN>
 }
 
 void IntegerType() : {} 
@@ -592,8 +596,8 @@ void NamedNumberList() : {  }
 
 void NamedNumber() : { } 
 { 
-  identifier() <LEFTPAREN_TKN> ( SignedNumber() | DefinedValue()) 
-                            <RIGHTPAREN_TKN> 
+  identifier() [<LEFTPAREN_TKN> ( SignedNumber() | DefinedValue())
+                            <RIGHTPAREN_TKN>]
 }
 
 void SignedNumber() :
@@ -603,7 +607,7 @@ void SignedNumber() :
 { 
   [ m = <MINUS_TKN> ] ( n = <NUMBER_TKN> | n = <NUMBER_ERANGE_TKN> )
   {
-     jjtThis.setNumber(Integer.valueOf(((null != m) ? m.toString() : "") + n.toString()).intValue());
+     jjtThis.setNumber(Long.valueOf(((null != m) ? m.toString() : "") + n.toString()).longValue());
   }
 }
 
@@ -639,7 +643,7 @@ void ElementTypeList() #void: {}
 
 void ElementType() : {}
 { 
-  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtThis.setOptional(true); }  ) | ( <DEFAULT_TKN> NamedValue() ) ] )
+  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtThis.setOptional(true); }  ) | ( <DEFAULT_TKN> Value() ) ] )
 
 | ComponentsType()
 }
@@ -698,12 +702,16 @@ void SubtypeValueSetList() : {}
    SubtypeValueSet() (<BAR_TKN> SubtypeValueSet())* 
 }
 
+/**
+ * TODO: implement CONTAINING token
+ */
 void SubtypeValueSet() : {} 
 { 
- (
-  ValueRange() | ContainedSubtype() | PermittedAlphabet() | SizeConstraint() | InnerTypeConstraints() )
+   (
+      ValueRange() | <CONTAINING_TKN> <UCASEFIRST_IDENT_TKN> | ContainedSubtype() | PermittedAlphabet()
+      | SizeConstraint() | InnerTypeConstraints()
+   )
 }
-
 
 void ContainedSubtype() : {} 
 { 
