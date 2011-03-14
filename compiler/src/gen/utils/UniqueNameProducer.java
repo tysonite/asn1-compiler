@@ -24,6 +24,12 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
    }
 
    @Override
+   public Object visit(ASTChoiceType node, Object data) {
+      builder.append("_ChoiceType");
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
    public Object visit(ASTSetOrSequenceType node, Object data) {
       builder.append("_SequenceType");
       return node.childrenAccept(this, data);

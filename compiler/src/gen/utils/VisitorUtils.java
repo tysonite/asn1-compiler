@@ -34,7 +34,9 @@ public final class VisitorUtils {
            CodeBuilder builder, SimpleNode node, T visitor) {
       node.childrenAccept(visitor, null);
       if (visitor.hasValuableContent()) {
-         builder.append(visitor.getContent());
+         if (null != builder) {
+            builder.append(visitor.getContent());
+         }
          return true;
       }
       return false;

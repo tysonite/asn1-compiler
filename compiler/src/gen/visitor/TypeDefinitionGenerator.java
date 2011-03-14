@@ -19,6 +19,8 @@ public class TypeDefinitionGenerator extends DoNothingASTVisitor implements Gene
 
       VisitorUtils.visitChildsAndAccept(builder, node,
               new SetOrSequenceReadWriteDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new ChoiceTypeReadWriteDefinition(context));
    }
 
    public String getContent() {
