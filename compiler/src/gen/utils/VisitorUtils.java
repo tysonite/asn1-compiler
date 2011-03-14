@@ -71,7 +71,7 @@ public final class VisitorUtils {
          }
       }
 
-      final TypeGenerator gen = new TypeGenerator(newType);
+      final TypeDeclarationGenerator gen = new TypeDeclarationGenerator(newType);
       gen.generate(context);
 
       builder.append(gen.getContent());

@@ -6,7 +6,7 @@ import gen.visitor.*;
 import gen.utils.*;
 import parser.*;
 
-public class CPPCodeGenerator implements Generator {
+public class CPPCodeGenerator {
 
    /* root ASN.1 node */
    SimpleNode node = null;
@@ -14,8 +14,6 @@ public class CPPCodeGenerator implements Generator {
    final GeneratorContext context = new GeneratorContext();
    /* output directory path */
    String outputDirectory = null;
-   /* C++ code */
-   final CodeBuilder builder = new CodeBuilder();
 
    /**
     * Constructs CPP code generator
@@ -37,6 +35,12 @@ public class CPPCodeGenerator implements Generator {
     * Generates CPP code.
     */
    public final void generate(final GeneratorContext context) {
+      generateHeaderFile(node);
+      generateFile(node);
+   }
+
+   private void generateHeaderFile(final SimpleNode node) {
+      final CodeBuilder builder = new CodeBuilder();
 
       builder.append("#ifndef __ASN1_TYPES_HH").newLine();
       builder.append("#define __ASN1_TYPES_HH 1").newLine();
@@ -51,7 +55,7 @@ public class CPPCodeGenerator implements Generator {
       builder.newLine();
 
       /* traverse over nodes recursivly */
-      generateCode(node);
+      generateDeclarationCode(node, builder);
 
       builder.append("}").newLine();
       builder.newLine();
@@ -75,24 +79,48 @@ public class CPPCodeGenerator implements Generator {
       }
    }
 
-   public String getContent() {
-      return builder.toString();
-   }
+   private void generateFile(final SimpleNode node) {
+      final CodeBuilder builder = new CodeBuilder();
 
-   public boolean hasValuableContent() {
-      return true;
+      builder.append("#include <ASN1Types.hh>").newLine();
+      builder.newLine();
+
+      // begin of namespace
+      builder.append("namespace asn1").newLine();
+      builder.append("{").newLine();
+
+      generateDefinitionCode(node, builder);
+
+      // end of namespace
+      builder.append("}").newLine();
+
+      /* dump generated content to file */
+      FileWriter writer = null;
+      try {
+         writer = new FileWriter(outputDirectory + "/ASN1Types.cc");
+         writer.write(builder.toString());
+         writer.close();
+      } catch (IOException e) {
+         System.err.println("Error : " + e);
+      } finally {
+         try {
+            writer.close();
+            writer = null;
+         } catch (IOException e) {
+         }
+      }
    }
 
    /**
-    * Generates C++ code for a specified type.
+    * Generates C++ code for a specified ASN.1.
     *
     * @param node type to generate C++ code for
     */
-   private void generateCode(final SimpleNode node) {
+   private void generateDeclarationCode(final SimpleNode node, final CodeBuilder builder) {
       for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
          final SimpleNode child = (SimpleNode) node.jjtGetChild(i);
          if (child instanceof ASTTypeAssignment) {
-            final TypeGenerator generator = new TypeGenerator((ASTTypeAssignment) child);
+            final TypeDeclarationGenerator generator = new TypeDeclarationGenerator((ASTTypeAssignment) child);
             generator.generate(context);
             context.dumpExternalContent(builder);
             builder.append(generator.getContent());
@@ -104,9 +132,27 @@ public class CPPCodeGenerator implements Generator {
             final ASTModuleDefinition moduleDef = (ASTModuleDefinition) child;
             context.setModuleTag(moduleDef.getTag());
 
-            generateCode(child);
+            generateDeclarationCode(child, builder);
          } else {
-            generateCode(child);
+            generateDeclarationCode(child, builder);
+         }
+      }
+   }
+
+   private void generateDefinitionCode(final SimpleNode node, final CodeBuilder builder) {
+      for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+         final SimpleNode child = (SimpleNode) node.jjtGetChild(i);
+         if (child instanceof ASTTypeAssignment) {
+            final TypeDefinitionGenerator generator = new TypeDefinitionGenerator((ASTTypeAssignment) child);
+            generator.generate(context);
+            builder.append(generator.getContent());
+         } else if (child instanceof ASTModuleDefinition) {
+            final ASTModuleDefinition moduleDef = (ASTModuleDefinition) child;
+            context.setModuleTag(moduleDef.getTag());
+
+            generateDefinitionCode(child, builder);
+         } else {
+            generateDefinitionCode(child, builder);
          }
       }
    }

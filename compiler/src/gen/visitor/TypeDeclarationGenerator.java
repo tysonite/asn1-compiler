@@ -4,12 +4,12 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class TypeGenerator extends DoNothingASTVisitor implements Generator {
+public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Generator {
 
    private ASTTypeAssignment node = null;
    private CodeBuilder builder = new CodeBuilder();
 
-   public TypeGenerator(final ASTTypeAssignment node) {
+   public TypeDeclarationGenerator(final ASTTypeAssignment node) {
       this.node = node;
    }
 

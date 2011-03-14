@@ -13,6 +13,16 @@ public class GeneratorContext {
    private List<String> externalizedTypes = new ArrayList<String>();
    /* content to add before currently generated content */
    private List<CodeBuilder> externalContent = new ArrayList<CodeBuilder>();
+   /* current type name */
+   private String typeName;
+
+   public void setTypeName(final String typeName) {
+      this.typeName = typeName;
+   }
+
+   public String getTypeName() {
+      return this.typeName;
+   }
 
    public void setModuleTag(int tag) {
       moduleTag = tag;
