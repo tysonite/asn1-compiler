@@ -22,7 +22,8 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
                  append("(const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())) {
-            builder.append(VisitorUtils.queueGeneratedCode(node, context));
+            builder.append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context)));
          }
 
          builder.append("::ValueType& v) { _").
@@ -37,7 +38,8 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
          builder.append(2, "const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())) {
-            builder.append(VisitorUtils.queueGeneratedCode(node, context));
+            builder.append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context)));
          }
          builder.append("::ValueType& get_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
@@ -78,7 +80,8 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
          builder.append(2, "");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())) {
-            builder.append(VisitorUtils.queueGeneratedCode(node, context));
+            builder.append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context)));
          }
          builder.append("::ValueType _").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
@@ -189,7 +192,8 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new DefinedCPPTypeName())) {
-         builder.append("typedef ").append(VisitorUtils.queueGeneratedCode(node, context)).
+         builder.append("typedef ").append(GenerationUtils.asCPPToken(
+                 VisitorUtils.queueGeneratedCode(node, context))).
                  append(" ").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type;").newLine();
          builder.append(1, GenerationUtils.asCPPToken(node.getFirstToken().toString())).
