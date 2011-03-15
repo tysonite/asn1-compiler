@@ -61,9 +61,11 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       @Override
       public Object visit(ASTElementType node, Object data) {
          // write code for type reading
-         builder.append(1, "_").append(node.getFirstToken().toString()).append("_Type").
+         builder.append(1, "_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Type").
                  append(".write(writer, value.get_").
-                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append("());").newLine();
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append("());").
+                 newLine();
 
          return data;
       }
@@ -98,7 +100,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
    @Override
    public Object visit(ASTSetOrSequenceType node, Object data) {
       builder.newLine();
-      builder.append("void ").append(context.getTypeName()).
+      builder.append("void ").append(GenerationUtils.asCPPToken(context.getTypeName())).
               append("::read(ASN1ValueReader& reader, ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
@@ -112,7 +114,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       builder.append("}").newLine();
       builder.newLine();
 
-      builder.append("void ").append(context.getTypeName()).
+      builder.append("void ").append(GenerationUtils.asCPPToken(context.getTypeName())).
               append("::write(ASN1ValueWriter& writer, const ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
