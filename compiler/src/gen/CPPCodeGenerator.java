@@ -59,7 +59,8 @@ public class CPPCodeGenerator {
       builder.newLine();
 
       /* traverse over nodes recursivly */
-      generateDeclarationCode(node, builder);
+      generateValueDeclarationCode(node, builder);
+      generateTypeDeclarationCode(node, builder);
 
       builder.append("}").newLine();
       builder.newLine();
@@ -124,12 +125,25 @@ public class CPPCodeGenerator {
       }
    }
 
+   private void generateValueDeclarationCode(final SimpleNode node, final CodeBuilder builder) {
+      for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+         final SimpleNode child = (SimpleNode) node.jjtGetChild(i);
+         if (child instanceof ASTValueAssignment) {
+            final ValueGenerator generator = new ValueGenerator((ASTValueAssignment) child);
+            generator.generate(context);
+            builder.append(generator.getContent());
+         } else {
+            generateValueDeclarationCode(child, builder);
+         }
+      }
+   }
+
    /**
     * Generates C++ code for a specified ASN.1.
     *
     * @param node type to generate C++ code for
     */
-   private void generateDeclarationCode(final SimpleNode node, final CodeBuilder builder) {
+   private void generateTypeDeclarationCode(final SimpleNode node, final CodeBuilder builder) {
       for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
          final SimpleNode child = (SimpleNode) node.jjtGetChild(i);
          if (child instanceof ASTTypeAssignment) {
@@ -137,17 +151,13 @@ public class CPPCodeGenerator {
             generator.generate(context);
             context.dumpExternalContent(builder);
             builder.append(generator.getContent());
-         } else if (child instanceof ASTValueAssignment) {
-            final ValueGenerator generator = new ValueGenerator((ASTValueAssignment) child);
-            generator.generate(context);
-            builder.append(generator.getContent());
          } else if (child instanceof ASTModuleDefinition) {
             final ASTModuleDefinition moduleDef = (ASTModuleDefinition) child;
             context.setModuleTag(moduleDef.getTag());
 
-            generateDeclarationCode(child, builder);
+            generateTypeDeclarationCode(child, builder);
          } else {
-            generateDeclarationCode(child, builder);
+            generateTypeDeclarationCode(child, builder);
          }
       }
    }
