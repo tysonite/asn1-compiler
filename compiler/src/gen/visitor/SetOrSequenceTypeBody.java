@@ -131,11 +131,14 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new DefinedTypeName())) {
          builder.append("typedef ").append(VisitorUtils.queueGeneratedCode(node, context)).
-                 append(" ").append(node.getFirstToken().toString()).append("_Type;").newLine();
-         builder.append(1, node.getFirstToken().toString()).append("_Type");
+                 append(" ").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Type;").newLine();
+         builder.append(1, GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Type");
       }
 
-      builder.append(" _").append(node.getFirstToken().toString()).append("_Type;");
+      builder.append(" _").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+              append("_Type;");
       builder.newLine();
 
       return data;

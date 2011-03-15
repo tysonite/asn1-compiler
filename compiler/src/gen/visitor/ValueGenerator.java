@@ -21,21 +21,21 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
    @Override
    public Object visit(ASTIntegerType node, Object data) {
       builder.append("enum { ");
-      builder.append(this.node.getFirstToken().toString()).append(" = ");
+      builder.append(GenerationUtils.asCPPToken(this.node.getFirstToken().toString())).append(" = ");
       return data;
    }
 
    @Override
    public Object visit(ASTBooleanType node, Object data) {
       builder.append("#define ");
-      builder.append(this.node.getFirstToken().toString()).append(" ");
+      builder.append(GenerationUtils.asCPPToken(this.node.getFirstToken().toString())).append(" ");
       return data;
    }
 
    @Override
    public Object visit(ASTOctetStringType node, Object data) {
       builder.append("#define ");
-      builder.append(this.node.getFirstToken().toString()).append(" \"");
+      builder.append(GenerationUtils.asCPPToken(this.node.getFirstToken().toString())).append(" \"");
       return data;
    }
 

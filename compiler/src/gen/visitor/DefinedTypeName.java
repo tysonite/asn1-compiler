@@ -11,7 +11,8 @@ public class DefinedTypeName extends DoNothingASTVisitor implements ContentProvi
 
    @Override
    public Object visit(ASTDefinedType node, Object data) {
-      builder.append(asn1GeneratedNameSpace).append(node.getFirstToken().toString());
+      builder.append(asn1GeneratedNameSpace).
+              append(GenerationUtils.asCPPToken(node.getFirstToken().toString()));
       return data;
    }
 

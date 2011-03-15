@@ -23,7 +23,7 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
    public Object visit(ASTIntegerType node, Object data) {
       builder.newLine();
 
-      final String typeValueName = assignmentTypeName + "_Value";
+      final String typeValueName = GenerationUtils.asCPPToken(assignmentTypeName) + "_Value";
       builder.append(1, "enum ").append(typeValueName).newLine();
       builder.append(1, "{").newLine();
 
@@ -47,14 +47,14 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTidentifier node, Object data) {
-      builder.append(2, node.getFirstToken().toString()).append(" = ");
+      builder.append(2, GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(" = ");
       return data;
    }
 
    @Override
    public Object visit(ASTDefinedValue node, Object data) {
       if (node.jjtGetParent() instanceof ASTNamedNumber) {
-         builder.append(node.getFirstToken().toString()).append(",");
+         builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(",");
          builder.newLine();
 
          isValueAble = true;
@@ -64,7 +64,7 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
-      builder.append(node.getFirstToken().toString()).append(",");
+      builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(",");
       builder.newLine();
 
       isValueAble = true;

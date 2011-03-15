@@ -18,7 +18,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
       // C++ class declaration
       builder.append("// TypeAssignment for ASN.1 type: ").append(typeName).newLine();
-      builder.append("class ").append(typeName).append(" : public ");
+      builder.append("class ").append(GenerationUtils.asCPPToken(typeName)).append(" : public ");
 
       // base type of the class
       VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
@@ -29,7 +29,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       builder.newLine();
       builder.append("{").newLine();
       builder.append("public:").newLine().newLine();
-      builder.append(1, "explicit ").append(typeName).append("()");
+      builder.append(1, "explicit ").append(GenerationUtils.asCPPToken(typeName)).append("()");
 
       /* check whether it is needed to add " : public " */
       VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());

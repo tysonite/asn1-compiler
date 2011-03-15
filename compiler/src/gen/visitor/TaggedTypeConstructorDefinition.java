@@ -57,7 +57,9 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    @Override
    public Object visit(ASTClassNumber node, Object data) {
-      builder.append(2, "setTagNumber(" + node.getFirstToken().toString() + ");").newLine();
+      builder.append(2, "setTagNumber(").
+              append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(");").
+              newLine();
       return data;
    }
 

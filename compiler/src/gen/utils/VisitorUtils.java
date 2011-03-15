@@ -96,7 +96,7 @@ public final class VisitorUtils {
       return uniqueName.toString();
    }
 
-   /*
+   /**
     * Do not allow instantiation.
     */
    private VisitorUtils() {
