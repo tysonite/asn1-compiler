@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
 
@@ -16,39 +17,33 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
 
    @Override
    public Object visit(ASTIntegerType node, Object data) {
-      builder.append("IntegerType");
+      builder.append(asn1NameSpace).append("IntegerType");
       return data;
    }
 
    @Override
    public Object visit(ASTBooleanType node, Object data) {
-      builder.append("BooleanType");
+      builder.append(asn1NameSpace).append("BooleanType");
       return data;
    }
 
    @Override
    public Object visit(ASTNullType node, Object data) {
-      builder.append("NullType");
+      builder.append(asn1NameSpace).append("NullType");
       return data;
    }
 
    @Override
    public Object visit(ASTObjectIdentifierType node, Object data) {
-      builder.append("ObjectIdentifierType");
+      builder.append(asn1NameSpace).append("ObjectIdentifierType");
       return data;
    }
 
    @Override
    public Object visit(ASTOctetStringType node, Object data) {
-      builder.append("OctetStringType");
+      builder.append(asn1NameSpace).append("OctetStringType");
       return data;
    }
-
-//   @Override
-//   public Object visit(ASTSetOrSequenceType node, Object data) {
-//      builder.append("SequenceType");
-//      return data;
-//   }
 
    public String getContent() {
       return builder.toString();

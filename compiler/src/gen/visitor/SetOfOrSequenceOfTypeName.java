@@ -20,18 +20,11 @@ public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements Co
    }
 
    @Override
-   public Object visit(ASTDefinedType node, Object data) {
-      if (node.jjtGetParent() instanceof ASTSetOrSequenceOfType) {
-         builder.append(node.getFirstToken().toString());
-      }
-      return data;
-   }
-
-   @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       builder.append("SequenceOfType<");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+              new DefinedTypeName(),
               new SetOfOrSequenceOfTypeName(context))) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
       }

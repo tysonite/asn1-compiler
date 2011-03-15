@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor implements ContentProvider {
+public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
+        implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
    private boolean isMinSize = true;

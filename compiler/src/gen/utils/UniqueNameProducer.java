@@ -85,7 +85,7 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
    }
 
    public String getContent() {
-      return builder.toString();
+      return builder.toString().replace(':', '_');
    }
 
    public boolean hasValuableContent() {

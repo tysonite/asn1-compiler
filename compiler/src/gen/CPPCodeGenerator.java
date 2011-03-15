@@ -54,8 +54,15 @@ public class CPPCodeGenerator {
       builder.append("{").newLine();
       builder.newLine();
 
+      builder.append("namespace generated").newLine();
+      builder.append("{").newLine();
+      builder.newLine();
+
       /* traverse over nodes recursivly */
       generateDeclarationCode(node, builder);
+
+      builder.append("}").newLine();
+      builder.newLine();
 
       builder.append("}").newLine();
       builder.newLine();
@@ -88,10 +95,16 @@ public class CPPCodeGenerator {
       // begin of namespace
       builder.append("namespace asn1").newLine();
       builder.append("{").newLine();
+      builder.newLine();
+
+      builder.append("namespace generated").newLine();
+      builder.append("{").newLine();
 
       generateDefinitionCode(node, builder);
 
       // end of namespace
+      builder.append("}").newLine();
+      builder.newLine();
       builder.append("}").newLine();
 
       /* dump generated content to file */
