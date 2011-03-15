@@ -19,22 +19,25 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          builder.append(2, "void set_").append(node.getFirstToken().toString()).
                  append("(const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedTypeName())) {
+                 new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCode(node, context));
          }
 
-         builder.append("::ValueType& v) { _").append(node.getFirstToken().toString()).
+         builder.append("::ValueType& v) { _").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append(" = v; }");
          builder.newLine();
 
          // getter
          builder.append(2, "const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedTypeName())) {
+                 new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCode(node, context));
          }
-         builder.append("::ValueType& get_").append(node.getFirstToken().toString()).
-                 append("() const { return _").append(node.getFirstToken().toString()).
+         builder.append("::ValueType& get_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("() const { return _").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("; }");
          builder.newLine();
 
@@ -60,10 +63,11 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          // member
          builder.append(2, "");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedTypeName())) {
+                 new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCode(node, context));
          }
-         builder.append("::ValueType _").append(node.getFirstToken().toString()).
+         builder.append("::ValueType _").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append(";");
          builder.newLine();
 
@@ -129,12 +133,14 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       builder.append(1, "");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new DefinedTypeName())) {
+              new DefinedCPPTypeName())) {
          builder.append("typedef ").append(VisitorUtils.queueGeneratedCode(node, context)).
                  append(" ").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type;").newLine();
          builder.append(1, GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type");
+      } else {
+         VisitorUtils.prependDefinedGeneratedNode(node, context);
       }
 
       builder.append(" _").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).

@@ -14,6 +14,10 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
    }
 
    public void generate(final GeneratorContext context) {
+      if (node.isProcessed()) {
+         return;
+      }
+
       final String typeName = node.getFirstToken().toString();
 
       // C++ class declaration
@@ -21,9 +25,12 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       builder.append("class ").append(GenerationUtils.asCPPToken(typeName)).append(" : public ");
 
       // base type of the class
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      if (VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
-              new DefinedTypeName(), new SetOrSequenceTypeName());
+              new DefinedCPPTypeName(), new SetOrSequenceTypeName())) {
+
+         VisitorUtils.prependDefinedGeneratedNode(node, context);
+      }
 
       // body of the class
       builder.newLine();
@@ -55,6 +62,8 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
       builder.newLine();
       builder.append("};").newLine().newLine();
+
+      node.markAsProcessed();
    }
 
    public String getContent() {

@@ -1,7 +1,7 @@
 package gen.utils;
 
 import gen.*;
-import gen.visitor.DefinedTypeName;
+import gen.visitor.DefinedCPPTypeName;
 import gen.visitor.SimpleTypeName;
 import parser.*;
 
@@ -19,7 +19,7 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
    @Override
    public Object visit(ASTDefinedType node, Object data) {
       builder.append("_INTERNAL_");
-      VisitorUtils.visitNodeAndAccept(builder, node, new DefinedTypeName());
+      VisitorUtils.visitNodeAndAccept(builder, node, new DefinedCPPTypeName());
       return node.childrenAccept(this, data);
    }
 

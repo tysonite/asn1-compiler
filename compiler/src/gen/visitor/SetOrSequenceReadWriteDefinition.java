@@ -24,7 +24,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
          // write value type of the type
          builder.append(2, "");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedTypeName())) {
+                 new DefinedCPPTypeName())) {
             final CodeBuilder uniqueName = new CodeBuilder();
             VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
 
@@ -33,11 +33,12 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
          builder.append("::ValueType v;").newLine();
 
          // write code for type reading
-         builder.append(2, "_").append(node.getFirstToken().toString()).append("_Type").
-                 append(".read(reader, v);").newLine();
+         builder.append(2, "_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Type").append(".read(reader, v);").newLine();
 
          // write code for setting value
-         builder.append(2, "value.set_").append(node.getFirstToken().toString()).append("(v);").
+         builder.append(2, "value.set_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append("(v);").
                  newLine();
 
          builder.append(1, "}").newLine();
@@ -61,8 +62,8 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       public Object visit(ASTElementType node, Object data) {
          // write code for type reading
          builder.append(1, "_").append(node.getFirstToken().toString()).append("_Type").
-                 append(".write(writer, value.get_").append(node.getFirstToken().toString()).
-                 append("());").newLine();
+                 append(".write(writer, value.get_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append("());").newLine();
 
          return data;
       }
@@ -84,7 +85,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
    @Override
    public Object visit(ASTTaggedType node, Object data) {
       if (!VisitorUtils.visitChildsAndAccept(null, node, new SimpleTypeName(),
-              new DefinedTypeName())) {
+              new DefinedCPPTypeName())) {
          final CodeBuilder uniqueName = new CodeBuilder();
          VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
 

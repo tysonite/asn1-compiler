@@ -21,12 +21,12 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
    @Override
    public Object visit(ASTTaggedType node, Object data) {
       VisitorUtils.visitNodeAndAccept(builder, node, new TaggedTypeName(context));
-      VisitorUtils.visitNodeAndAccept(builder, node, new DefinedTypeName());
+      VisitorUtils.visitNodeAndAccept(builder, node, new DefinedCPPTypeName());
 
       builder.append("(new ");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new SetOfOrSequenceOfConstructorDeclaration(context), new DefinedTypeName())) {
+              new SetOfOrSequenceOfConstructorDeclaration(context), new DefinedCPPTypeName())) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
       }
 

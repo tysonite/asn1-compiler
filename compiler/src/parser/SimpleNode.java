@@ -10,6 +10,7 @@ public class SimpleNode implements Node {
    protected Object value;
    protected AsnParser parser;
    protected Token first_token, last_token;
+   protected boolean isProcessed = false;
 
    public SimpleNode(int i) {
       id = i;
@@ -18,6 +19,14 @@ public class SimpleNode implements Node {
    public SimpleNode(AsnParser p, int i) {
       this(i);
       parser = p;
+   }
+
+   public void markAsProcessed() {
+      isProcessed = true;
+   }
+
+   public boolean isProcessed() {
+      return isProcessed;
    }
 
    public void setFirstToken(Token firstToken) {

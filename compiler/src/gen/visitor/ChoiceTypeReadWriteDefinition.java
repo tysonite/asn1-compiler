@@ -114,7 +114,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
    @Override
    public Object visit(ASTTaggedType node, Object data) {
       if (!VisitorUtils.visitChildsAndAccept(null, node, new SimpleTypeName(),
-              new DefinedTypeName())) {
+              new DefinedCPPTypeName())) {
          final CodeBuilder uniqueName = new CodeBuilder();
          VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
 

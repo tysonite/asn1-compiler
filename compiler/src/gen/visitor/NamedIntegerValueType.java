@@ -47,7 +47,7 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTidentifier node, Object data) {
-      builder.append(2, GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(" = ");
+      builder.append(2, "k_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(" = ");
       return data;
    }
 

@@ -24,9 +24,11 @@ public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements Co
       builder.append("SequenceOfType<");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new DefinedTypeName(),
+              new DefinedCPPTypeName(),
               new SetOfOrSequenceOfTypeName(context))) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
+      } else {
+         VisitorUtils.prependDefinedGeneratedNode(node, context);
       }
 
       builder.append(">");

@@ -23,8 +23,10 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
       builder.append("TaggingType<");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new SetOfOrSequenceOfTypeName(context), new DefinedTypeName())) {
+              new SetOfOrSequenceOfTypeName(context), new DefinedCPPTypeName())) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
+      } else {
+         VisitorUtils.prependDefinedGeneratedNode(node, context);
       }
 
       builder.append(">");

@@ -96,6 +96,51 @@ public final class VisitorUtils {
       return uniqueName.toString();
    }
 
+   public static void prependDefinedGeneratedNode(final SimpleNode node,
+           final GeneratorContext context) {
+      final CodeBuilder definedTypeName = new CodeBuilder();
+      if (VisitorUtils.visitChildsAndAccept(definedTypeName, node, new DefinedTypeName())) {
+         ASTTypeAssignment assignment = VisitorUtils.searchForAssignmentNodeByName(node,
+                 definedTypeName.toString());
+
+         if (assignment != null && !assignment.isProcessed()) {
+            TypeDeclarationGenerator generator = new TypeDeclarationGenerator(assignment);
+            generator.generate(context);
+
+            final CodeBuilder externalBuilder = new CodeBuilder();
+            externalBuilder.append(generator.getContent());
+            context.addExternalContent(externalBuilder);
+         }
+      }
+   }
+
+   public static ASTTypeAssignment searchForAssignmentNodeByName(final SimpleNode node,
+           final String name) {
+      if (!(node instanceof ASTInput)) {
+         return searchForAssignmentNodeByName((SimpleNode) node.jjtGetParent(), name);
+      }
+
+      return searchNode(node, name);
+   }
+
+   protected static ASTTypeAssignment searchNode(final SimpleNode node, final String name) {
+      if (!(node instanceof ASTTypeAssignment)) {
+         for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            ASTTypeAssignment typeAss;
+            typeAss = searchNode((SimpleNode) node.jjtGetChild(i), name);
+            if (null != typeAss) {
+               return typeAss;
+            }
+         }
+      } else {
+         if (node.getFirstToken().toString().equals(name)) {
+            return (ASTTypeAssignment) node;
+         }
+      }
+
+      return null;
+   }
+
    /**
     * Do not allow instantiation.
     */
