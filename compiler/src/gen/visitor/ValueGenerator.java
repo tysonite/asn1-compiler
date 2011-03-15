@@ -121,4 +121,8 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
    public boolean hasValuableContent() {
       return true;
    }
+
+   public String typeName() {
+      return node.getFirstToken().toString();
+   }
 }

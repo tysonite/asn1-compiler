@@ -30,4 +30,8 @@ public class TypeDefinitionGenerator extends DoNothingASTVisitor implements Gene
    public boolean hasValuableContent() {
       return !builder.toString().isEmpty();
    }
+
+   public String typeName() {
+      return node.getFirstToken().toString();
+   }
 }

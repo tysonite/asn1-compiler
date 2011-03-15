@@ -34,9 +34,11 @@ public class CPPCodeGenerator {
    /**
     * Generates CPP code.
     */
-   public final void generate(final GeneratorContext context) {
+   public final void generate() {
       generateHeaderFile(node);
       generateFile(node);
+
+      context.ensureAllContentWasGenerater();
    }
 
    private void generateHeaderFile(final SimpleNode node) {
@@ -136,7 +138,7 @@ public class CPPCodeGenerator {
             final TypeDeclarationGenerator generator = new TypeDeclarationGenerator((ASTTypeAssignment) child);
             generator.generate(context);
             context.dumpExternalContent(builder);
-            builder.append(generator.getContent());
+            context.checkGenerators(generator, builder);
          } else if (child instanceof ASTValueAssignment) {
             final ValueGenerator generator = new ValueGenerator((ASTValueAssignment) child);
             generator.generate(context);

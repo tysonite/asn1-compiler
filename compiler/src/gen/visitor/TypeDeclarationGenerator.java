@@ -15,15 +15,29 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
    public void generate(final GeneratorContext context) {
       final String typeName = node.getFirstToken().toString();
+      context.setTypeName(typeName);
+
+      // mark type as already generated
+      context.addGeneratedType(typeName);
 
       // C++ class declaration
       builder.append("// TypeAssignment for ASN.1 type: ").append(typeName).newLine();
       builder.append("class ").append(GenerationUtils.asCPPToken(typeName)).append(" : public ");
 
       // base type of the class
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      final CodeBuilder baseClassName = new CodeBuilder();
+      if (VisitorUtils.visitChildsAndAccept(baseClassName, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
-              new DefinedTypeName(), new SetOrSequenceTypeName());
+              new DefinedTypeName(), new SetOrSequenceTypeName())) {
+
+         if (!context.isTypeGenerated(baseClassName.toString(), node)) {
+            //context.queueGenerator(this);
+
+            context.addDepForType(typeName, baseClassName.toString());
+         }
+
+         builder.append(baseClassName.toString());
+      }
 
       // body of the class
       builder.newLine();
@@ -63,5 +77,9 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
    public boolean hasValuableContent() {
       return true;
+   }
+
+   public String typeName() {
+      return node.getFirstToken().toString();
    }
 }
