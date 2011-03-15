@@ -127,7 +127,7 @@ public class AsnParser/*@bgen(jjtree)*/implements AsnParserTreeConstants, AsnPar
                                 root.dump("\u005ct");
 
             CPPCodeGenerator generator = new CPPCodeGenerator(root, outputDirectory);
-            generator.generate();
+            generator.generate(null);
 
                                 showUsage = false;
                         }

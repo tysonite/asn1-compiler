@@ -161,7 +161,7 @@ public class AsnParser/*@bgen(jjtree)*/implements AsnParserTreeConstants/*@egen*
 				root.dump("\t");
 
             CPPCodeGenerator generator = new CPPCodeGenerator(root, outputDirectory);
-            generator.generate();
+            generator.generate(null);
 
 				showUsage = false;
 			}
