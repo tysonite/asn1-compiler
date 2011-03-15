@@ -18,7 +18,7 @@ public:
    typedef std::vector<typename TypeItemType::ValueType> ValueType;
 
    // Constructor
-   explicit SequenceOfType(const TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)
+   explicit SequenceOfType(TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)
       : SequenceType(minSize, maxSize), _innerType(innerType) {}
 
    // Destructor
@@ -33,7 +33,8 @@ public:
       return SequenceType::toString() + " { " + _innerType->toString() + " }";
    }
 
-   const TypeItemType& innerType() const { return *_innerType; }
+   // Returns reference to inner type
+   TypeItemType& innerType() { return *_innerType; }
 
    // Checks type parameters for validness
    void checkType(const ValueType& value) const;
@@ -43,7 +44,7 @@ public:
 
 private:
 
-   const TypeItemType* _innerType;
+   TypeItemType* _innerType;
 
    DISALLOW_COPY_AND_ASSIGN(SequenceOfType);
 };

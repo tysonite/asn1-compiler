@@ -21,7 +21,7 @@ public:
    typedef typename TypeItemType::ValueType ValueType;
 
    // Constructor
-   explicit TaggingType(const TypeItemType* innerType)
+   explicit TaggingType(TypeItemType* innerType)
       : _innerType(innerType) {}
 
    // Destructor
@@ -34,7 +34,7 @@ public:
    std::string toString() const { return _innerType->toString(); }
 
    // Returns reference to inner type
-   const TypeItemType& innerType() const { return *_innerType; }
+   TypeItemType& innerType() { return *_innerType; }
 
    // Reads/Writes the value
    void read(ASN1ValueReader& reader, ValueType& value) const;
@@ -42,7 +42,7 @@ public:
 
 private:
 
-   const TypeItemType* _innerType;
+   TypeItemType* _innerType;
 
    DISALLOW_COPY_AND_ASSIGN(TaggingType);
 };
