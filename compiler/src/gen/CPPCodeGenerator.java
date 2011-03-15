@@ -34,7 +34,7 @@ public class CPPCodeGenerator {
    /**
     * Generates CPP code.
     */
-   public final void generate(final GeneratorContext context) {
+   public final void generate() {
       generateHeaderFile(node);
       generateFile(node);
    }
