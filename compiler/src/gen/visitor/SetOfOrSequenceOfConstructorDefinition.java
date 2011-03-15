@@ -10,12 +10,16 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
    private CodeBuilder builder = new CodeBuilder();
    private boolean isMinSize = true;
    private int innerLevel = 0;
+   private boolean isSequenceOf = false;
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
       if (node.jjtGetParent() instanceof ASTTaggedType
               || node.jjtGetParent() instanceof ASTSetOrSequenceOfType) {
          ++innerLevel;
+      }
+      if (node.jjtGetParent() instanceof ASTSetOrSequenceOfType) {
+         isSequenceOf = true;
       }
       return node.childrenAccept(this, data);
    }
@@ -32,7 +36,11 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTSubtypeSpec node, Object data) {
-      return node.childrenAccept(this, data);
+      if (isSequenceOf) {
+         return node.childrenAccept(this, data);
+      } else {
+         return data;
+      }
    }
 
    @Override
