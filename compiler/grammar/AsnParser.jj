@@ -157,7 +157,7 @@ public class AsnParser
 				root.dump("\t");
 
             CPPCodeGenerator generator = new CPPCodeGenerator(root, outputDirectory);
-            generator.generate(null);
+            generator.generate();
 
 				showUsage = false;
 			}
