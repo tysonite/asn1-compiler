@@ -25,6 +25,9 @@ public:
    // Writes INTEGER value
    void writeInteger(const Integer& value, const IntegerType& type);
 
+   // Writes ENUMERATED value
+   void writeEnumerated(const Integer& value, const EnumeratedType& type);
+
    // Writes OBJECT IDENTIFIER value
    void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type);
 
@@ -67,6 +70,9 @@ protected:
 
    // Writes OCTET STRING value
    virtual void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
+
+   // Writes INTEGER value
+   void _doWriteInteger(const Integer& value);
 
 private:
 

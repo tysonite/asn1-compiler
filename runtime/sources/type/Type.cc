@@ -19,6 +19,8 @@ std::string Type::typeName() const
       return "NULL";
    case INTEGER_TYPE:
       return "INTEGER";
+   case ENUMERATED_TYPE:
+      return "ENUMERATED";
    case BOOLEAN_TYPE:
       return "BOOLEAN";
    case OBJECT_IDENTIFIER_TYPE:

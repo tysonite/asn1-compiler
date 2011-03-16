@@ -23,6 +23,9 @@ public:
    // Reads INTEGER value
    void readInteger(Integer& value, const IntegerType& type);
 
+   // Reads ENUMERATED value
+   void readEnumerated(Integer& value, const EnumeratedType& type);
+   
    // Reads OBJECT IDENTIFIER value
    void readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type);
 
@@ -70,6 +73,9 @@ protected:
 
    // Reads and checks OCTET STRING value
    void _readOctetStringOctets(OctetString& value, const OctetStringType& type);
+
+   // Reads INTEGER value
+   void _doReadInteger(Integer& value);
 
    // Checks tag for correctness
    void _checkTagIsCorrect(PCType pc, const Type& type);

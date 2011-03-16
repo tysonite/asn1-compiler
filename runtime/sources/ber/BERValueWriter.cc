@@ -33,29 +33,23 @@ void BERValueWriter::writeInteger(const Integer& value, const IntegerType& type)
          ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
          type.tagClass());
 
-      Integer tmpValue = (value >= 0 ? value : ~value);
-      tmpValue >>= 7;
-      uint8_t valueLength = 1;
+      _doWriteInteger(value);
+      _buffer.updateLengthOctets(position);
+   }
+}
 
-      // calculate INTEGER value length
-      while (tmpValue != 0)
-      {
-         tmpValue >>= 8;
-         ++valueLength;
-      }
+// Writes ENUMERATED value
+void BERValueWriter::writeEnumerated(const Integer& value, const EnumeratedType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeEnumerated(value, type);
+   else
+   {
+      BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::ENUMERATED_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         type.tagClass());
 
-      // save position and resize buffer
-      BERBuffer::SizeType bufferSize = _buffer.size();
-      _buffer.resize(bufferSize + valueLength);
-
-      // write INTEGER value
-      tmpValue = value;
-      for (BERBuffer::SizeType i = valueLength; i > 0; --i)
-      {
-         _buffer.put(bufferSize + (i - 1), tmpValue & 0xFF);
-         tmpValue >>= 8;
-      }
-
+      _doWriteInteger(value);
       _buffer.updateLengthOctets(position);
    }
 }
@@ -220,6 +214,33 @@ void BERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuff
    _buffer.encodeLengthOctets(value.size());
    _buffer.reserve(_buffer.size() + value.size());
    _buffer.write(reinterpret_cast<const BERBuffer::ValueType*>(value.data()), value.size());
+}
+
+// Writes INTEGER value
+void BERValueWriter::_doWriteInteger(const Integer& value)
+{
+   Integer tmpValue = (value >= 0 ? value : ~value);
+   tmpValue >>= 7;
+   uint8_t valueLength = 1;
+
+   // calculate INTEGER value length
+   while (tmpValue != 0)
+   {
+      tmpValue >>= 8;
+      ++valueLength;
+   }
+
+   // save position and resize buffer
+   BERBuffer::SizeType bufferSize = _buffer.size();
+   _buffer.resize(bufferSize + valueLength);
+
+   // write INTEGER value
+   tmpValue = value;
+   for (BERBuffer::SizeType i = valueLength; i > 0; --i)
+   {
+      _buffer.put(bufferSize + (i - 1), tmpValue & 0xFF);
+      tmpValue >>= 8;
+   }
 }
 
 // Writes SEQUENCE/SET value end

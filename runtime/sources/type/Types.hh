@@ -4,6 +4,7 @@
 #include <type/NullType.hh>
 #include <type/BooleanType.hh>
 #include <type/IntegerType.hh>
+#include <type/EnumeratedType.hh>
 #include <type/ObjectIdentifierType.hh>
 #include <type/OctetStringType.hh>
 #include <type/VisibleStringType.hh>

@@ -59,21 +59,30 @@ void BERValueReader::readInteger(Integer& value, const IntegerType& type)
          return;
       }
 
-      bool isFirstByte = true;
-      while (_buffer.current() < _buffer.end())
-      {
-         Integer b = _buffer.get();
-         if (isFirstByte)
-         {
-            value = (b & 0x80) ? ~0LL : 0LL;
-            isFirstByte = false;
-         }
+      _doReadInteger(value);
 
-         value <<= 8;
-         value |= static_cast<Integer>(b);
-      }
+      // check received data
+      type.checkType(value);
+   }
+}
 
-      _buffer.clearEnd();
+// Reads ENUMERATED value
+void BERValueReader::readEnumerated(Integer& value, const EnumeratedType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readEnumerated(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      int64_t length;
+      _buffer.setEnd(_buffer.decodeIL(tag, pc, cl, length));
+
+      _checkTagIsCorrect(pc, type);
+      _checkTagTagging(tag, cl, BERBuffer::ENUMERATED_BERTYPE, type);
+
+      _doReadInteger(value);
 
       // check received data
       type.checkType(value);
@@ -348,6 +357,26 @@ void BERValueReader::_readOctetStringOctets(OctetString& value, const OctetStrin
 
    // check received data
    type.checkType(value);
+}
+
+// Reads INTEGER value
+void BERValueReader::_doReadInteger(Integer& value)
+{
+   bool isFirstByte = true;
+   while (_buffer.current() < _buffer.end())
+   {
+      Integer b = _buffer.get();
+      if (isFirstByte)
+      {
+         value = (b & 0x80) ? ~0LL : 0LL;
+         isFirstByte = false;
+      }
+
+      value <<= 8;
+      value |= static_cast<Integer>(b);
+   }
+
+   _buffer.clearEnd();
 }
 
 // Checks tag for correctness

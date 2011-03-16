@@ -24,6 +24,7 @@ typedef std::vector<uint16_t> ObjectIdentifier;
 class Type;
 class NullType;
 class IntegerType;
+class EnumeratedType;
 class BooleanType;
 class ObjectIdentifierType;
 class OctetStringType;

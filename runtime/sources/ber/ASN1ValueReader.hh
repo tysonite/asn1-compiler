@@ -16,6 +16,9 @@ public:
    // Reads INTEGER value
    virtual void readInteger(Integer& value, const IntegerType& type) = 0;
 
+   // Reads ENUMERATED value
+   virtual void readEnumerated(Integer& value, const EnumeratedType& type) = 0;
+
    // Reads OBJECT IDENTIFIER value
    virtual void readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type) = 0;
 
