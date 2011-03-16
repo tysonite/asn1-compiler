@@ -992,8 +992,8 @@ public:
 
    enum Type10_Value
    {
-      C1 = 1,
-      C2 = 2,
+      k_C1 = 1,
+      k_C2 = 2,
    };
 };
 
@@ -1243,7 +1243,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType9)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType10)
 {
-   Type10::ValueType vToWrite = Type10::C1, vToRead = Type10::C2;
+   Type10::ValueType vToWrite = Type10::k_C1, vToRead = Type10::k_C2;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1266,7 +1266,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType10)
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
    BOOST_CHECK_EQUAL(vToWrite, vToRead);
-   BOOST_CHECK_EQUAL(vToWrite, Type10::C1);
+   BOOST_CHECK_EQUAL(vToWrite, Type10::k_C1);
 }
 
 }
@@ -2823,22 +2823,22 @@ public:
 
    explicit TypeChoice() : asn1::ChoiceType()
    {
-      _addChoice(&_integerType);
-      _addChoice(&_booleanType);
+      _addChoice(&_i_Type);
+      _addChoice(&_b_Type);
    }
 
    class TypeChoice_Value
    {
    public:
 
-      explicit TypeChoice_Value() : _id(__VALUE_TYPE_NOT_DEFINED__) {}
+      explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
 
-      void set_i(const asn1::IntegerType::ValueType& v) { _value.i = v; _id = i_ID; }
-      const asn1::IntegerType::ValueType& get_i() const { return _value.i; }
+      void set_i(const asn1::IntegerType::ValueType& v) { _i = v; _id = i_ID; }
+      const asn1::IntegerType::ValueType& get_i() const { return _i; }
       bool has_i_Choosen() const { return _id == i_ID; }
 
-      void set_b(const asn1::BooleanType::ValueType& v) { _value.b = v; _id = b_ID; }
-      const asn1::BooleanType::ValueType& get_b() const { return _value.b; }
+      void set_b(const asn1::BooleanType::ValueType& v) { _b = v; _id = b_ID; }
+      const asn1::BooleanType::ValueType& get_b() const { return _b; }
       bool has_b_Choosen() const { return _id == b_ID; }
 
    private:
@@ -2847,17 +2847,13 @@ public:
       {
          i_ID = 1,
          b_ID = 2,
-         __VALUE_TYPE_NOT_DEFINED__ = -1
+         __VALUE_NOT_DEFINED__ = -1
       };
 
-      union ChoiceValue_value
-      {
-         asn1::IntegerType::ValueType i;
-         asn1::BooleanType::ValueType b;
-      };
+      asn1::IntegerType::ValueType _i;
+      asn1::BooleanType::ValueType _b;
 
       ChoiceValue_identifier _id;
-      ChoiceValue_value      _value;
    };
 
    typedef TypeChoice_Value ValueType;
@@ -2867,22 +2863,22 @@ public:
       asn1::Type* choosenType = NULL;
       reader.readChoice(*this, &choosenType);
 
-      if (choosenType == &_integerType)
+      if (choosenType == &_i_Type)
       {
          asn1::IntegerType::ValueType v;
-         _integerType.read(reader, v);
+         _i_Type.read(reader, v);
          value.set_i(v);
       }
-      else if (choosenType == &_booleanType)
+      else if (choosenType == &_b_Type)
       {
          asn1::BooleanType::ValueType v;
-         _booleanType.read(reader, v);
+         _b_Type.read(reader, v);
          value.set_b(v);
       }
       else
       {
          throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
-            _integerType.toString() + ", " + _booleanType.toString());
+            _i_Type.toString() + ", " + _b_Type.toString());
       }
    }
 
@@ -2891,15 +2887,15 @@ public:
       assert(value.has_i_Choosen() || value.has_b_Choosen());
 
       if (value.has_i_Choosen())
-         _integerType.write(writer, value.get_i());
+         _i_Type.write(writer, value.get_i());
       else if (value.has_b_Choosen())
-         _booleanType.write(writer, value.get_b());
+         _b_Type.write(writer, value.get_b());
    }
 
 private:
 
-   asn1::IntegerType _integerType;
-   asn1::BooleanType _booleanType;
+   asn1::IntegerType _i_Type;
+   asn1::BooleanType _b_Type;
 };
 
 class Type1 : public TypeChoice
