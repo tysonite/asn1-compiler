@@ -15,6 +15,8 @@ public class GeneratorContext {
    private List<CodeBuilder> externalContent = new ArrayList<CodeBuilder>();
    /* current type name */
    private String typeName;
+   /* base type name */
+   private String baseTypeName;
 
    public void setTypeName(final String typeName) {
       this.typeName = typeName;
@@ -22,6 +24,14 @@ public class GeneratorContext {
 
    public String getTypeName() {
       return this.typeName;
+   }
+
+   public void setBaseTypeName(final String typeName) {
+      this.baseTypeName = typeName;
+   }
+
+   public String getBaseTypeName() {
+      return this.baseTypeName;
    }
 
    public void setModuleTag(int tag) {

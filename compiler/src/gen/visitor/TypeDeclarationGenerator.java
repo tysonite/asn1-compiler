@@ -25,13 +25,16 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       builder.append("class ").append(GenerationUtils.asCPPToken(typeName)).append(" : public ");
 
       // base type of the class
-      if (VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      final CodeBuilder baseTypeName = new CodeBuilder();
+      if (VisitorUtils.visitChildsAndAccept(baseTypeName, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
               new DefinedCPPTypeName(), new SetOrSequenceTypeName(), new ChoiceTypeName(),
               new EnumeratedTypeName())) {
 
          VisitorUtils.prependDefinedGeneratedNode(node, context);
       }
+      builder.append(baseTypeName.toString());
+      context.setBaseTypeName(baseTypeName.toString());
 
       // body of the class
       builder.newLine();

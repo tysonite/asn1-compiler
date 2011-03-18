@@ -79,9 +79,19 @@ public class EnumeratedTypeBody extends DoNothingASTVisitor implements ContentPr
 
       builder.newLine();
       builder.append(1, "void read(ASN1ValueReader& reader, ").append("ValueType").
-              append("& value) const {}").newLine();
+              append("& value) const").newLine();
+      builder.append(1, "{").newLine();
+      builder.append(2, context.getBaseTypeName()).append("::ValueType v;").newLine();
+      builder.append(2, context.getBaseTypeName()).append("::read(reader, v);").newLine();
+      builder.append(2, "value = static_cast<ValueType>(v);").newLine();
+      builder.append(1, "}").newLine();
+      builder.newLine();
+
       builder.append(1, "void write(ASN1ValueWriter& writer, const ").append("ValueType").
-              append("& value) const {}").newLine();
+              append("& value) const").newLine();
+      builder.append(1, "{").newLine();
+      builder.append(2, context.getBaseTypeName()).append("::write(writer, value);").newLine();
+      builder.append(1, "}").newLine();
 
       return data;
    }
