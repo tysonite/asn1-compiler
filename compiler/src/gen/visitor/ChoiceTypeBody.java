@@ -16,6 +16,8 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
       @Override
       public Object visit(ASTElementType node, Object data) {
+         builder.append(2, "// Alternative: ").append(node.getFirstToken().toString()).newLine();
+
          // setter
          builder.append(2, "void set_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).

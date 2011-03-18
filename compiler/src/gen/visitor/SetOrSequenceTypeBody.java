@@ -15,6 +15,8 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
       @Override
       public Object visit(ASTElementType node, Object data) {
+         builder.append(2, "// Component: ").append(node.getFirstToken().toString()).newLine();
+
          // setter
          builder.append(2, "void set_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
