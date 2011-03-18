@@ -27,7 +27,8 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       // base type of the class
       if (VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
-              new DefinedCPPTypeName(), new SetOrSequenceTypeName(), new ChoiceTypeName())) {
+              new DefinedCPPTypeName(), new SetOrSequenceTypeName(), new ChoiceTypeName(),
+              new EnumeratedTypeName())) {
 
          VisitorUtils.prependDefinedGeneratedNode(node, context);
       }
@@ -54,6 +55,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfConstructorDefinition());
       VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceConstructorDefinition());
+      VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedConstructorDefinition());
 
       builder.append(1, "}").newLine();
 
@@ -61,6 +63,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerValueType(typeName));
       VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeBody(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceTypeBody(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedTypeBody(context));
 
       builder.newLine();
       builder.append("};").newLine().newLine();
