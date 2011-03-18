@@ -14,6 +14,7 @@ class EnumeratedType : public Type
 public:
 
    typedef Integer ValueType;
+   typedef std::list<ValueType> EnumsType;
 
    explicit EnumeratedType(const ValueType& defaultValue = 0, bool hasDefault = false)
       : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
@@ -27,7 +28,7 @@ public:
    // Checks type parameters for validness
    void checkType(const ValueType& value) const
    {
-      std::list<ValueType>::const_iterator p = std::find(_enumValues.begin(), _enumValues.end(), value);
+      EnumsType::const_iterator p = std::find(_enumValues.begin(), _enumValues.end(), value);
       if (p == _enumValues.end())
          throw ASN1Exception("Value '" + utils::ntos(value) + "' is illegal in enumeration " + toString());
    }
@@ -58,9 +59,9 @@ protected:
 
 private:
 
-   ValueType            _defaultValue;
-   bool                 _hasDefault;
-   std::list<ValueType> _enumValues;
+   ValueType _defaultValue;
+   bool      _hasDefault;
+   EnumsType _enumValues;
 
 private:
 
