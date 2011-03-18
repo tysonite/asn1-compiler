@@ -21,6 +21,8 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
       } else {
          VisitorUtils.visitNodeAndAccept(builder, node,
                  new SetOfOrSequenceOfConstructorDefinition());
+         VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent(),
+                 new IntegerConstructorDefinition());
          return data;
       }
    }
