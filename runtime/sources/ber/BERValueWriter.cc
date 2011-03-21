@@ -65,14 +65,13 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
          ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
          type.tagClass());
 
-      ObjectIdentifier::ObjectIdentifierRaw rawValue(value.getValueAsVector());
-      if (rawValue.size() < 2)
+      if (value.size() < 2)
          return;
 
-      _buffer.reserve(_buffer.size() + rawValue.size());
-      _buffer.put((rawValue[0] * 40 + rawValue[1]) & 0x00FF);
-      for (ObjectIdentifier::ObjectIdentifierRaw::size_type i = 2; i < rawValue.size(); ++i)
-         _buffer.encodeInteger(rawValue[i]);
+      _buffer.reserve(_buffer.size() + value.size());
+      _buffer.put((value[0] * 40 + value[1]) & 0x00FF);
+      for (ObjectIdentifier::size_type i = 2; i < value.size(); ++i)
+         _buffer.encodeInteger(value[i]);
 
       _buffer.updateLengthOctets(position);
    }

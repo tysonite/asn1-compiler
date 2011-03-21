@@ -15,7 +15,7 @@ void ObjectIdentifier::_parseAndSetOid(const std::string& value)
       throw ASN1Exception("Object Identifier value '" + value + "' is incorrect");
 
    for (std::vector<std::string>::const_iterator p = tokens.begin(); p != tokens.end(); ++p)
-      _oid.push_back(utils::ston<uint16_t>(*p)); // TODO: take into case when conversation is not possible
+      push_back(utils::ston<uint16_t>(*p)); // TODO: take into case when conversation is not possible
 }
 
 // Returns object identifier represented as string
@@ -24,7 +24,7 @@ std::string ObjectIdentifier::getValueAsString() const
    std::string value;
 
    bool isFirst(true);
-   for (ObjectIdentifierRaw::const_iterator p = _oid.begin(); p != _oid.end(); ++p)
+   for (const_iterator p = begin(); p != end(); ++p)
    {
       if (isFirst)
       {

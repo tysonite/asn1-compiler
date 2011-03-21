@@ -108,20 +108,17 @@ void BERValueReader::readObjectIdentifier(ObjectIdentifier& value, const ObjectI
       if (length < 1)
          throw BERBufferException("Illegal BER " + type.toString() + " length");
 
-      ObjectIdentifier::ObjectIdentifierRaw rawValue;
-      rawValue.push_back(static_cast<ObjectIdentifier::ObjectIdentifierRaw::value_type>(_buffer.get()));
-      if (rawValue[0] < 0 || rawValue[0] > 119)
+      value.push_back(static_cast<ObjectIdentifier::value_type>(_buffer.get()));
+      if (value[0] < 0 || value[0] > 119)
          throw BERBufferException("BER " + type.toString() + " must be in interval [0, 119]");
 
-      rawValue.push_back(rawValue[0] % 40);
-      rawValue[0] /= 40;
+      value.push_back(value[0] % 40);
+      value[0] /= 40;
 
       while (_buffer.current() < _buffer.end())
-         rawValue.push_back(static_cast<ObjectIdentifier::ObjectIdentifierRaw::value_type>(_buffer.decodeInteger()));
+         value.push_back(static_cast<ObjectIdentifier::value_type>(_buffer.decodeInteger()));
 
       _buffer.clearEnd();
-
-      value.setValue(rawValue);
 
       // check received data
       type.checkType(value);

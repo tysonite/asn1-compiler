@@ -9,41 +9,27 @@
 namespace asn1
 {
 
-class ObjectIdentifier
+class ObjectIdentifier : public std::vector<uint16_t>
 {
 public:
 
-   typedef std::vector<uint16_t> ObjectIdentifierRaw;
+   // Default constructor
+   ObjectIdentifier() {}
 
    // Constructor: value is a string representation of the object identifier.
    // i.e.: value = "1.2.3.4.5"
    ObjectIdentifier(const std::string& value) { setValue(value); }
 
-   // Constructor: value is a vector of identifiers
-   // i.e.: value = { 1, 2, 3, 4, 5 }
-   ObjectIdentifier(const ObjectIdentifierRaw& value) { setValue(value); }
-
    // Sets object identifier as string
    void setValue(const std::string& value) { _parseAndSetOid(value); }
 
-   // Sets object identifier as vector
-   void setValue(const ObjectIdentifierRaw& value) { _oid = value; }
-
    // Returns object identifier represented as string
    std::string getValueAsString() const;
-
-   // Returns object identifier in internal representation
-   ObjectIdentifierRaw getValueAsVector() const { return _oid; }
 
 private:
 
    // Parses and sets oid
    void _parseAndSetOid(const std::string& value);
-
-private:
-
-   // object identifier
-   ObjectIdentifierRaw _oid;
 };
 
 }
