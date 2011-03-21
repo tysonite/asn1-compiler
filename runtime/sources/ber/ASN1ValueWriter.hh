@@ -2,6 +2,7 @@
 #define __ASN1_VALUE_WRITER_HH
 
 #include <type/TypeCommon.hh>
+#include <value/ObjectIdentifier.hh>
 
 namespace asn1
 {

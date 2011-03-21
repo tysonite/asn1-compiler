@@ -1,6 +1,7 @@
 #ifndef __UTILS_HH
 #define __UTILS_HH
 
+#include <vector>
 #include <string>
 
 namespace utils
@@ -112,15 +113,53 @@ char (&ArraySizeHelper(const T (&array)[N]))[N];
 
 #define arraysize(array) (sizeof(utils::ArraySizeHelper(array)))
 
-// Converts the given number with any base into the string
-template <typename TypeToConvert>
-std::string ntos(TypeToConvert n, unsigned char b = 10)
+namespace
 {
    static const char* mask = "0123456789ABCDEF";
-   b = b > 1 && b <= 16 ? b : 10;
+}
+
+// Converts the given number with any base into the string
+template <typename T>
+inline std::string ntos(T n, unsigned char b = 10)
+{
    std::string s;
+
+   b = (b > 1 && b <= 16) ? b : 10;
    return (s += n < b ? "" : ntos(n / b, b)) + mask[n % b];
 }
+
+// Converts the given string into the integer with any base
+template <typename T>
+inline T ston(const std::string& s, unsigned char b = 10)
+{
+   T no = 0;
+   const char* pos(NULL);
+
+   b = (b > 1 && b <= 16) ? b : 10;
+   for (std::size_t i = 0; i < s.length(); ++i)
+      no = (pos = ::strchr(mask, s[i])) != 0 ? static_cast<T>(b) * no + static_cast<T>(pos - mask) : no;
+   return no;
+}
+
+// Splits the given string by delimiter
+inline void split(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = " ")
+{
+   // Skip delimiters at beginning.
+   std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+   // Find first "non-delimiter".
+   std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+
+   while (std::string::npos != pos || std::string::npos != lastPos)
+   {
+      // Found a token, add it to the vector.
+      tokens.push_back(str.substr(lastPos, pos - lastPos));
+      // Skip delimiters.  Note the "not_of"
+      lastPos = str.find_first_not_of(delimiters, pos);
+      // Find next "non-delimiter"
+      pos = str.find_first_of(delimiters, lastPos);
+   }
+}
+
 
 }
 

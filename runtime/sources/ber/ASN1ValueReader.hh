@@ -2,6 +2,7 @@
 #define __ASN1_VALUE_READER_HH
 
 #include <type/TypeCommon.hh>
+#include <value/Values.hh>
 
 namespace asn1
 {

@@ -18,7 +18,6 @@ typedef uint8_t CLType;
 typedef bool                  Boolean;
 typedef int64_t               Integer;
 typedef std::string           OctetString;
-typedef std::vector<uint16_t> ObjectIdentifier;
 
 // Types of ASN.1 value type representation
 class Type;
