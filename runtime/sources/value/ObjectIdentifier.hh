@@ -48,4 +48,4 @@ private:
 
 }
 
-#endif // __OBJECT_IDENTIFIER_VALUE_HH
+#endif // __OBJECT_IDENTIFIER_HH
