@@ -28,7 +28,8 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
             builder.append(" + \", \"");
          }
 
-         builder.append(" + ").append("_").append(node.getFirstToken().toString()).
+         builder.append(" + ").append("_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type.toString()");
 
          return data;
@@ -56,7 +57,8 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
             builder.append(1, "else ");
          }
 
-         builder.append("if (choosenType == &_").append(node.getFirstToken().toString()).
+         builder.append("if (choosenType == &_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type)").newLine();
 
          VisitorUtils.visitNodeAndAccept(builder, node,
@@ -86,12 +88,14 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
             builder.append(1, "else ");
          }
 
-         builder.append("if (value.has_").append(node.getFirstToken().toString()).
+         builder.append("if (value.has_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Choosen())").newLine();
 
          // write code for type reading
-         builder.append(2, "_").append(node.getFirstToken().toString()).append("_Type").
-                 append(".write(writer, value.get_").append(node.getFirstToken().toString()).
+         builder.append(2, "_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Type").append(".write(writer, value.get_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("());").newLine();
 
          return data;
