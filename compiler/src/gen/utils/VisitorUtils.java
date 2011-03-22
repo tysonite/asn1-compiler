@@ -14,12 +14,14 @@ public final class VisitorUtils {
     * @param node
     * @param visitor
     */
-   public static <T extends AsnParserVisitor & ContentProvider> void visitNodeAndAccept(
+   public static <T extends AsnParserVisitor & ContentProvider> boolean visitNodeAndAccept(
            CodeBuilder builder, SimpleNode node, T visitor) {
       node.jjtAccept(visitor, null);
       if (visitor.hasValuableContent()) {
          builder.append(visitor.getContent());
+         return true;
       }
+      return false;
    }
 
    /**
@@ -59,7 +61,8 @@ public final class VisitorUtils {
       final ASTTypeAssignment newType = new ASTTypeAssignment(0);
       newType.setFirstToken(new Token(0, typeName));
 
-      if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType) {
+      if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType
+              || node instanceof ASTElementType) {
          for (int i = 0, j = 0; i < node.jjtGetNumChildren(); ++i, ++j) {
             if (!(node.jjtGetChild(i) instanceof ASTBuiltinType)) {
                --j;
@@ -86,7 +89,8 @@ public final class VisitorUtils {
       final ASTTypeAssignment newType = new ASTTypeAssignment(0);
       newType.setFirstToken(new Token(0, typeName));
 
-      if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType) {
+      if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType
+              || node instanceof ASTElementType) {
          for (int i = 0, j = 0; i < node.jjtGetNumChildren(); ++i, ++j) {
             if (!(node.jjtGetChild(i) instanceof ASTBuiltinType)) {
                --j;

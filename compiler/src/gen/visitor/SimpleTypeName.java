@@ -17,7 +17,9 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
 
    @Override
    public Object visit(ASTIntegerType node, Object data) {
-      builder.append(asn1NameSpace).append("IntegerType");
+      if (!VisitorUtils.visitNodeAndAccept(builder, node, new IsNamedIntegerType())) {
+         builder.append(asn1NameSpace).append("IntegerType");
+      }
       return data;
    }
 

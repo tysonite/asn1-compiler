@@ -72,7 +72,7 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
 
    @Override
    public Object visit(ASTClassNumber node, Object data) {
-      builder.append("_").append(node.getFirstToken().toString());
+      builder.append("_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString()));
       return node.childrenAccept(this, data);
    }
 
@@ -87,6 +87,28 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
       } else if (node.isContext()) {
          builder.append("_CONTEXT_SPECIFIC");
       }
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTNamedNumberList node, Object data) {
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTNamedNumber node, Object data) {
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTidentifier node, Object data) {
+      builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString()));
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTSignedNumber node, Object data) {
+      builder.append(String.valueOf(node.getNumber()));
       return node.childrenAccept(this, data);
    }
 

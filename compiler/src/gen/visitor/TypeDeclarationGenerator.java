@@ -29,7 +29,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       if (VisitorUtils.visitChildsAndAccept(baseTypeName, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
               new DefinedCPPTypeName(), new SetOrSequenceTypeName(), new ChoiceTypeName(),
-              new EnumeratedTypeName())) {
+              new EnumeratedTypeName(), new NamedIntegerType())) {
 
          VisitorUtils.prependDefinedGeneratedNode(node, context);
       }

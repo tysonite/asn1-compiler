@@ -22,7 +22,8 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("(const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedCPPTypeName())) {
+                 new DefinedCPPTypeName())
+                 || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(GenerationUtils.asCPPToken(
                     VisitorUtils.queueGeneratedCode(node, context)));
          }
@@ -35,7 +36,8 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          // getter
          builder.append(2, "const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedCPPTypeName())) {
+                 new DefinedCPPTypeName())
+                 || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(GenerationUtils.asCPPToken(
                     VisitorUtils.queueGeneratedCode(node, context)));
          }
@@ -68,7 +70,8 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          // member
          builder.append(2, "");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-                 new DefinedCPPTypeName())) {
+                 new DefinedCPPTypeName())
+                 || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(GenerationUtils.asCPPToken(
                     VisitorUtils.queueGeneratedCode(node, context)));
          }
@@ -139,7 +142,8 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       builder.append(1, "");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
-              new DefinedCPPTypeName())) {
+              new DefinedCPPTypeName())
+              || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
          builder.append("typedef ").append(GenerationUtils.asCPPToken(
                  VisitorUtils.queueGeneratedCode(node, context))).
                  append(" ").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
