@@ -13,6 +13,7 @@ public class GeneratorContext {
    private List<String> externalizedTypes = new ArrayList<String>();
    /* content to add before currently generated content */
    private List<CodeBuilder> externalContent = new ArrayList<CodeBuilder>();
+   private List<CodeBuilder> externalDefContent = new ArrayList<CodeBuilder>();
    /* current type name */
    private String typeName;
    /* base type name */
@@ -58,10 +59,21 @@ public class GeneratorContext {
       externalContent.add(builder);
    }
 
+   public void addExternalDefContent(final CodeBuilder builder) {
+      externalDefContent.add(builder);
+   }
+
    public void dumpExternalContent(final CodeBuilder builder) {
       for (CodeBuilder b : externalContent) {
          builder.append(b.toString());
       }
       externalContent.clear();
+   }
+
+   public void dumpExternalDefContent(final CodeBuilder builder) {
+      for (CodeBuilder b : externalDefContent) {
+         builder.append(b.toString());
+      }
+      externalDefContent.clear();
    }
 }

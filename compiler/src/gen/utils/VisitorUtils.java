@@ -80,6 +80,33 @@ public final class VisitorUtils {
       return builder;
    }
 
+   public static CodeBuilder generateDefCodeAsForTypeAssignment(final SimpleNode node,
+           final String typeName, final GeneratorContext context) {
+      final CodeBuilder builder = new CodeBuilder();
+      final ASTTypeAssignment newType = new ASTTypeAssignment(0);
+      newType.setFirstToken(new Token(0, typeName));
+
+      if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType) {
+         for (int i = 0, j = 0; i < node.jjtGetNumChildren(); ++i, ++j) {
+            if (!(node.jjtGetChild(i) instanceof ASTBuiltinType)) {
+               --j;
+               continue;
+            }
+            newType.jjtAddChild(node.jjtGetChild(i), j);
+         }
+      } else {
+         for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            newType.jjtAddChild(node.jjtGetChild(i), i);
+         }
+      }
+
+      final TypeDefinitionGenerator gen = new TypeDefinitionGenerator(newType);
+      gen.generate(context);
+
+      builder.append(gen.getContent());
+      return builder;
+   }
+
    public static String queueGeneratedCode(final SimpleNode node, final GeneratorContext context) {
       final CodeBuilder uniqueName = new CodeBuilder();
       VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
@@ -90,6 +117,9 @@ public final class VisitorUtils {
 
          /* generate code for a new type */
          context.addExternalContent(VisitorUtils.generateCodeAsForTypeAssignment(node,
+                 uniqueName.toString(), context));
+
+         context.addExternalDefContent(VisitorUtils.generateDefCodeAsForTypeAssignment(node,
                  uniqueName.toString(), context));
       }
 

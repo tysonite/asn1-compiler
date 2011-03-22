@@ -163,6 +163,8 @@ public class CPPCodeGenerator {
    }
 
    private void generateDefinitionCode(final SimpleNode node, final CodeBuilder builder) {
+      context.dumpExternalDefContent(builder);
+
       for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
          final SimpleNode child = (SimpleNode) node.jjtGetChild(i);
          if (child instanceof ASTTypeAssignment) {
