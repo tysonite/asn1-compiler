@@ -72,13 +72,13 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
          for (int i = 0; i < innerLevel; ++i) {
             builder.append("innerType().");
          }
-         builder.append("setMinValue(").append(String.valueOf(node.getNumber())).append(");");
+         builder.append("setMinValue(").append(String.valueOf(node.getNumber())).append("LL);");
          isMinSize = false;
       } else {
          for (int i = 0; i < innerLevel; ++i) {
             builder.append("innerType().");
          }
-         builder.append("setMaxValue(").append(String.valueOf(node.getNumber())).append(");");
+         builder.append("setMaxValue(").append(String.valueOf(node.getNumber())).append("LL);");
       }
       builder.newLine();
       return data;

@@ -20,7 +20,7 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      builder.append("TaggingType<");
+      builder.append("asn1::TaggingType<");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new DefinedCPPTypeName())) {
