@@ -15,7 +15,8 @@ public class SimpleTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
-      if (node.getType() != 8 /* not tagged type */ && context.isImplicitModule()) {
+      if (node.getType() != 8 /* not tagged type */
+              && node.getType() != 6 /* not CHOICE type */ && context.isImplicitModule()) {
          builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
       }
 
