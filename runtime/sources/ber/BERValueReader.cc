@@ -298,7 +298,24 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
       for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)
       {
          Type* t = *p;
-         if (t->tagClass() == cl && ((t->hasTagNumber() && t->tagNumber() == tag) || (!t->hasTagNumber() && t->typeID() == tag)))
+         if (t->typeID() == CHOICE_TYPE)
+         {
+            try
+            {
+               readChoice(*((ChoiceType*) t), choosenType);
+               *choosenType = t;
+               return;
+            }
+            catch (...)
+            {
+               /* Do not process an exception, because it is issued by nested CHOICE,
+                  if the type cannot be distingushed.
+                  TODO: Find another way to check nested CHOICE.
+               */
+            }
+         }
+         else if (t->tagClass() == cl && ((t->hasTagNumber() && t->tagNumber() == tag)
+             || (!t->hasTagNumber() && t->typeID() == tag)))
          {
             *choosenType = t;
             return;
