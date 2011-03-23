@@ -3669,14 +3669,16 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
    BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
    BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
-   Type9 type;
-
    // encoding
    asn1::BERBuffer outbuffer;
    asn1::BERValueWriter writer(outbuffer);
 
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+   {
+      Type9 type;
+
+      BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+      BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+   }
 
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x06, 0x02, 0x01, 0xFF, 0x01, 0x01, 0x00 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
@@ -3686,8 +3688,12 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
    asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
    asn1::BERValueReader reader(inbuffer);
 
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+   {
+      Type9 type;
+
+      BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+      BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+   }
 
    BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
    BOOST_CHECK_EQUAL(vToRead.get_b(), false);
