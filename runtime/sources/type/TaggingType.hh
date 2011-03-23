@@ -50,13 +50,38 @@ private:
 template <typename TypeItemType>
 void TaggingType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   if (hasExplicitTagging() || hasEmptyTagging())
+   if (hasImplicitTagging())
+   {
+      // override inner type definition
+      ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagType> > > tagRestorer(
+         std::bind1st(std::mem_fun(&Type::setTagNumber), _innerType),
+         _innerType->tagNumber());
+
+      const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
+
+      ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
+         std::bind1st(std::mem_fun(&Type::setTagClass), _innerType),
+         _innerType->tagClass());
+
+      const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
+
+      ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
+         std::bind1st(std::mem_fun(&Type::setTagging), _innerType),
+         _innerType->tagging());
+
+      if (!_innerType->hasExplicitTagging())
+         const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
+      else
+         taggingRestorer.restoreNotNeeded();
+
+      _innerType->read(reader, value);
+   }
+   else if (hasExplicitTagging() || hasEmptyTagging())
+   {
       reader.readExplicitBegin(*this);
-
-   _innerType->read(reader, value);
-
-   if (hasExplicitTagging() || hasEmptyTagging())
+      _innerType->read(reader, value);
       reader.readExplicitEnd(*this);
+   }
 }
 
 template <typename TypeItemType>
@@ -66,20 +91,20 @@ void TaggingType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& 
    {
       // override inner type definition
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagType> > > tagRestorer(
-         std::bind1st(std::mem_fun(&Type::setTagNumber), const_cast<TaggingType<TypeItemType>*>(this)),
-         tagNumber());
+         std::bind1st(std::mem_fun(&Type::setTagNumber), _innerType),
+         _innerType->tagNumber());
 
       const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
 
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
-         std::bind1st(std::mem_fun(&Type::setTagClass), const_cast<TaggingType<TypeItemType>*>(this)),
-         tagClass());
+         std::bind1st(std::mem_fun(&Type::setTagClass), _innerType),
+         _innerType->tagClass());
 
       const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
 
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
-         std::bind1st(std::mem_fun(&Type::setTagging), const_cast<TaggingType<TypeItemType>*>(this)),
-         tagging());
+         std::bind1st(std::mem_fun(&Type::setTagging), _innerType),
+         _innerType->tagging());
 
       if (!_innerType->hasExplicitTagging())
          const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
