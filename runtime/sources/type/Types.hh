@@ -6,6 +6,7 @@
 #include <type/IntegerType.hh>
 #include <type/EnumeratedType.hh>
 #include <type/ObjectIdentifierType.hh>
+#include <type/BitStringType.hh>
 #include <type/OctetStringType.hh>
 #include <type/VisibleStringType.hh>
 #include <type/PrintableStringType.hh>
