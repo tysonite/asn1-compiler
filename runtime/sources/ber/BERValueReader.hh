@@ -14,8 +14,13 @@ class BERBuffer;
 class BERValueReader : public ASN1ValueReader
 {
 public:
+
+   // Constructor
    explicit BERValueReader(BERBuffer& buffer)
       : _nestedReader(NULL), _buffer(buffer), _sequenceEndPos(0) {}
+
+   // Destructor
+   ~BERValueReader() { delete _nestedReader; }
 
    // Reads BOOLEAN value
    void readBoolean(Boolean& value, const BooleanType& type);

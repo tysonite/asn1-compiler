@@ -16,8 +16,11 @@ class BERValueWriter : public ASN1ValueWriter
 public:
    
    // Constructor
-   BERValueWriter(BERBuffer& buffer)
+   explicit BERValueWriter(BERBuffer& buffer)
       : _nestedWriter(NULL), _buffer(buffer), _compositionStart(0) {}
+
+   // Destructor
+   ~BERValueWriter() { delete _nestedWriter; }
 
    // Writes BOOLEAN value
    void writeBoolean(const Boolean& value, const BooleanType& type);
