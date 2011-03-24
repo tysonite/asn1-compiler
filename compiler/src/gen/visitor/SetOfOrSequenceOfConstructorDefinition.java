@@ -11,6 +11,7 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
    private boolean isMinSize = true;
    private int innerLevel = 0;
    private boolean isSequenceOf = false;
+   private boolean isSizeConstraints = false;
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -26,17 +27,22 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
+      isSequenceOf = true;
+      VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition(false, 1));
       return node.childrenAccept(this, data);
    }
 
    @Override
    public Object visit(ASTSizeConstraint node, Object data) {
-      return node.childrenAccept(this, data);
+      isSizeConstraints = true;
+      node.childrenAccept(this, data);
+      isSizeConstraints = false;
+      return data;
    }
 
    @Override
    public Object visit(ASTSubtypeSpec node, Object data) {
-      if (isSequenceOf) {
+      if (isSequenceOf && isSizeConstraints) {
          return node.childrenAccept(this, data);
       } else {
          return data;

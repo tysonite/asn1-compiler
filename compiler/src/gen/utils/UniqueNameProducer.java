@@ -43,7 +43,7 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
 
    @Override
    public Object visit(ASTElementType node, Object data) {
-      builder.append("_").append(node.getFirstToken().toString());
+      builder.append("_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString()));
       return node.childrenAccept(this, data);
    }
 

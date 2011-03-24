@@ -131,7 +131,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
    @Override
    public Object visit(ASTChoiceType node, Object data) {
       builder.newLine();
-      builder.append("void ").append(context.getTypeName()).
+      builder.append("void ").append(GenerationUtils.asCPPToken(context.getTypeName())).
               append("::read(ASN1ValueReader& reader, ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
@@ -153,7 +153,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
       builder.append("}").newLine();
       builder.newLine();
 
-      builder.append("void ").append(context.getTypeName()).
+      builder.append("void ").append(GenerationUtils.asCPPToken(context.getTypeName())).
               append("::write(ASN1ValueWriter& writer, const ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
