@@ -48,6 +48,8 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
          builder.append(2, "setTagClass(Type::CONTEXT_SPECIFIC);").newLine();
       }
 
+      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeConstructorDefinition(1));
+
       return data;
    }
 

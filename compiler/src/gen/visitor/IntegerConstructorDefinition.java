@@ -12,6 +12,18 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    private int innerLevel = 0;
    private boolean isInteger = false;
 
+   public IntegerConstructorDefinition() {
+   }
+
+   public IntegerConstructorDefinition(boolean overrideInteger) {
+      this.isInteger = overrideInteger;
+   }
+
+   public IntegerConstructorDefinition(boolean overrideInteger, int innerLevel) {
+      this(overrideInteger);
+      this.innerLevel = innerLevel;
+   }
+
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
       if (node.jjtGetParent() instanceof ASTTaggedType

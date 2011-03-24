@@ -47,6 +47,12 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
       return data;
    }
 
+   @Override
+   public Object visit(ASTBitStringType node, Object data) {
+      builder.append(asn1NameSpace).append("BitStringType");
+      return data;
+   }
+
    public String getContent() {
       return builder.toString();
    }
