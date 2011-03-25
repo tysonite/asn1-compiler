@@ -26,11 +26,11 @@ public:
    const Integer& defaultValue() const { return _defaultValue; }
    bool hasDefault() const { return _hasDefault; }
 
-   void setMinValue(const Integer& value) { _minValue = value; _hasMinMax = true; }
-   Integer minValue() const { return _minValue; }
+   void setMinValue(int64_t value) { _minValue = value; _hasMinMax = true; }
+   int64_t minValue() const { return _minValue; }
 
-   void setMaxValue(const Integer& value) { _maxValue = value; _hasMinMax = true; }
-   Integer maxValue() const { return _maxValue; }
+   void setMaxValue(int64_t value) { _maxValue = value; _hasMinMax = true; }
+   int64_t maxValue() const { return _maxValue; }
 
    // Checks type parameters for validness
    void checkType(const ValueType& value) const;
@@ -56,7 +56,7 @@ private:
    ValueType _defaultValue;
    bool      _hasDefault;
 
-   ValueType _minValue, _maxValue;
+   int64_t   _minValue, _maxValue;
    bool      _hasMinMax;
 
 private:

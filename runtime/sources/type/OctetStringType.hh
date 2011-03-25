@@ -30,6 +30,8 @@ public:
 
    const ValueType& defaultValue() const { return _defaultValue; }
    bool hasDefault() const { return _hasDefault; }
+
+   // Adds size constraint
    void addSize(int64_t minSize, int64_t maxSize) { _sizes.push_back(SizeMinMaxType(minSize, maxSize)); }
 
    // Checks type parameters for validness
@@ -38,7 +40,7 @@ public:
    // Reads the value
    virtual void read(ASN1ValueReader& reader, ValueType& value) const
    { 
-      ValueRestorer<OctetString> restorer(value);
+      ValueRestorer<ValueType> restorer(value);
 
       reader.readOctetString(value, *this); 
 
