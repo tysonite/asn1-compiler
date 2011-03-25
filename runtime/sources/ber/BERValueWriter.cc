@@ -109,6 +109,15 @@ void BERValueWriter::writeVisibleString(const OctetString& value, const VisibleS
       _doWriteOctetString(value, BERBuffer::VISIBLESTRING_BERTYPE, type);
 }
 
+// Writes GRAPHIC STRING value
+void BERValueWriter::writeGraphicString(const OctetString& value, const GraphicStringType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeGraphicString(value, type);
+   else
+      _doWriteOctetString(value, BERBuffer::GRAPHICSTRING_BERTYPE, type);
+}
+
 // Writes PRINTABLE STRING value
 void BERValueWriter::writePrintableString(const OctetString& value, const PrintableStringType& type)
 {

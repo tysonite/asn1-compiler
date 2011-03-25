@@ -182,6 +182,24 @@ void BERValueReader::readVisibleString(OctetString& value, const VisibleStringTy
    }
 }
 
+// Reads GRAPHIC STRING value
+void BERValueReader::readGraphicString(OctetString& value, const GraphicStringType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readGraphicString(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      _checkTagTagging(tag, cl, BERBuffer::GRAPHICSTRING_BERTYPE, type);
+
+      _readOctetStringOctets(value, type);
+   }
+}
+
 // Reads PRINTABLE STRING value
 void BERValueReader::readPrintableString(OctetString& value, const PrintableStringType& type)
 {

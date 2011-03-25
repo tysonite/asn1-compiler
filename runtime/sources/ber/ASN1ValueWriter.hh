@@ -32,6 +32,9 @@ public:
    // Writes VISIBLE STRING value
    virtual void writeVisibleString(const OctetString& value, const VisibleStringType& type) = 0;
 
+   // Writes GRAPHIC STRING value
+   virtual void writeGraphicString(const OctetString& value, const GraphicStringType& type) = 0;
+
    // Writes PRINTABLE STRING value
    virtual void writePrintableString(const OctetString& value, const PrintableStringType& type) = 0;
 

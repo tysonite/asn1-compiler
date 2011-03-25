@@ -43,6 +43,9 @@ public:
    // Reads VISIBLE STRING value
    void readVisibleString(OctetString& value, const VisibleStringType& type);
 
+   // Reads GRAPHIC STRING value
+   void readGraphicString(OctetString& value, const GraphicStringType& type);
+
    // Reads PRINTABLE STRING value
    void readPrintableString(OctetString& value, const PrintableStringType& type);
 

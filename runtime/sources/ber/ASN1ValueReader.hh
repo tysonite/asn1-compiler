@@ -32,6 +32,9 @@ public:
    // Reads VISIBLE STRING value
    virtual void readVisibleString(OctetString& value, const VisibleStringType& type) = 0;
 
+   // Reads GRAPHIC STRING value
+   virtual void readGraphicString(OctetString& value, const GraphicStringType& type) = 0;
+
    // Reads PRINTABLE STRING value
    virtual void readPrintableString(OctetString& value, const PrintableStringType& type) = 0;
 
