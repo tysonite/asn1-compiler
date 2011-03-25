@@ -11,6 +11,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    private boolean isMinSize = true;
    private int innerLevel = 0;
    private boolean isInteger = false;
+   private String typeName = null;
 
    public IntegerConstructorDefinition() {
    }
@@ -22,6 +23,10 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    public IntegerConstructorDefinition(boolean overrideInteger, int innerLevel) {
       this(overrideInteger);
       this.innerLevel = innerLevel;
+   }
+
+   public IntegerConstructorDefinition(String typeName) {
+      this.typeName = typeName;
    }
 
    @Override
@@ -80,6 +85,10 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(2, "");
+
+      if (null != typeName) {
+         builder.append(typeName).append(".");
+      }
       if (isMinSize) {
          for (int i = 0; i < innerLevel; ++i) {
             builder.append("innerType().");
