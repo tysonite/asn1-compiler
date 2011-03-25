@@ -108,7 +108,7 @@ public class UniqueNameProducer extends DoNothingASTVisitor implements ContentPr
 
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
-      builder.append(String.valueOf(node.getNumber()));
+      builder.append(node.getNumber());
       return node.childrenAccept(this, data);
    }
 

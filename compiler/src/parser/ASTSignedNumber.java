@@ -4,7 +4,7 @@ package parser;
 
 public class ASTSignedNumber extends SimpleNode {
 
-   private long n = 0;
+   private String n = null;
 
    public ASTSignedNumber(int id) {
       super(id);
@@ -14,11 +14,11 @@ public class ASTSignedNumber extends SimpleNode {
       super(p, id);
    }
 
-   public void setNumber(long n) {
+   public void setNumber(String n) {
       this.n = n;
    }
 
-   public long getNumber() {
+   public String getNumber() {
       return n;
    }
 

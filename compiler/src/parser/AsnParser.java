@@ -1564,7 +1564,7 @@ try {Token tok;
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;
     jjtreeCloseNodeScope(jjtn000);
-     jjtn000.setNumber(Long.valueOf(((null != m) ? m.toString() : "") + n.toString()).longValue());
+     jjtn000.setNumber(((null != m) ? m.toString() : "") + n.toString());
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);

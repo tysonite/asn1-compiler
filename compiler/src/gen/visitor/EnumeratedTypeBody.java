@@ -42,7 +42,7 @@ public class EnumeratedTypeBody extends DoNothingASTVisitor implements ContentPr
 
       @Override
       public Object visit(ASTSignedNumber node, Object data) {
-         builder.append(" = ").append(String.valueOf(node.getNumber())).append(",").newLine();
+         builder.append(" = ").append(node.getNumber()).append(",").newLine();
          wasSignedNumber = true;
          return data;
       }

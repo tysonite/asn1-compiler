@@ -1509,7 +1509,7 @@ void SignedNumber() :
   }
 /*@egen*/
   {
-     jjtn000.setNumber(Long.valueOf(((null != m) ? m.toString() : "") + n.toString()).longValue());
+     jjtn000.setNumber(((null != m) ? m.toString() : "") + n.toString());
   }/*@bgen(jjtree)*/
   } finally {
     if (jjtc000) {

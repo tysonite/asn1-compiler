@@ -85,13 +85,13 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
          for (int i = 0; i < innerLevel; ++i) {
             builder.append("innerType().");
          }
-         builder.append("setMinSize(").append(String.valueOf(node.getNumber())).append(");");
+         builder.append("setMinSize(").append(node.getNumber()).append(");");
          isMinSize = false;
       } else {
          for (int i = 0; i < innerLevel; ++i) {
             builder.append("innerType().");
          }
-         builder.append("setMaxSize(").append(String.valueOf(node.getNumber())).append(");");
+         builder.append("setMaxSize(").append(node.getNumber()).append(");");
       }
       builder.newLine();
       return data;
