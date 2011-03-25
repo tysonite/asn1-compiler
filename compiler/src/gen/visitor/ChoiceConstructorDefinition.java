@@ -28,7 +28,8 @@ public class ChoiceConstructorDefinition extends DoNothingASTVisitor implements 
 
       // internal types
       VisitorUtils.visitChildsAndAccept(builder, node,
-              new IntegerConstructorDefinition(elementTypeName));
+              new IntegerConstructorDefinition(elementTypeName),
+              new OctetStringConstructorDefinition(elementTypeName));
 
       return data;
    }

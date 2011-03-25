@@ -22,7 +22,7 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
          VisitorUtils.visitNodeAndAccept(builder, node,
                  new SetOfOrSequenceOfConstructorDefinition());
          VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent(),
-                 new IntegerConstructorDefinition());
+                 new IntegerConstructorDefinition(), new OctetStringConstructorDefinition());
          return data;
       }
    }

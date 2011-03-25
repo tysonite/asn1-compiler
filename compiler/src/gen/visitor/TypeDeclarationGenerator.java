@@ -61,6 +61,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceConstructorDefinition());
       VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedConstructorDefinition());
       VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition());
+      VisitorUtils.visitChildsAndAccept(builder, node, new OctetStringConstructorDefinition());
       VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeConstructorDefinition());
 
       builder.append(1, "}").newLine();
