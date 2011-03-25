@@ -82,6 +82,32 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
       }
    }
 
+   private void appendInner() {
+      for (int i = 0; i < innerLevel; ++i) {
+         builder.append("innerType().");
+      }
+   }
+
+   private void appendMinValue(String value, boolean isNumber) {
+      appendInner();
+      builder.append("setMinValue(").append(value);
+      if (isNumber) {
+         builder.append("LL);");
+      } else {
+         builder.append(");");
+      }
+   }
+
+   private void appendMaxValue(String value, boolean isNumber) {
+      appendInner();
+      builder.append("setMaxValue(").append(value);
+      if (isNumber) {
+         builder.append("LL);");
+      } else {
+         builder.append(");");
+      }
+   }
+
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(2, "");
@@ -90,16 +116,27 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
          builder.append(typeName).append(".");
       }
       if (isMinSize) {
-         for (int i = 0; i < innerLevel; ++i) {
-            builder.append("innerType().");
-         }
-         builder.append("setMinValue(").append(node.getNumber()).append("LL);");
+         appendMinValue(node.getNumber(), true);
          isMinSize = false;
       } else {
-         for (int i = 0; i < innerLevel; ++i) {
-            builder.append("innerType().");
-         }
-         builder.append("setMaxValue(").append(node.getNumber()).append("LL);");
+         appendMinValue(node.getNumber(), true);
+      }
+      builder.newLine();
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTDefinedValue node, Object data) {
+      builder.append(2, "");
+
+      if (null != typeName) {
+         builder.append(typeName).append(".");
+      }
+      if (isMinSize) {
+         appendMinValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
+         isMinSize = false;
+      } else {
+         appendMaxValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
       }
       builder.newLine();
       return data;
