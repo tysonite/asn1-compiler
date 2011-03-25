@@ -607,7 +607,7 @@ void SignedNumber() :
 { 
   [ m = <MINUS_TKN> ] ( n = <NUMBER_TKN> | n = <NUMBER_ERANGE_TKN> )
   {
-     jjtThis.setNumber(Long.valueOf(((null != m) ? m.toString() : "") + n.toString()).longValue());
+     jjtThis.setNumber(((null != m) ? m.toString() : "") + n.toString());
   }
 }
 
