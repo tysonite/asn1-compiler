@@ -119,7 +119,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
          appendMinValue(node.getNumber(), true);
          isMinSize = false;
       } else {
-         appendMinValue(node.getNumber(), true);
+         appendMaxValue(node.getNumber(), true);
       }
       builder.newLine();
       return data;
