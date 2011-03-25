@@ -79,20 +79,54 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
       }
    }
 
+   private void appendInner() {
+      for (int i = 0; i < innerLevel; ++i) {
+         builder.append("innerType().");
+      }
+   }
+
+   private void appendMinValue(String value, boolean isNumber) {
+      appendInner();
+      builder.append("setMinSize(").append(value);
+      if (isNumber) {
+         builder.append("LL);");
+      } else {
+         builder.append(");");
+      }
+   }
+
+   private void appendMaxValue(String value, boolean isNumber) {
+      appendInner();
+      builder.append("setMaxSize(").append(value);
+      if (isNumber) {
+         builder.append("LL);");
+      } else {
+         builder.append(");");
+      }
+   }
+
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(2, "");
       if (isMinSize) {
-         for (int i = 0; i < innerLevel; ++i) {
-            builder.append("innerType().");
-         }
-         builder.append("setMinSize(").append(node.getNumber()).append(");");
+         appendMinValue(node.getNumber(), true);
          isMinSize = false;
       } else {
-         for (int i = 0; i < innerLevel; ++i) {
-            builder.append("innerType().");
-         }
-         builder.append("setMaxSize(").append(node.getNumber()).append(");");
+         appendMaxValue(node.getNumber(), true);
+      }
+      builder.newLine();
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTDefinedValue node, Object data) {
+      builder.append(2, "");
+
+      if (isMinSize) {
+         appendMinValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
+         isMinSize = false;
+      } else {
+         appendMaxValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
       }
       builder.newLine();
       return data;
