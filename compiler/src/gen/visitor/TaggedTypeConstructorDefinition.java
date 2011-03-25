@@ -91,6 +91,15 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
    }
 
    @Override
+   public Object visit(ASTnumber node, Object data) {
+      if (!(node.jjtGetParent() instanceof ASTClassNumber)) {
+         return data;
+      }
+      identifier = GenerationUtils.asCPPToken(node.getFirstToken().toString());
+      return data;
+   }
+
+   @Override
    public Object visit(ASTClass node, Object data) {
       builder.append(2, "setTagClass(");
 
