@@ -8,6 +8,7 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    private CodeBuilder builder = new CodeBuilder();
    private boolean wasTagClass = false;
+   private String identifier = null;
    private final GeneratorContext context;
 
    public TaggedTypeConstructorDefinition(final GeneratorContext context) {
@@ -61,9 +62,31 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    @Override
    public Object visit(ASTClassNumber node, Object data) {
-      builder.append(2, "setTagNumber(").
-              append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(");").
-              newLine();
+      identifier = null;
+
+      node.childrenAccept(this, data);
+
+      if (null != identifier) {
+         builder.append(2, "setTagNumber(").append(identifier).append(");").newLine();
+      }
+
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTDefinedValue node, Object data) {
+      if (node.jjtGetParent() instanceof ASTClassNumber) {
+         return node.childrenAccept(this, data);
+      }
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTidentifier node, Object data) {
+      if (!(node.jjtGetParent() instanceof ASTDefinedValue)) {
+         return data;
+      }
+      identifier = GenerationUtils.asCPPToken(node.getFirstToken().toString());
       return data;
    }
 
