@@ -8,16 +8,27 @@ public class SimpleTypeConstructorDefinition extends DoNothingASTVisitor impleme
 
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
+   private String typeName = null;
 
    public SimpleTypeConstructorDefinition(final GeneratorContext context) {
       this.context = context;
+   }
+
+   public SimpleTypeConstructorDefinition(final GeneratorContext context, String typeName) {
+      this.context = context;
+      this.typeName = typeName;
    }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
       if (node.getType() != 8 /* not tagged type */
               && node.getType() != 6 /* not CHOICE type */ && context.isImplicitModule()) {
-         builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
+
+         builder.append(2, "");
+         if (null != typeName) {
+            builder.append(typeName).append(".");
+         }
+         builder.append("setTagging(Type::IMPLICIT_TAGGING);").newLine();
       }
 
       return data;
@@ -28,6 +39,6 @@ public class SimpleTypeConstructorDefinition extends DoNothingASTVisitor impleme
    }
 
    public boolean hasValuableContent() {
-      return true;
+      return !builder.toString().isEmpty();
    }
 }
