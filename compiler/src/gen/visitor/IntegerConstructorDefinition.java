@@ -1,5 +1,7 @@
 package gen.visitor;
 
+import java.util.*;
+
 import gen.*;
 import gen.utils.*;
 import parser.*;
@@ -12,6 +14,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    private int innerLevel = 0;
    private boolean isInteger = false;
    private String typeName = null;
+   private List<String> namedIdentifiers = new ArrayList<String>();
 
    public IntegerConstructorDefinition() {
    }
@@ -42,6 +45,24 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    public Object visit(ASTIntegerType node, Object data) {
       isInteger = true;
       return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTNamedNumberList node, Object data) {
+      if (isInteger) {
+         namedIdentifiers.clear();
+         return node.childrenAccept(this, data);
+      } else {
+         return data;
+      }
+   }
+
+   @Override
+   public Object visit(ASTNamedNumber node, Object data) {
+      if (node.jjtGetParent() instanceof ASTNamedNumberList) {
+         namedIdentifiers.add(node.getFirstToken().toString());
+      }
+      return data;
    }
 
    @Override
@@ -132,11 +153,16 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
       if (null != typeName) {
          builder.append(typeName).append(".");
       }
+
+      String value = node.getFirstToken().toString();
+      if (namedIdentifiers.contains(value)) {
+         value = "k_" + value; // use internal constant
+      }
       if (isMinSize) {
-         appendMinValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
+         appendMinValue(GenerationUtils.asCPPToken(value), false);
          isMinSize = false;
       } else {
-         appendMaxValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
+         appendMaxValue(GenerationUtils.asCPPToken(value), false);
       }
       builder.newLine();
       return data;

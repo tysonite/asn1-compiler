@@ -67,10 +67,9 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       builder.append(1, "}").newLine();
 
       // body of the class
-      VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerValueType(typeName));
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOrSequenceTypeBody(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceTypeBody(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedTypeBody(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerValueType(typeName),
+              new SetOrSequenceTypeBody(context), new ChoiceTypeBody(context),
+              new EnumeratedTypeBody(context));
 
       builder.newLine();
       builder.append("};").newLine().newLine();
