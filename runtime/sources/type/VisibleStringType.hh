@@ -15,15 +15,15 @@ public:
       : OctetStringType(defaultValue, hasDefault) {}
 
    // Returns type identifier
-   TypeID typeID() const { return VISIBLE_STRING_TYPE; }
+   virtual TypeID typeID() const { return VISIBLE_STRING_TYPE; }
    
    // Checks type parameters for validness
-   void checkType(const OctetString& value) const;
+   void checkType(const ValueType& value) const;
 
    // Reads the value
    void read(ASN1ValueReader& reader, ValueType& value) const
    { 
-      ValueRestorer<OctetString> restorer(value);
+      ValueRestorer<ValueType> restorer(value);
       
       reader.readVisibleString(value, *this); 
 

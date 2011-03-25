@@ -10,6 +10,8 @@
 #include <type/OctetStringType.hh>
 #include <type/VisibleStringType.hh>
 #include <type/PrintableStringType.hh>
+#include <type/GraphicStringType.hh>
+#include <type/GeneralizedTimeType.hh>
 #include <type/SequenceOfType.hh>
 #include <type/SequenceType.hh>
 #include <type/TaggingType.hh>

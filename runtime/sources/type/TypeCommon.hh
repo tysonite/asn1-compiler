@@ -28,6 +28,8 @@ class BooleanType;
 class ObjectIdentifierType;
 class OctetStringType;
 class VisibleStringType;
+class GraphicStringType;
+class GeneralizedTimeType;
 class PrintableStringType;
 class SequenceType;
 class ChoiceType;
