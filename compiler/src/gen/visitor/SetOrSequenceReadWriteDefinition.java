@@ -19,6 +19,8 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
       @Override
       public Object visit(ASTElementType node, Object data) {
+         VisitorUtils.visitNodeAndAccept(builder, node, new ReadOptionalDefinition());
+
          builder.append(1, "{").newLine();
 
          // write value type of the type
@@ -60,8 +62,13 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
       @Override
       public Object visit(ASTElementType node, Object data) {
+         int indent = 1;
+         if (VisitorUtils.visitNodeAndAccept(builder, node, new WriteOptionalDefinition())) {
+            indent = 2;
+         }
+
          // write code for type reading
-         builder.append(1, "_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+         builder.append(indent, "_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type").
                  append(".write(writer, value.get_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append("());").
@@ -76,6 +83,70 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
       public boolean hasValuableContent() {
          return true;
+      }
+   }
+
+   protected static class ReadOptionalDefinition extends DoNothingASTVisitor implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!node.isOptional()) {
+            return data;
+         }
+
+         // write code for checking optional element
+         builder.newLine();
+         builder.append(1, "bool is_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present(false);").newLine();
+         builder.append(1, "reader.isSequenceComponentPresent(_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Type, is_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present);").newLine();
+         builder.newLine();
+
+         builder.append(1, "if (is_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present)").newLine();
+
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty();
+      }
+   }
+
+   protected static class WriteOptionalDefinition extends DoNothingASTVisitor implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!node.isOptional()) {
+            return data;
+         }
+
+         // write code for checking optional element
+         builder.append(1, "if (value.is_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present())").newLine();
+
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty();
       }
    }
 

@@ -4,6 +4,8 @@ package parser;
 
 public class ASTElementType extends SimpleNode {
 
+   private boolean isOptional = false;
+
    public ASTElementType(int id) {
       super(id);
    }
@@ -12,7 +14,12 @@ public class ASTElementType extends SimpleNode {
       super(p, id);
    }
 
-   public void setOptional(boolean optional) {
+   public void setOptional(boolean isOptional) {
+      this.isOptional = isOptional;
+   }
+
+   public boolean isOptional() {
+      return isOptional;
    }
 
    /** Accept the visitor. **/

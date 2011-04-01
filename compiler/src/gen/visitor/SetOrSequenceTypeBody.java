@@ -30,7 +30,9 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
          builder.append("::ValueType& v) { _").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
-                 append(" = v; }");
+                 append(" = v; ");
+         VisitorUtils.visitNodeAndAccept(builder, node, new SetAsPresent());
+         builder.append(" }");
          builder.newLine();
 
          // getter
@@ -48,6 +50,9 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
                  append("; }");
          builder.newLine();
 
+         // presence
+         VisitorUtils.visitNodeAndAccept(builder, node, new SetIsPresentDeclaration());
+
          builder.newLine();
          return data;
       }
@@ -58,6 +63,142 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
       public boolean hasValuableContent() {
          return true;
+      }
+   }
+
+   protected class SetAsPresent extends DoNothingASTVisitor implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!node.isOptional()) {
+            return data;
+         }
+
+         builder.append("_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present = true;");
+
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty();
+      }
+   }
+
+   protected class SetIsPresentDeclaration extends DoNothingASTVisitor implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!node.isOptional()) {
+            return data;
+         }
+
+         builder.append(2, "void set_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present(bool isPresent = true) { ");
+         builder.append("_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present = isPresent; }").newLine();
+
+         builder.append(2, "bool is_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present() const { return ");
+         builder.append("_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present; }").newLine();
+
+         builder.newLine();
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty();
+      }
+   }
+
+   protected class SetupInitialPresence extends DoNothingASTVisitor implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!node.isOptional()) {
+            return data;
+         }
+
+         builder.append(3, "_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present = false;").newLine();
+         return data;
+
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty();
+      }
+   }
+
+   protected class ValuePresenceDeclaration extends DoNothingASTVisitor implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!node.isOptional()) {
+            return data;
+         }
+
+         builder.append(2, "bool _").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Present;").newLine();
+         return data;
+
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty();
+      }
+   }
+
+   protected class HasOptionalElements extends DoNothingASTVisitor implements ContentProvider {
+
+      private boolean hasOptionalElements = false;
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (node.isOptional()) {
+            hasOptionalElements = true;
+            return data;
+         } else {
+            return data;
+         }
+      }
+
+      public String getContent() {
+         return null;
+      }
+
+      public boolean hasValuableContent() {
+         return hasOptionalElements;
       }
    }
 
@@ -79,6 +220,9 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append(";");
          builder.newLine();
+
+         // presence
+         VisitorUtils.visitNodeAndAccept(builder, node, new ValuePresenceDeclaration());
 
          return data;
       }
@@ -109,6 +253,17 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       builder.append(1, "{").newLine();
       builder.append(1, "public:").newLine();
       builder.newLine();
+
+      // constructor
+      if (VisitorUtils.visitChildsAndAccept(null, node, new HasOptionalElements())) {
+         builder.append(2, "explicit SequenceValue_Type()").newLine();
+         builder.append(2, "{").newLine();
+
+         VisitorUtils.visitChildsAndAccept(builder, node, new SetupInitialPresence());
+
+         builder.append(2, "}").newLine();
+         builder.newLine();
+      }
 
       // write setters/getters
       VisitorUtils.visitChildsAndAccept(builder, node, new SetGetDeclaration());
