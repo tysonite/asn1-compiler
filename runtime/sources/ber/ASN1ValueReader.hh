@@ -40,6 +40,7 @@ public:
 
    // Reads SEQUENCE value
    virtual void readSequenceBegin(const SequenceType& type) = 0;
+   virtual void isSequenceComponentPresent(const Type& type, bool& isPresent) = 0;
    virtual bool isSequenceEnd(const SequenceType& type) = 0;
    virtual void readSequenceEnd(const SequenceType& type) = 0;
 

@@ -241,6 +241,29 @@ void BERValueReader::readSequenceBegin(const SequenceType& type)
 
       // create reader for nested operations
       _nestedReader = _prototype();
+      assert(_nestedReader != NULL);
+   }
+}
+
+void BERValueReader::isSequenceComponentPresent(const Type& type, bool& isPresent)
+{
+   if (_nestedReader)
+      _nestedReader->isSequenceComponentPresent(type, isPresent);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.lookupIdentifierOctets(tag, pc, cl);
+
+      isPresent = false;
+      if (type.tagClass() == cl)
+      {
+         if (type.hasTagNumber() && (type.tagNumber() == tag))
+            isPresent = true;
+         else if (!type.hasTagNumber() && type.typeID() == tag)
+            isPresent = true;
+      }
    }
 }
 

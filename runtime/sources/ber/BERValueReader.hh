@@ -51,6 +51,7 @@ public:
 
    // Reads SEQUENCE value
    void readSequenceBegin(const SequenceType& type);
+   void isSequenceComponentPresent(const Type& type, bool& isPresent);
    bool isSequenceEnd(const SequenceType& type);
    void readSequenceEnd(const SequenceType& type);
 
