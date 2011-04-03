@@ -280,7 +280,7 @@ public:
          put(static_cast<uint8_t>(length));
       else // Definite long form
       {
-         assert(0); // TODO: to be implemented
+         assert(0); // TODO: See issue http://code.google.com/p/asn1-compiler/issues/detail?id=9
       }
    }
 
