@@ -71,6 +71,18 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
               new SetOrSequenceTypeBody(context), new ChoiceTypeBody(context),
               new EnumeratedTypeBody(context));
 
+      // protected methods
+      // (only for XER)
+      builder.newLine();
+      builder.append("#if defined(ASN1_ENABLE_XER)").newLine();
+      builder.append("protected:").newLine();
+      builder.newLine();
+
+      builder.append(1, "const char* _doTypeName() const { return \"");
+      builder.append(typeName);
+      builder.append("\"; }").newLine();
+      builder.append("#endif // ASN1_ENABLE_XER").newLine();
+      
       builder.newLine();
       builder.append("};").newLine().newLine();
 
