@@ -195,7 +195,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinition());
 
       builder.newLine();
-      builder.append(1, "writer.writeSequenceEnd();").newLine();
+      builder.append(1, "writer.writeSequenceEnd(*this);").newLine();
       builder.append("}").newLine();
 
       builder.newLine();
