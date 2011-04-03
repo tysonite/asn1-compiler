@@ -3181,6 +3181,206 @@ BOOST_AUTO_TEST_CASE(TestBerChoiceType8)
 
 }
 
+namespace choice_choice_type
+{
+
+// ASN.1 (EXPLICIT environment):
+// TypeChoice ::= CHOICE { TypeNestedChoice CHOICE { i INTEGER, b BOOLEAN } }
+
+class TypeNestedChoice : public asn1::ChoiceType
+{
+public:
+
+   explicit TypeNestedChoice() : asn1::ChoiceType()
+   {
+      _addChoice(&_i_Type);
+      _addChoice(&_b_Type);
+   }
+
+   class TypeChoice_Value
+   {
+   public:
+
+      explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
+
+      void set_i(const asn1::IntegerType::ValueType& v) { _i = v; _id = i_ID; }
+      const asn1::IntegerType::ValueType& get_i() const { return _i; }
+      bool has_i_Choosen() const { return _id == i_ID; }
+
+      void set_b(const asn1::BooleanType::ValueType& v) { _b = v; _id = b_ID; }
+      const asn1::BooleanType::ValueType& get_b() const { return _b; }
+      bool has_b_Choosen() const { return _id == b_ID; }
+
+   private:
+
+      enum ChoiceValue_identifier
+      {
+         i_ID = 1,
+         b_ID = 2,
+         __VALUE_NOT_DEFINED__ = -1
+      };
+
+      asn1::IntegerType::ValueType _i;
+      asn1::BooleanType::ValueType _b;
+
+      ChoiceValue_identifier _id;
+   };
+
+   typedef TypeChoice_Value ValueType;
+
+   void read(asn1::ASN1ValueReader& reader, TypeChoice_Value& value) const
+   {
+      asn1::Type* choosenType = NULL;
+      reader.readChoice(*this, &choosenType);
+
+      if (choosenType == &_i_Type)
+      {
+         asn1::IntegerType::ValueType v;
+         _i_Type.read(reader, v);
+         value.set_i(v);
+      }
+      else if (choosenType == &_b_Type)
+      {
+         asn1::BooleanType::ValueType v;
+         _b_Type.read(reader, v);
+         value.set_b(v);
+      }
+      else
+      {
+         throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
+            _i_Type.toString() + ", " + _b_Type.toString());
+      }
+   }
+
+   void write(asn1::ASN1ValueWriter& writer, const TypeChoice_Value& value) const
+   {
+      assert(value.has_i_Choosen() || value.has_b_Choosen());
+
+      if (value.has_i_Choosen())
+         _i_Type.write(writer, value.get_i());
+      else if (value.has_b_Choosen())
+         _b_Type.write(writer, value.get_b());
+   }
+
+private:
+
+   asn1::IntegerType _i_Type;
+   asn1::BooleanType _b_Type;
+};
+
+class TypeChoice : public asn1::ChoiceType
+{
+public:
+
+   explicit TypeChoice() : asn1::ChoiceType()
+   {
+      _addChoice(&_TypeNestedChoice_Type);
+   }
+
+   class TypeChoice_Value
+   {
+   public:
+
+      explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
+
+      void set_TypeNestedChoice(const TypeNestedChoice::ValueType& v) { _TypeNestedChoice = v; _id = TypeNestedChoice_ID; }
+      const TypeNestedChoice::ValueType& get_TypeNestedChoice() const { return _TypeNestedChoice; }
+      bool has_TypeNestedChoice_Choosen() const { return _id == TypeNestedChoice_ID; }
+
+   private:
+
+      enum ChoiceValue_identifier
+      {
+         TypeNestedChoice_ID = 1,
+         __VALUE_NOT_DEFINED__ = -1
+      };
+
+      TypeNestedChoice::ValueType _TypeNestedChoice;
+
+      ChoiceValue_identifier _id;
+   };
+
+   typedef TypeChoice_Value ValueType;
+
+   void read(asn1::ASN1ValueReader& reader, TypeChoice_Value& value) const
+   {
+      asn1::Type* choosenType = NULL;
+      reader.readChoice(*this, &choosenType);
+
+      if (choosenType == &_TypeNestedChoice_Type)
+      {
+         TypeNestedChoice::ValueType v;
+         _TypeNestedChoice_Type.read(reader, v);
+         value.set_TypeNestedChoice(v);
+      }
+      else
+      {
+         throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
+            _TypeNestedChoice_Type.toString());
+      }
+   }
+
+   void write(asn1::ASN1ValueWriter& writer, const TypeChoice_Value& value) const
+   {
+      assert(value.has_TypeNestedChoice_Choosen());
+
+      if (value.has_TypeNestedChoice_Choosen())
+         _TypeNestedChoice_Type.write(writer, value.get_TypeNestedChoice());
+   }
+
+private:
+
+   TypeNestedChoice _TypeNestedChoice_Type;
+};
+
+BOOST_AUTO_TEST_CASE(TestBerChoiceChoiceType1)
+{
+   TypeNestedChoice::ValueType nc;
+
+   BOOST_CHECK_EQUAL(nc.has_b_Choosen(), false);
+   BOOST_CHECK_EQUAL(nc.has_i_Choosen(), false);
+
+   nc.set_b(true);
+
+   BOOST_CHECK_EQUAL(nc.has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(nc.get_b(), true);
+
+   TypeChoice::ValueType vToWrite, vToRead;
+
+   BOOST_CHECK_EQUAL(vToWrite.has_TypeNestedChoice_Choosen(), false);
+
+   vToWrite.set_TypeNestedChoice(nc);
+
+   BOOST_CHECK_EQUAL(vToWrite.has_TypeNestedChoice_Choosen(), true);
+
+   TypeChoice type;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x01, 0xFF };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
+      dataToTest, dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToRead.has_TypeNestedChoice_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_TypeNestedChoice().has_i_Choosen(), false);
+   BOOST_CHECK_EQUAL(vToRead.get_TypeNestedChoice().has_b_Choosen(), true);
+   BOOST_CHECK_EQUAL(vToRead.get_TypeNestedChoice().get_b(), true);
+}
+
+}
+
 namespace sequence_type
 {
 
@@ -3188,7 +3388,7 @@ namespace sequence_type
 // TypeSequence ::= SEQUENCE { i INTEGER, b BOOLEAN }
 // Type1 ::= TypeSequence
 // Type2 ::= [APPLICATION 3] IMPLICIT Type1
-// Type3 ::= [2] Type2
+// Type3 ::= [2] Type2pe
 // Type4 ::= [APPLICATION 7] IMPLICIT Type3
 // Type5 ::= [2] IMPLICIT Type2
 // Type6 ::= [3] Type3
