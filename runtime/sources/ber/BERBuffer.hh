@@ -26,16 +26,16 @@ public:
    typedef ContentType::value_type ValueType;
 
    // Constructors
-   BERBuffer()
+   explicit BERBuffer()
       : _current(0), _end(0) {}
-   BERBuffer(const ValueType* data, SizeType size)
+   explicit BERBuffer(const ValueType* data, SizeType size)
       : _current(0), _end(0)
    {
       write(data, size);
    }
 
    // Clears the buffer
-   void clear() { _data.clear(); _current = 0; }
+   void clear() { _data.clear(); _current = 0; _end = 0; }
 
    // Swaps the buffers
    void swap(BERBuffer& other)
