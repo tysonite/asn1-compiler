@@ -1,6 +1,9 @@
 #ifndef __BIT_STRING_TYPE_HH
 #define __BIT_STRING_TYPE_HH
 
+#include <common/ASN1ValueReader.hh>
+#include <common/ASN1ValueWriter.hh>
+
 #include <type/Type.hh>
 
 namespace asn1

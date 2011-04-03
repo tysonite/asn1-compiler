@@ -4,6 +4,9 @@
 #include <list>
 #include <algorithm>
 
+#include <common/ASN1ValueReader.hh>
+#include <common/ASN1ValueWriter.hh>
+
 #include <type/Type.hh>
 
 namespace asn1

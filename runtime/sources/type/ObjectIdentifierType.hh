@@ -1,9 +1,10 @@
 #ifndef __OBJECT_IDENTIFIER_TYPE_HH
 #define __OBJECT_IDENTIFIER_TYPE_HH
 
+#include <common/ASN1ValueReader.hh>
+#include <common/ASN1ValueWriter.hh>
+
 #include <type/Type.hh>
-#include <ber/ASN1ValueReader.hh>
-#include <ber/ASN1ValueWriter.hh>
 
 namespace asn1
 {
@@ -14,6 +15,7 @@ public:
 
    typedef ObjectIdentifier ValueType;
 
+   // Constructor
    explicit ObjectIdentifierType() {}
 
    // Returns type identifier

@@ -1,9 +1,10 @@
 #ifndef __BOOLEAN_TYPE_HH
 #define __BOOLEAN_TYPE_HH
 
+#include <common/ASN1ValueReader.hh>
+#include <common/ASN1ValueWriter.hh>
+
 #include <type/Type.hh>
-#include <ber/ASN1ValueReader.hh>
-#include <ber/ASN1ValueWriter.hh>
 
 namespace asn1
 {

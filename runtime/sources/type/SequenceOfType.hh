@@ -3,9 +3,10 @@
 
 #include <vector>
 
+#include <common/ASN1ValueReader.hh>
+#include <common/ASN1ValueWriter.hh>
+
 #include <type/SequenceType.hh>
-#include <ber/ASN1ValueReader.hh>
-#include <ber/ASN1ValueWriter.hh>
 
 namespace asn1
 {

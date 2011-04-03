@@ -1,11 +1,10 @@
 #ifndef __INTEGER_TYPE_HH
 #define __INTEGER_TYPE_HH
 
-#include <type/Type.hh>
+#include <common/ASN1ValueReader.hh>
+#include <common/ASN1ValueWriter.hh>
 
-#include <ber/ASN1ValueReader.hh>
-#include <ber/ASN1ValueWriter.hh>
-#include <ber/BERBuffer.hh>
+#include <type/Type.hh>
 
 namespace asn1
 {

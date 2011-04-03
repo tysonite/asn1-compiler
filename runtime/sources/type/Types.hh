@@ -1,6 +1,10 @@
 #ifndef __TYPES_HH
 #define __TYPES_HH
 
+/*
+ * All types supported by runtime library.
+ */
+
 #include <type/NullType.hh>
 #include <type/BooleanType.hh>
 #include <type/IntegerType.hh>

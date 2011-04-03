@@ -1,6 +1,4 @@
 #include <type/Type.hh>
-#include <ber/ASN1ValueReader.hh>
-#include <ber/ASN1ValueWriter.hh>
 
 namespace asn1
 {
