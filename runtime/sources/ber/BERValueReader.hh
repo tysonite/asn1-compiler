@@ -1,7 +1,7 @@
 #ifndef __BER_VALUE_READER_HH
 #define __BER_VALUE_READER_HH
 
-#include <ber/ASN1ValueReader.hh>
+#include <common/ASN1ValueReader.hh>
 #include <ber/BERBuffer.hh>
 #include <type/TypeCommon.hh>
 #include <common/Utils.hh>

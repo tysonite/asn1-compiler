@@ -3,7 +3,7 @@
 
 #include <cstddef>
 
-#include <ber/ASN1ValueWriter.hh>
+#include <common/ASN1ValueWriter.hh>
 #include <ber/BERBuffer.hh>
 #include <common/Utils.hh>
 
