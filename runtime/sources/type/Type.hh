@@ -90,6 +90,10 @@ public:
    bool hasTagNumber() const { return _tagNumber >= 0; }
    void setTagNumber(TagType tagNumber) { _tagNumber = tagNumber; }
 
+protected:
+
+   virtual const char* _doTypeName() const { return "UNDEFINED"; }
+
 private:
 
    TaggingType _taggingType;

@@ -11,6 +11,7 @@ Type::~Type()
 // Returns string representation of type identifier
 std::string Type::typeName() const
 {
+#if !defined(ASN1_ENABLE_XER)
    switch (typeID())
    {
    case NULL_TYPE:
@@ -40,6 +41,9 @@ std::string Type::typeName() const
    default:
       return "Unknown Type";
    }
+#else
+   return _doTypeName();
+#endif
 }
 
 // Returns string representation of tagging type
