@@ -18,7 +18,7 @@ void ObjectIdentifier::_parseAndSetOid(const std::string& value)
       push_back(utils::ston<uint16_t>(*p)); // TODO: take into case when conversation is not possible
 }
 
-// Returns object identifier represented as string
+// Returns object identifier represented as string (i.e. "1.2.3")
 std::string ObjectIdentifier::getValueAsString() const
 {
    std::string value;

@@ -23,7 +23,7 @@ public:
    // Sets object identifier as string
    void setValue(const std::string& value) { _parseAndSetOid(value); }
 
-   // Returns object identifier represented as string
+   // Returns object identifier represented as string (i.e. "1.2.3")
    std::string getValueAsString() const;
 
 private:
