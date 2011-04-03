@@ -63,8 +63,14 @@ void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& valu
 {
    ValueRestorer<ValueType> restorer(value);
 
+   // clear previous values
    value.clear();
-   
+
+   // allocate space for value depending on minimal size
+   if (hasMinSize())
+      value.reserve(static_cast<ValueType::size_type>(minSize()));
+
+   // perform read of components
    reader.readSequenceOfBegin(*this);
    while (!reader.isSequenceOfEnd(*this))
    {
@@ -74,6 +80,7 @@ void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& valu
    }
    reader.readSequenceOfEnd(*this);
 
+   // do not restore value if reading completed without exceptions
    restorer.restoreNotNeeded();
 }
 
