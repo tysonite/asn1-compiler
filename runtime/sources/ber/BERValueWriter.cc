@@ -142,7 +142,7 @@ void BERValueWriter::writeSequenceBegin(const SequenceType& type)
    }
 }
 
-void BERValueWriter::writeSequenceEnd()
+void BERValueWriter::writeSequenceEnd(const SequenceType& type)
 {
    _writeLastCompositionEnd();
 }
@@ -152,9 +152,9 @@ void BERValueWriter::writeSequenceOfBegin(const SequenceType& type)
    writeSequenceBegin(type);
 }
 
-void BERValueWriter::writeSequenceOfEnd()
+void BERValueWriter::writeSequenceOfEnd(const SequenceType& type)
 {
-   writeSequenceEnd();
+   writeSequenceEnd(type);
 }
 
 // Writes SET value

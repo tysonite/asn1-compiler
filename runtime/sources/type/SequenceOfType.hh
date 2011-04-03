@@ -83,7 +83,7 @@ void SequenceOfType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueTyp
    writer.writeSequenceOfBegin(*this);
    for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
       _innerType->write(writer, *p);
-   writer.writeSequenceOfEnd();
+   writer.writeSequenceOfEnd(*this);
 }
 
 }

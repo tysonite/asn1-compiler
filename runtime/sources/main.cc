@@ -5,56 +5,28 @@
 #include "ber/BERValueWriter.hh"
 #include "ber/BERValueReader.hh"
 
-#include <type/IntegerType.hh>
+#include "xer/XERBuffer.hh"
+#include "xer/XERValueWriter.hh"
+//#include "xer/XERValueReader.hh"
 
-int my_main()
+#include <ASN1Types.hh>
+
+int main()
 {
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-   
-   asn1::IntegerType outType1(0, false);
-   //outType1.setTagging(asn1::Type::EMPTY_TAGGING);
-   //outType1.setTagNumber(0);
-
-   asn1::IntegerType outType2(0, false);
-   //outType2.setImplicit(true);
-   //outType2.setTagNumber(2);
-
-//   writer.writeSequenceBegin();
-   outType1.write(writer, 1);
-   outType2.write(writer, 2);
-   writer.writeSequenceEnd();
-
-   for (std::size_t i = 0; i < outbuffer.size(); ++i)
-   {
-      if ((i + 1) % 20 == 0)
-         std::cout << std::endl;
-      std::cout << "0x" << std::hex << (int) outbuffer.data()[i] << std::dec << " ";
-   }
-   std::cout << std::endl;
-
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
    try
    {
-      asn1::Integer v1(-1), v2(-1);
+      asn1::XERBuffer buffer;
+      asn1::XERValueWriter writer(buffer, false);
+
+      asn1::generated::SNMPv3Message::ValueType msg;
+      asn1::generated::SNMPv3Message msgType;
       
-      asn1::IntegerType inType1(0, false);
-      inType1.setTagging(asn1::Type::EMPTY_TAGGING);
-      inType1.setTagNumber(0);
+      // set parameters
+      msg.set_msgVersion(3);
+      
+      msgType.write(writer, msg);
 
-      asn1::IntegerType inType2(0, false);
-      //inType2.setImplicit(true);
-      //inType2.setTagNumber(2);
-
-//      reader.readSequenceBegin();
-
-      inType1.read(reader, v1);
-      inType2.read(reader, v2);
-//      reader.readSequenceEnd();
-
-      std::cout << "v1 = " << v1 << "; v2 = " << v2 << std::endl;
+      std::cout << buffer.c_str() << std::endl;
    }
    catch (std::exception& e)
    {

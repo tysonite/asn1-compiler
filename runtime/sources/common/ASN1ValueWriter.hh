@@ -40,11 +40,11 @@ public:
 
    // Writes SEQUENCE value
    virtual void writeSequenceBegin(const SequenceType& type) = 0;
-   virtual void writeSequenceEnd() = 0;
+   virtual void writeSequenceEnd(const SequenceType& type) = 0;
 
    // Writes SEQUENCE OF value (the same as SET)
    virtual void writeSequenceOfBegin(const SequenceType& type) = 0;
-   virtual void writeSequenceOfEnd() = 0;
+   virtual void writeSequenceOfEnd(const SequenceType& type) = 0;
 
    // Writes SET value
    virtual void writeSetBegin() = 0;

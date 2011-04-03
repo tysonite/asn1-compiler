@@ -3246,7 +3246,7 @@ public:
       writer.writeSequenceBegin(*this);
       _IType.write(writer, value.get_i());
       _BType.write(writer, value.get_b());
-      writer.writeSequenceEnd();
+      writer.writeSequenceEnd(*this);
    }
 
 private:
