@@ -1,5 +1,5 @@
-#include <type/SequenceType.hh>
-#include <common/ASN1Exception.hh>
+#include "SequenceType.hh"
+#include "ASN1Exception.hh"
 
 namespace asn1
 {

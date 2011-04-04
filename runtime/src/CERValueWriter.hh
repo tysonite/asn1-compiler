@@ -1,7 +1,7 @@
 #ifndef __CER_VALUE_WRITER_HH
 #define __CER_VALUE_WRITER_HH
 
-#include <ber/BERValueWriter.hh>
+#include "BERValueWriter.hh"
 
 namespace asn1
 {

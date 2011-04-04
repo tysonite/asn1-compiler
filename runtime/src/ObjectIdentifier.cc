@@ -1,6 +1,6 @@
-#include <value/ObjectIdentifier.hh>
-#include <common/Utils.hh>
-#include <common/ASN1Exception.hh>
+#include "ObjectIdentifier.hh"
+#include "Utils.hh"
+#include "ASN1Exception.hh"
 
 namespace asn1
 {

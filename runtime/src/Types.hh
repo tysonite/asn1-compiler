@@ -5,20 +5,20 @@
  * All types supported by runtime library.
  */
 
-#include <type/NullType.hh>
-#include <type/BooleanType.hh>
-#include <type/IntegerType.hh>
-#include <type/EnumeratedType.hh>
-#include <type/ObjectIdentifierType.hh>
-#include <type/BitStringType.hh>
-#include <type/OctetStringType.hh>
-#include <type/VisibleStringType.hh>
-#include <type/PrintableStringType.hh>
-#include <type/GraphicStringType.hh>
-#include <type/GeneralizedTimeType.hh>
-#include <type/SequenceOfType.hh>
-#include <type/SequenceType.hh>
-#include <type/TaggingType.hh>
-#include <type/ChoiceType.hh>
+#include "NullType.hh"
+#include "BooleanType.hh"
+#include "IntegerType.hh"
+#include "EnumeratedType.hh"
+#include "ObjectIdentifierType.hh"
+#include "BitStringType.hh"
+#include "OctetStringType.hh"
+#include "VisibleStringType.hh"
+#include "PrintableStringType.hh"
+#include "GraphicStringType.hh"
+#include "GeneralizedTimeType.hh"
+#include "SequenceOfType.hh"
+#include "SequenceType.hh"
+#include "TaggingType.hh"
+#include "ChoiceType.hh"
 
 #endif // __TYPES_HH

@@ -1,8 +1,8 @@
 #ifndef __ASN1_VALUE_WRITER_HH
 #define __ASN1_VALUE_WRITER_HH
 
-#include <type/TypeCommon.hh>
-#include <value/Values.hh>
+#include "TypeCommon.hh"
+#include "Values.hh"
 
 namespace asn1
 {

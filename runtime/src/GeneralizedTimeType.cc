@@ -1,5 +1,4 @@
-#include <type/GeneralizedTimeType.hh>
-#include <common/ASN1Exception.hh>
+#include "GeneralizedTimeType.hh"
 
 namespace asn1
 {

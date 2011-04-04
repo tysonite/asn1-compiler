@@ -1,10 +1,10 @@
 #ifndef __BER_VALUE_READER_HH
 #define __BER_VALUE_READER_HH
 
-#include <common/ASN1ValueReader.hh>
-#include <ber/BERBuffer.hh>
-#include <type/TypeCommon.hh>
-#include <common/Utils.hh>
+#include "ASN1ValueReader.hh"
+#include "BERBuffer.hh"
+#include "TypeCommon.hh"
+#include "Utils.hh"
 
 namespace asn1
 {

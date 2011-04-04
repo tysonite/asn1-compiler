@@ -1,7 +1,7 @@
-#include <ber/BERValueReader.hh>
-#include <ber/BERBuffer.hh>
-#include <type/Types.hh>
-#include <common/Utils.hh>
+#include "BERValueReader.hh"
+#include "BERBuffer.hh"
+#include "Types.hh"
+#include "Utils.hh"
 
 namespace asn1
 {

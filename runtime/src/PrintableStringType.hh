@@ -1,7 +1,7 @@
 #ifndef __PRINTABLE_STRING_TYPE_HH
 #define __PRINTABLE_STRING_TYPE_HH
 
-#include <type/OctetStringType.hh>
+#include "OctetStringType.hh"
 
 namespace asn1
 {

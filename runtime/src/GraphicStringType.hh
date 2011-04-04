@@ -1,7 +1,7 @@
 #ifndef __GRAPHIC_STRING_TYPE_HH
 #define __GRAPHIC_STRING_TYPE_HH
 
-#include <type/OctetStringType.hh>
+#include "OctetStringType.hh"
 
 namespace asn1
 {

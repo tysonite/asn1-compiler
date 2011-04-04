@@ -3,9 +3,9 @@
 
 #include <cstddef>
 
-#include <common/ASN1ValueWriter.hh>
+#include "ASN1ValueWriter.hh"
 
-#include <xer/XERBuffer.hh>
+#include "XERBuffer.hh"
 
 namespace asn1
 {

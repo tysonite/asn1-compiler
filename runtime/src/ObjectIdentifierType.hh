@@ -1,10 +1,10 @@
 #ifndef __OBJECT_IDENTIFIER_TYPE_HH
 #define __OBJECT_IDENTIFIER_TYPE_HH
 
-#include <common/ASN1ValueReader.hh>
-#include <common/ASN1ValueWriter.hh>
+#include "ASN1ValueReader.hh"
+#include "ASN1ValueWriter.hh"
 
-#include <type/Type.hh>
+#include "Type.hh"
 
 namespace asn1
 {

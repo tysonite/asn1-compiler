@@ -1,6 +1,6 @@
-#include <common/ASN1Exception.hh>
-#include <common/Utils.hh>
-#include <type/OctetStringType.hh>
+#include "ASN1Exception.hh"
+#include "Utils.hh"
+#include "OctetStringType.hh"
 
 namespace asn1
 {

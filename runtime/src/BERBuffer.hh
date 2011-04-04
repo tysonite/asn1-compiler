@@ -8,8 +8,8 @@
 #include <vector>
 #include <exception>
 
-#include <common/ASN1Exception.hh>
-#include <type/TypeCommon.hh>
+#include "ASN1Exception.hh"
+#include "TypeCommon.hh"
 
 namespace asn1
 {

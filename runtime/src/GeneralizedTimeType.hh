@@ -1,7 +1,7 @@
 #ifndef __GENERALIZED_TIME_TYPE_HH
 #define __GENERALIZED_TIME_TYPE_HH
 
-#include <type/VisibleStringType.hh>
+#include "VisibleStringType.hh"
 
 namespace asn1
 {

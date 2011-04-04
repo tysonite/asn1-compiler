@@ -1,6 +1,6 @@
 #include <string>
 
-#include <type/ChoiceType.hh>
+#include "ChoiceType.hh"
 
 namespace asn1
 {

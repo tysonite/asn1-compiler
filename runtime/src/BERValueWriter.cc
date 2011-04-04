@@ -1,7 +1,7 @@
 #include <cassert>
 
-#include <ber/BERValueWriter.hh>
-#include <type/Types.hh>
+#include "BERValueWriter.hh"
+#include "Types.hh"
 
 namespace asn1
 {

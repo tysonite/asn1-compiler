@@ -5,10 +5,10 @@
 #include <vector>
 #include <utility>
 
-#include <common/ASN1ValueReader.hh>
-#include <common/ASN1ValueWriter.hh>
+#include "ASN1ValueReader.hh"
+#include "ASN1ValueWriter.hh"
 
-#include <type/Type.hh>
+#include "Type.hh"
 
 namespace asn1
 {

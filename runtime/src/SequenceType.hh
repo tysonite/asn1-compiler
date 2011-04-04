@@ -1,7 +1,7 @@
 #ifndef __SEQUENCE_TYPE_HH
 #define __SEQUENCE_TYPE_HH
 
-#include <type/Type.hh>
+#include "Type.hh"
 
 namespace asn1
 {

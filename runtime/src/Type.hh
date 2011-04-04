@@ -4,9 +4,9 @@
 #include <string>
 #include <limits>
 
-#include <type/TypeCommon.hh>
-#include <ber/BERBuffer.hh>
-#include <common/Utils.hh>
+#include "TypeCommon.hh"
+#include "BERBuffer.hh"
+#include "Utils.hh"
 
 namespace asn1
 {

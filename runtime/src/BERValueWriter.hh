@@ -3,9 +3,9 @@
 
 #include <cstddef>
 
-#include <common/ASN1ValueWriter.hh>
-#include <ber/BERBuffer.hh>
-#include <common/Utils.hh>
+#include "ASN1ValueWriter.hh"
+#include "BERBuffer.hh"
+#include "Utils.hh"
 
 namespace asn1
 {

@@ -1,4 +1,4 @@
-#include <type/GraphicStringType.hh>
+#include "GraphicStringType.hh"
 
 namespace asn1
 {
