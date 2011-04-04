@@ -68,7 +68,7 @@ void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& valu
 
    // allocate space for value depending on minimal size
    if (hasMinSize())
-      value.reserve(static_cast<ValueType::size_type>(minSize()));
+      value.reserve(static_cast<typename ValueType::size_type>(minSize()));
 
    // perform read of components
    reader.readSequenceOfBegin(*this);

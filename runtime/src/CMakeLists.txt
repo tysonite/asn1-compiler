@@ -18,6 +18,10 @@ set (HEADERS ASN1Exception.hh ASN1ValueReader.hh ASN1ValueWriter.hh
              Type.hh TypeCommon.hh Types.hh Utils.hh Values.hh
              VisibleStringType.hh XERBuffer.hh XERValueWriter.hh)
 
+if (CMAKE_COMPILER_IS_GNUCC)
+   set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")
+endif ()
+
 source_group ("Header Files" FILES ${HEADERS})
 
 add_library (asn1-runtime-lib ${SOURCES} ${HEADERS})
