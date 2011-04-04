@@ -2,6 +2,10 @@ project (asn1-runtime)
 
 cmake_minimum_required (VERSION 2.6)
 
+set (ASN1_RUNTIME_INCLUDE_DIRS
+   ${CMAKE_SOURCE_DIR}/src
+   CACHE INTERNAL "")
+
 set (SOURCES BERValueReader.cc BERValueWriter.cc CERValueWriter.cc
              XERValueWriter.cc ChoiceType.cc GeneralizedTimeType.cc
              GraphicStringType.cc IntegerType.cc ObjectIdentifier.cc
@@ -22,7 +26,19 @@ if (CMAKE_COMPILER_IS_GNUCC)
    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")
 endif ()
 
+set (ASN1_RUNTIME_LIBRARY
+   asn1-runtime-lib
+   CACHE INTERNAL "")
+
+set (ASN1_RUNTIME_LINK_LIBRARIES
+   ${ASN1_RUNTIME_LINK_LIBRARIES}
+   ${ASN1_RUNTIME_LIBRARY}
+   CACHE INTERNAL "")
+
 source_group ("Header Files" FILES ${HEADERS})
 
-add_library (asn1-runtime-lib ${SOURCES} ${HEADERS})
-                                                          
+add_library (${ASN1_RUNTIME_LIBRARY} ${SOURCES} ${HEADERS})
+
+target_link_libraries(${ASN1_RUNTIME_LIBRARY} ${ASN1_RUNTIME_LINK_LIBRARIES})
+
+
