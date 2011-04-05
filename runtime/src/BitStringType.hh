@@ -13,16 +13,12 @@ class BitStringType : public Type
 {
 public:
 
-   typedef Integer ValueType;
-   
-   explicit BitStringType(const ValueType& defaultValue = 0, bool hasDefault = false)
-      : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
+   typedef BitString ValueType;
+
+   explicit BitStringType() {}
 
    // Returns type identifier
-   virtual TypeID typeID() const { return INTEGER_TYPE; }
-
-   const Integer& defaultValue() const { return _defaultValue; }
-   bool hasDefault() const { return _hasDefault; }
+   virtual TypeID typeID() const { return BITSTRING_TYPE; }
 
    // Checks type parameters for validness
    void checkType(const ValueType& value) const {}
@@ -30,7 +26,7 @@ public:
    // Reads the value
    void read(ASN1ValueReader& reader, ValueType& value) const
    { 
-      ValueRestorer<Integer> restorer(value);
+      ValueRestorer<ValueType> restorer(value);
 
       restorer.restoreNotNeeded();
    }
@@ -39,11 +35,6 @@ public:
    void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
    }
-
-private:
-
-   ValueType _defaultValue;
-   bool      _hasDefault;
 
 private:
     
