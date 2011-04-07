@@ -4258,6 +4258,178 @@ BOOST_AUTO_TEST_CASE(TestBerEnumeratedType7)
 
 }
 
+namespace bit_string_tests
+{
+
+// ASN.1 (EXPLICIT environment):
+// Type1 ::= BIT STRING
+// Type2 ::= [APPLICATION 3] IMPLICIT Type1
+// Type3 ::= [2] Type2
+// Type4 ::= [APPLICATION 7] IMPLICIT Type3
+// Type5 ::= [2] IMPLICIT Type2
+// Type6 ::= [3] Type3
+// Type7 ::= [4] IMPLICIT Type6
+// Type8 ::= [5] BIT STRING
+// Type9 ::= [5] IMPLICIT BIT STRING
+
+class Type1 : public asn1::BitStringType
+{
+};
+
+class Type2 : public asn1::TaggingType<Type1>
+{
+public:
+   Type2() : asn1::TaggingType<Type1>(new Type1)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type3 : public asn1::TaggingType<Type2>
+{
+public:
+   Type3() : asn1::TaggingType<Type2>(new Type2)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type4 : public asn1::TaggingType<Type3>
+{
+public:
+   Type4() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(7);
+      setTagClass(asn1::Type::APPLICATION);
+   }
+};
+
+class Type5 : public asn1::TaggingType<Type2>
+{
+public:
+   Type5() : asn1::TaggingType<Type2>(new Type2)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(2);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type6 : public asn1::TaggingType<Type3>
+{
+public:
+   Type6() : asn1::TaggingType<Type3>(new Type3)
+   {
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+      setTagNumber(3);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type7 : public asn1::TaggingType<Type6>
+{
+public:
+   Type7() : asn1::TaggingType<Type6>(new Type6)
+   {
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+      setTagNumber(4);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+   }
+};
+
+class Type8 : public asn1::TaggingType<asn1::BitStringType>
+{
+public:
+   Type8() : asn1::TaggingType<asn1::BitStringType>(new asn1::BitStringType)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::EXPLICIT_TAGGING);
+   }
+};
+
+class Type9 : public asn1::TaggingType<asn1::BitStringType>
+{
+public:
+   Type9() : asn1::TaggingType<asn1::BitStringType>(new asn1::BitStringType)
+   {
+      setTagNumber(5);
+      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
+      setTagging(asn1::Type::IMPLICIT_TAGGING);
+   }
+};
+
+BOOST_AUTO_TEST_CASE(TestBitStringValue)
+{
+   asn1::BitStringType::ValueType value;
+
+   BOOST_CHECK_NO_THROW(value.setValue("01"));
+   BOOST_CHECK_EQUAL(value.size(), 2);
+   BOOST_CHECK_EQUAL(value[0], false);
+   BOOST_CHECK_EQUAL(value[1], true);
+   BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
+
+   BOOST_CHECK_THROW(value.setValue("A"), asn1::ASN1Exception);
+   BOOST_CHECK_EQUAL(value.size(), 2);
+   BOOST_CHECK_EQUAL(value[0], false);
+   BOOST_CHECK_EQUAL(value[1], true);
+   BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
+
+   BOOST_CHECK_THROW(value.setValue("102"), asn1::ASN1Exception);
+   BOOST_CHECK_EQUAL(value.size(), 2);
+   BOOST_CHECK_EQUAL(value[0], false);
+   BOOST_CHECK_EQUAL(value[1], true);
+   BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
+
+   BOOST_CHECK_NO_THROW(value.setValue("111"));
+   BOOST_CHECK_EQUAL(value.size(), 3);
+   BOOST_CHECK_EQUAL(value[0], true);
+   BOOST_CHECK_EQUAL(value[1], true);
+   BOOST_CHECK_EQUAL(value[2], true);
+   BOOST_CHECK_EQUAL(value.getValueAsString(), "111");
+
+   // constructors
+   BOOST_CHECK_NO_THROW(asn1::BitStringType::ValueType value("01"));
+   BOOST_CHECK_THROW(asn1::BitStringType::ValueType value("012"), asn1::ASN1Exception);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBitStringType1)
+{
+   Type1::ValueType vToWrite, vToRead;
+
+   BOOST_CHECK_NO_THROW(vToWrite.setValue("1010100110001010")); // in hex: A98A
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type1 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x03, 0x03, 0x00, 0xa9, 0x8a };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite.begin(), vToWrite.end(), vToRead.begin(), vToRead.end());
+   BOOST_CHECK_EQUAL(vToWrite.getValueAsString(), vToRead.getValueAsString());
+}
+
+}
+
 /*ut::test_suite* init_unit_test_suite(int argc, char* argv[])
 {
    ut::test_suite* test = BOOST_TEST_SUITE("BER encoding/decoding test suite");
