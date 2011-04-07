@@ -23,6 +23,9 @@ public:
    // Reads OBJECT IDENTIFIER value
    virtual void readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type) = 0;
 
+   // Reads BIT STRING value
+   virtual void readBitString(BitString& value, const BitStringType& type) = 0;
+
    // Reads NULL value
    virtual void readNull(const NullType& type) = 0;
 

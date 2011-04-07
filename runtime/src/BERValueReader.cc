@@ -125,6 +125,52 @@ void BERValueReader::readObjectIdentifier(ObjectIdentifier& value, const ObjectI
    }
 }
 
+// Reads BIT STRING value
+void BERValueReader::readBitString(BitString& value, const BitStringType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readBitString(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      int64_t length;
+      _buffer.setEnd(_buffer.decodeIL(tag, pc, cl, length));
+
+      _checkTagIsCorrect(pc, type);
+      _checkTagTagging(tag, cl, BERBuffer::BITSTRING_BERTYPE, type);
+
+      BERBuffer::ValueType b = _buffer.get();
+      _buffer.setEnd(_buffer.end() - 1);
+
+      while (_buffer.current() < _buffer.end())
+      {
+         BERBuffer::ValueType m = _buffer.get();
+         for (int i = 0; i < 8; ++i)
+         {
+            if ((m & (0x80 >> i)) != 0)
+               value.push_back(true);
+            else
+               value.push_back(false);
+         }
+      }
+
+      // set end of the value
+      _buffer.setEnd(_buffer.end() + 1);
+
+      // read last byte
+      BERBuffer::ValueType m = _buffer.get();
+      for (int i = 0; i < 8 - b; ++i)
+      {
+         if ((m & (0x80 >> i)) != 0)
+            value.push_back(true);
+         else
+            value.push_back(false);
+      }
+   }
+}
+
 // Reads NULL value
 void BERValueReader::readNull(const NullType& type)
 {

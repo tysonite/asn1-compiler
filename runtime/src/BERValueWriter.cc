@@ -77,6 +77,37 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
    }
 }
 
+// Writes BIT STRING value
+void BERValueWriter::writeBitString(const BitString& value, const BitStringType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeBitString(value, type);
+   else
+   {
+      BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::BITSTRING_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         type.tagClass());
+
+      _buffer.put(7 & (8 - value.size()));
+      for (BitString::size_type i = 0; i < value.size(); i += 8)
+      {
+         BERBuffer::ValueType b = 0;
+         BERBuffer::SizeType l = value.size() - i;
+         if (l > 8)
+            l = 8;
+
+         for (BitString::size_type j = 0; j < l; ++j)
+         {
+            if (value[i + j] == true)
+               b |= 0x80 >> j;
+         }
+         _buffer.put(b);
+      }
+
+      _buffer.updateLengthOctets(position);
+   }
+}
+
 // Writes NULL value
 void BERValueWriter::writeNull(const NullType& type)
 {

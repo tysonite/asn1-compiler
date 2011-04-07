@@ -34,6 +34,9 @@ public:
    // Writes OBJECT IDENTIFIER value
    void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type);
 
+   // Writes BIT STRING value
+   void writeBitString(const BitString& value, const BitStringType& type);
+
    // Writes NULL value
    void writeNull(const NullType& type);
 

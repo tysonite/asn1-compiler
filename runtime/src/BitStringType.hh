@@ -28,12 +28,15 @@ public:
    { 
       ValueRestorer<ValueType> restorer(value);
 
+      reader.readBitString(value, *this);
+
       restorer.restoreNotNeeded();
    }
 
    // Writes the value
    void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
+      writer.writeBitString(value, *this);
    }
 
 private:

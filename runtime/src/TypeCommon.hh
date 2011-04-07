@@ -26,6 +26,7 @@ class IntegerType;
 class EnumeratedType;
 class BooleanType;
 class ObjectIdentifierType;
+class BitStringType;
 class OctetStringType;
 class VisibleStringType;
 class GraphicStringType;

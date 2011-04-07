@@ -34,6 +34,9 @@ public:
    // Reads OBJECT IDENTIFIER value
    void readObjectIdentifier(ObjectIdentifier& value, const ObjectIdentifierType& type);
 
+   // Reads BIT STRING value
+   virtual void readBitString(BitString& value, const BitStringType& type);
+
    // Reads NULL value
    void readNull(const NullType& type);
 

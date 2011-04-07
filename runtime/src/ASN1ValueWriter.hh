@@ -23,6 +23,9 @@ public:
    // Writes OBJECT IDENTIFIER value
    virtual void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type) = 0;
 
+   // Writes BIT STRING value
+   virtual void writeBitString(const BitString& value, const BitStringType& type) = 0;
+
    // Writes NULL value
    virtual void writeNull(const NullType& type) = 0;
 

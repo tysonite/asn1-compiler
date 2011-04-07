@@ -2,6 +2,7 @@
 #define __BIT_STRING_HH
 
 #include <vector>
+#include <string>
 
 namespace asn1
 {
@@ -19,6 +20,12 @@ public:
 
    // Sets bit string as string
    void setValue(const std::string& value) { _parseAndSetBitString(value); }
+
+   // Sets specified bit
+   void setBit(size_type bitNumber);
+
+   // Clears specified bit
+   void clearBit(size_type bitNumber);
 
    // Returns bit string represented as string (i.e. "11001")
    std::string getValueAsString() const;
