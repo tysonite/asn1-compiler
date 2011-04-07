@@ -4375,6 +4375,11 @@ BOOST_AUTO_TEST_CASE(TestBitStringValue)
    BOOST_CHECK_EQUAL(value[1], true);
    BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
 
+   value.setBit(0);
+   BOOST_CHECK_EQUAL(value[0], true);
+   value.clearBit(0);
+   BOOST_CHECK_EQUAL(value[0], false);
+
    BOOST_CHECK_THROW(value.setValue("A"), asn1::ASN1Exception);
    BOOST_CHECK_EQUAL(value.size(), 2);
    BOOST_CHECK_EQUAL(value[0], false);
