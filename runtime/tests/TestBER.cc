@@ -1,5 +1,6 @@
 #include <limits>
 
+#define BOOST_TEST_MODULE BER
 #define BOOST_TEST_MAIN
 #include <boost/test/included/unit_test.hpp>
 #include <boost/test/parameterized_test.hpp>
@@ -4398,22 +4399,33 @@ BOOST_AUTO_TEST_CASE(TestBitStringValue)
    BOOST_CHECK_THROW(asn1::BitStringType::ValueType value("012"), asn1::ASN1Exception);
 }
 
-BOOST_AUTO_TEST_CASE(TestBerBitStringType1)
+template <typename Type>
+struct BitStringFixture
 {
-   Type1::ValueType vToWrite, vToRead;
+   BitStringFixture()
+   {
+      BOOST_CHECK_NO_THROW(vToWrite.setValue("1010100110001010")); // in hex: A98A
+   }
+   ~BitStringFixture()
+   {
+      BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite.begin(), vToWrite.end(), vToRead.begin(), vToRead.end());
+      BOOST_CHECK_EQUAL(vToWrite.getValueAsString(), vToRead.getValueAsString());
+   }
 
-   BOOST_CHECK_NO_THROW(vToWrite.setValue("1010100110001010")); // in hex: A98A
+   typename Type::ValueType vToWrite, vToRead;
+   Type type;
+};
 
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType1, BitStringFixture<Type1>)
+{
    // encoding
    asn1::BERBuffer outbuffer;
    asn1::BERValueWriter writer(outbuffer);
 
-   Type1 type;
-
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
 
-   asn1::BERBuffer::ValueType dataToTest[] = { 0x03, 0x03, 0x00, 0xa9, 0x8a };
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x03, 0x03, 0x00, 0xA9, 0x8A };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
 
@@ -4423,9 +4435,174 @@ BOOST_AUTO_TEST_CASE(TestBerBitStringType1)
 
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
 
-   BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite.begin(), vToWrite.end(), vToRead.begin(), vToRead.end());
-   BOOST_CHECK_EQUAL(vToWrite.getValueAsString(), vToRead.getValueAsString());
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType2, BitStringFixture<Type2>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x43, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType3, BitStringFixture<Type3>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x05, 0x43, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType4, BitStringFixture<Type4>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x67, 0x05, 0x43, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType5, BitStringFixture<Type5>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x82, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType6, BitStringFixture<Type6>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA3, 0x07, 0xA2, 0x05, 0x43, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType7, BitStringFixture<Type7>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA4, 0x07, 0xA2, 0x05, 0x43, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType8, BitStringFixture<Type8>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x05, 0x03, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+}
+
+BOOST_FIXTURE_TEST_CASE(TestBerBitStringType9, BitStringFixture<Type9>)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x85, 0x03, 0x00, 0xA9, 0x8A };
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 }
 
 }

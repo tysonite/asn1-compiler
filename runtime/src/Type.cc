@@ -26,6 +26,8 @@ std::string Type::typeName() const
       return "OBJECT IDENTIFIER";
    case OCTET_STRING_TYPE:
       return "OCTET STRING";
+   case BITSTRING_TYPE:
+      return "BIT STRING";
    case VISIBLE_STRING_TYPE:
       return "VISIBLE STRING";
    case GRAPHIC_STRING_TYPE:
