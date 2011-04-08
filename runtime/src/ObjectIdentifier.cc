@@ -14,8 +14,11 @@ void ObjectIdentifier::_parseAndSetOid(const std::string& value)
    if (tokens.size() <= 0)
       throw ASN1Exception("Object Identifier value '" + value + "' is incorrect");
 
+   ObjectIdentifier tmp;
    for (std::vector<std::string>::const_iterator p = tokens.begin(); p != tokens.end(); ++p)
-      push_back(utils::ston<uint16_t>(*p)); // TODO: take into case when conversation is not possible
+      tmp.push_back(utils::ston<uint16_t>(*p)); // TODO: take into case when conversation is not possible
+
+   swap(tmp);
 }
 
 // Returns object identifier represented as string (i.e. "1.2.3")

@@ -1272,7 +1272,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType10)
 
 }
 
-namespace object_identifier
+namespace object_identifier_tests
 {
 
 // ASN.1 (EXPLICIT environment):
@@ -1378,6 +1378,24 @@ public:
       setTagging(asn1::Type::IMPLICIT_TAGGING);
    }
 };
+
+BOOST_AUTO_TEST_CASE(TestObjectIdentifierValue)
+{
+   asn1::ObjectIdentifierType::ValueType value;
+
+   BOOST_CHECK_THROW(value.setValue(""), asn1::ASN1Exception);
+
+   BOOST_CHECK_NO_THROW(value.setValue("1.2.3"));
+   BOOST_CHECK_EQUAL(value.size(), 3);
+   BOOST_CHECK_EQUAL(value[0], 1);
+   BOOST_CHECK_EQUAL(value[1], 2);
+   BOOST_CHECK_EQUAL(value[2], 3);
+   BOOST_CHECK_EQUAL(value.getValueAsString(), "1.2.3");
+
+   // constructors
+   BOOST_CHECK_NO_THROW(asn1::ObjectIdentifierType::ValueType value("1.2.3"));
+   BOOST_CHECK_THROW(asn1::ObjectIdentifierType::ValueType value(""), asn1::ASN1Exception);
+}
 
 BOOST_AUTO_TEST_CASE(TestBerObjectIdentifierType1)
 {
