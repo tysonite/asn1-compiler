@@ -39,65 +39,66 @@ public interface AsnParserTreeConstants
   public int JJTSETORSEQUENCEOFTYPE = 33;
   public int JJTSETORSEQUENCETYPE = 34;
   public int JJTCHOICETYPE = 35;
-  public int JJTELEMENTTYPE = 36;
-  public int JJTCOMPONENTSTYPE = 37;
-  public int JJTSELECTIONTYPE = 38;
-  public int JJTTAGGEDTYPE = 39;
-  public int JJTTAG = 40;
-  public int JJTCLASSNUMBER = 41;
-  public int JJTCLASS = 42;
-  public int JJTANYTYPE = 43;
-  public int JJTSUBTYPESPEC = 44;
-  public int JJTSUBTYPEVALUESETLIST = 45;
-  public int JJTSUBTYPEVALUESET = 46;
-  public int JJTCONTAINEDSUBTYPE = 47;
-  public int JJTSINGLEVALUE = 48;
-  public int JJTVALUERANGE = 49;
-  public int JJTSIZECONSTRAINT = 50;
-  public int JJTPERMITTEDALPHABET = 51;
-  public int JJTINNERTYPECONSTRAINTS = 52;
-  public int JJTSINGLETYPECONSTRAINT = 53;
-  public int JJTMULTIPLETYPECONSTRAINTS = 54;
-  public int JJTTYPECONSTRAINTS = 55;
-  public int JJTNAMEDCONSTRAINT = 56;
-  public int JJTCONSTRAINT = 57;
-  public int JJTVALUECONSTRAINT = 58;
-  public int JJTPRESENCECONSTRAINT = 59;
-  public int JJTVALUEASSIGNMENT = 60;
-  public int JJTVALUE = 61;
-  public int JJTDEFINEDVALUE = 62;
-  public int JJTBUILTINVALUE = 63;
-  public int JJTCOMPOUNDVALUE = 64;
-  public int JJTSKIP_TO_MATCHING_BRACE = 65;
-  public int JJTBOOLEANVALUE = 66;
-  public int JJTSPECIALREALVALUE = 67;
-  public int JJTNULLVALUE = 68;
-  public int JJTNAMEDVALUE = 69;
-  public int JJTOBJECTIDENTIFIERVALUE = 70;
-  public int JJTOBJIDCOMPONENTLIST = 71;
-  public int JJTOBJIDCOMPONENT = 72;
-  public int JJTNUMBERFORM = 73;
-  public int JJTNAMEANDNUMBERFORM = 74;
-  public int JJTBINARYSTRING = 75;
-  public int JJTHEXSTRING = 76;
-  public int JJTCHARSTRING = 77;
-  public int JJTNUMBER = 78;
-  public int JJTIDENTIFIER = 79;
-  public int JJTMODULEREFERENCE = 80;
-  public int JJTTYPEREFERENCE = 81;
-  public int JJTDEFINEDMACROTYPE = 82;
-  public int JJTDEFINEDMACRONAME = 83;
-  public int JJTSNMPOBJECTTYPEMACROTYPE = 84;
-  public int JJTSNMPACCESS = 85;
-  public int JJTSNMPSTATUS = 86;
-  public int JJTSNMPDESCRPART = 87;
-  public int JJTSNMPREFERPART = 88;
-  public int JJTSNMPINDEXPART = 89;
-  public int JJTTYPEORVALUELIST = 90;
-  public int JJTTYPEORVALUE = 91;
-  public int JJTSNMPDEFVALPART = 92;
-  public int JJTTEXTUALCONVENTIONMACROTYPE = 93;
-  public int JJTDISPLAYHINT = 94;
+  public int JJTDEFAULTVALUE = 36;
+  public int JJTELEMENTTYPE = 37;
+  public int JJTCOMPONENTSTYPE = 38;
+  public int JJTSELECTIONTYPE = 39;
+  public int JJTTAGGEDTYPE = 40;
+  public int JJTTAG = 41;
+  public int JJTCLASSNUMBER = 42;
+  public int JJTCLASS = 43;
+  public int JJTANYTYPE = 44;
+  public int JJTSUBTYPESPEC = 45;
+  public int JJTSUBTYPEVALUESETLIST = 46;
+  public int JJTSUBTYPEVALUESET = 47;
+  public int JJTCONTAINEDSUBTYPE = 48;
+  public int JJTSINGLEVALUE = 49;
+  public int JJTVALUERANGE = 50;
+  public int JJTSIZECONSTRAINT = 51;
+  public int JJTPERMITTEDALPHABET = 52;
+  public int JJTINNERTYPECONSTRAINTS = 53;
+  public int JJTSINGLETYPECONSTRAINT = 54;
+  public int JJTMULTIPLETYPECONSTRAINTS = 55;
+  public int JJTTYPECONSTRAINTS = 56;
+  public int JJTNAMEDCONSTRAINT = 57;
+  public int JJTCONSTRAINT = 58;
+  public int JJTVALUECONSTRAINT = 59;
+  public int JJTPRESENCECONSTRAINT = 60;
+  public int JJTVALUEASSIGNMENT = 61;
+  public int JJTVALUE = 62;
+  public int JJTDEFINEDVALUE = 63;
+  public int JJTBUILTINVALUE = 64;
+  public int JJTCOMPOUNDVALUE = 65;
+  public int JJTSKIP_TO_MATCHING_BRACE = 66;
+  public int JJTBOOLEANVALUE = 67;
+  public int JJTSPECIALREALVALUE = 68;
+  public int JJTNULLVALUE = 69;
+  public int JJTNAMEDVALUE = 70;
+  public int JJTOBJECTIDENTIFIERVALUE = 71;
+  public int JJTOBJIDCOMPONENTLIST = 72;
+  public int JJTOBJIDCOMPONENT = 73;
+  public int JJTNUMBERFORM = 74;
+  public int JJTNAMEANDNUMBERFORM = 75;
+  public int JJTBINARYSTRING = 76;
+  public int JJTHEXSTRING = 77;
+  public int JJTCHARSTRING = 78;
+  public int JJTNUMBER = 79;
+  public int JJTIDENTIFIER = 80;
+  public int JJTMODULEREFERENCE = 81;
+  public int JJTTYPEREFERENCE = 82;
+  public int JJTDEFINEDMACROTYPE = 83;
+  public int JJTDEFINEDMACRONAME = 84;
+  public int JJTSNMPOBJECTTYPEMACROTYPE = 85;
+  public int JJTSNMPACCESS = 86;
+  public int JJTSNMPSTATUS = 87;
+  public int JJTSNMPDESCRPART = 88;
+  public int JJTSNMPREFERPART = 89;
+  public int JJTSNMPINDEXPART = 90;
+  public int JJTTYPEORVALUELIST = 91;
+  public int JJTTYPEORVALUE = 92;
+  public int JJTSNMPDEFVALPART = 93;
+  public int JJTTEXTUALCONVENTIONMACROTYPE = 94;
+  public int JJTDISPLAYHINT = 95;
 
 
   public String[] jjtNodeName = {
@@ -137,6 +138,7 @@ public interface AsnParserTreeConstants
     "SetOrSequenceOfType",
     "SetOrSequenceType",
     "ChoiceType",
+    "DefaultValue",
     "ElementType",
     "ComponentsType",
     "SelectionType",
@@ -198,4 +200,4 @@ public interface AsnParserTreeConstants
     "DisplayHint",
   };
 }
-/* JavaCC - OriginalChecksum=5f17192c6489ab73e1f4fc39ef54f240 (do not edit this line) */
+/* JavaCC - OriginalChecksum=9f097088a7879558bf80e5f8e2268ba2 (do not edit this line) */

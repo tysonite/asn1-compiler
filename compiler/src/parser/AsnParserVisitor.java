@@ -39,6 +39,7 @@ public interface AsnParserVisitor
   public Object visit(ASTSetOrSequenceOfType node, Object data);
   public Object visit(ASTSetOrSequenceType node, Object data);
   public Object visit(ASTChoiceType node, Object data);
+  public Object visit(ASTDefaultValue node, Object data);
   public Object visit(ASTElementType node, Object data);
   public Object visit(ASTComponentsType node, Object data);
   public Object visit(ASTSelectionType node, Object data);
@@ -99,4 +100,4 @@ public interface AsnParserVisitor
   public Object visit(ASTTextualConventionMacroType node, Object data);
   public Object visit(ASTDisplayHint node, Object data);
 }
-/* JavaCC - OriginalChecksum=626943d8d9358cfd71b768fd204428fd (do not edit this line) */
+/* JavaCC - OriginalChecksum=ce1974378e10a9a7d0eec93789a1e828 (do not edit this line) */

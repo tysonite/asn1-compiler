@@ -77,95 +77,101 @@ public interface AsnParserConstants {
   /** RegularExpression Id. */
   int ANY_TKN = 40;
   /** RegularExpression Id. */
-  int OPTIONAL_TKN = 41;
+  int PRINTABLESTRING_TKN = 41;
   /** RegularExpression Id. */
-  int DEFAULT_TKN = 42;
+  int GENERALIZEDTIME_TKN = 42;
   /** RegularExpression Id. */
-  int COMPONENTS_TKN = 43;
+  int GRAPHICSTRING_TKN = 43;
   /** RegularExpression Id. */
-  int UNIVERSAL_TKN = 44;
+  int OPTIONAL_TKN = 44;
   /** RegularExpression Id. */
-  int APPLICATION_TKN = 45;
+  int DEFAULT_TKN = 45;
   /** RegularExpression Id. */
-  int PRIVATE_TKN = 46;
+  int COMPONENTS_TKN = 46;
   /** RegularExpression Id. */
-  int TRUE_TKN = 47;
+  int UNIVERSAL_TKN = 47;
   /** RegularExpression Id. */
-  int FALSE_TKN = 48;
+  int APPLICATION_TKN = 48;
   /** RegularExpression Id. */
-  int BEGIN_TKN = 49;
+  int PRIVATE_TKN = 49;
   /** RegularExpression Id. */
-  int END_TKN = 50;
+  int TRUE_TKN = 50;
   /** RegularExpression Id. */
-  int DEFINITIONS_TKN = 51;
+  int FALSE_TKN = 51;
   /** RegularExpression Id. */
-  int EXPLICIT_TKN = 52;
+  int BEGIN_TKN = 52;
   /** RegularExpression Id. */
-  int AUTOMATIC_TKN = 53;
+  int END_TKN = 53;
   /** RegularExpression Id. */
-  int ENUMERATED_TKN = 54;
+  int DEFINITIONS_TKN = 54;
   /** RegularExpression Id. */
-  int EXTERNAL_TKN = 55;
+  int EXPLICIT_TKN = 55;
   /** RegularExpression Id. */
-  int EXPORTS_TKN = 56;
+  int AUTOMATIC_TKN = 56;
   /** RegularExpression Id. */
-  int IMPORTS_TKN = 57;
+  int ENUMERATED_TKN = 57;
   /** RegularExpression Id. */
-  int REAL_TKN = 58;
+  int EXTERNAL_TKN = 58;
   /** RegularExpression Id. */
-  int INCLUDES_TKN = 59;
+  int EXPORTS_TKN = 59;
   /** RegularExpression Id. */
-  int CONTAINING_TKN = 60;
+  int IMPORTS_TKN = 60;
   /** RegularExpression Id. */
-  int MIN_TKN = 61;
+  int REAL_TKN = 61;
   /** RegularExpression Id. */
-  int MAX_TKN = 62;
+  int INCLUDES_TKN = 62;
   /** RegularExpression Id. */
-  int SIZE_TKN = 63;
+  int CONTAINING_TKN = 63;
   /** RegularExpression Id. */
-  int FROM_TKN = 64;
+  int MIN_TKN = 64;
   /** RegularExpression Id. */
-  int WITH_TKN = 65;
+  int MAX_TKN = 65;
   /** RegularExpression Id. */
-  int COMPONENT_TKN = 66;
+  int SIZE_TKN = 66;
   /** RegularExpression Id. */
-  int PRESENT_TKN = 67;
+  int FROM_TKN = 67;
   /** RegularExpression Id. */
-  int ABSENT_TKN = 68;
+  int WITH_TKN = 68;
   /** RegularExpression Id. */
-  int DEFINED_TKN = 69;
+  int COMPONENT_TKN = 69;
   /** RegularExpression Id. */
-  int BY_TKN = 70;
+  int PRESENT_TKN = 70;
   /** RegularExpression Id. */
-  int PLUS_INFINITY_TKN = 71;
+  int ABSENT_TKN = 71;
   /** RegularExpression Id. */
-  int MINUS_INFINITY_TKN = 72;
+  int DEFINED_TKN = 72;
   /** RegularExpression Id. */
-  int OBJECTTYPE_TKN = 73;
+  int BY_TKN = 73;
   /** RegularExpression Id. */
-  int SYNTAX_TKN = 74;
+  int PLUS_INFINITY_TKN = 74;
   /** RegularExpression Id. */
-  int ACCESS_TKN = 75;
+  int MINUS_INFINITY_TKN = 75;
   /** RegularExpression Id. */
-  int STATUS_TKN = 76;
+  int OBJECTTYPE_TKN = 76;
   /** RegularExpression Id. */
-  int DESCRIPTION_TKN = 77;
+  int SYNTAX_TKN = 77;
   /** RegularExpression Id. */
-  int REFERENCE_TKN = 78;
+  int ACCESS_TKN = 78;
   /** RegularExpression Id. */
-  int INDEX_TKN = 79;
+  int STATUS_TKN = 79;
   /** RegularExpression Id. */
-  int DEFVAL_TKN = 80;
+  int DESCRIPTION_TKN = 80;
   /** RegularExpression Id. */
-  int DHINT = 81;
+  int REFERENCE_TKN = 81;
   /** RegularExpression Id. */
-  int TC_TKN = 82;
+  int INDEX_TKN = 82;
   /** RegularExpression Id. */
-  int MACRO_TKN = 83;
+  int DEFVAL_TKN = 83;
   /** RegularExpression Id. */
-  int LCASEFIRST_IDENT_TKN = 84;
+  int DHINT = 84;
   /** RegularExpression Id. */
-  int UCASEFIRST_IDENT_TKN = 85;
+  int TC_TKN = 85;
+  /** RegularExpression Id. */
+  int MACRO_TKN = 86;
+  /** RegularExpression Id. */
+  int LCASEFIRST_IDENT_TKN = 87;
+  /** RegularExpression Id. */
+  int UCASEFIRST_IDENT_TKN = 88;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -215,6 +221,9 @@ public interface AsnParserConstants {
     "\"IMPLICIT\"",
     "\"CHOICE\"",
     "\"ANY\"",
+    "\"PrintableString\"",
+    "\"GeneralizedTime\"",
+    "\"GraphicString\"",
     "\"OPTIONAL\"",
     "\"DEFAULT\"",
     "\"COMPONENTS\"",

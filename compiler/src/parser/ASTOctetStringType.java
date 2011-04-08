@@ -2,20 +2,38 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package parser;
 
-public
-class ASTOctetStringType extends SimpleNode {
-  public ASTOctetStringType(int id) {
-    super(id);
-  }
+public class ASTOctetStringType extends SimpleNode {
 
-  public ASTOctetStringType(AsnParser p, int id) {
-    super(p, id);
-  }
+   public enum StringType {
 
+      OCTET_STRING,
+      PRINTABLE_STRING,
+      GENERALIZED_TIME,
+      GRAPHIC_STRING,
+      UNKNOWN,
+   };
+   private StringType type = StringType.UNKNOWN;
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(AsnParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+   public ASTOctetStringType(int id) {
+      super(id);
+   }
+
+   public ASTOctetStringType(AsnParser p, int id) {
+      super(p, id);
+   }
+
+   public void setType(StringType type) {
+      this.type = type;
+   }
+
+   public StringType getType() {
+      return type;
+   }
+
+   /** Accept the visitor. **/
+   @Override
+   public Object jjtAccept(AsnParserVisitor visitor, Object data) {
+      return visitor.visit(this, data);
+   }
 }
 /* JavaCC - OriginalChecksum=0773581deb543270b4910a1f9dd71a2c (do not edit this line) */

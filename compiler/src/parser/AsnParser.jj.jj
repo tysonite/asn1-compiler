@@ -303,6 +303,9 @@ TOKEN :
 | <IMPLICIT_TKN: "IMPLICIT">
 | <CHOICE_TKN: "CHOICE">
 | <ANY_TKN: "ANY">
+| <PRINTABLESTRING_TKN: "PrintableString">
+| <GENERALIZEDTIME_TKN: "GeneralizedTime">
+| <GRAPHICSTRING_TKN: "GraphicString">
 | <OPTIONAL_TKN: "OPTIONAL">
 | <DEFAULT_TKN: "DEFAULT">
 | <COMPONENTS_TKN: "COMPONENTS">
@@ -1313,7 +1316,38 @@ void OctetStringType() : {/*@bgen(jjtree) OctetStringType */
 {/*@bgen(jjtree) OctetStringType */
         try {
 /*@egen*/
-	<OCTET_TKN> <STRING_TKN>/*@bgen(jjtree)*/
+	((<OCTET_TKN> <STRING_TKN>)/*@bgen(jjtree)*/
+                                    {
+                                      jjtree.closeNodeScope(jjtn000, true);
+                                      jjtc000 = false;
+                                      jjtreeCloseNodeScope(jjtn000);
+                                    }
+/*@egen*/ { jjtn000.setType(ASTOctetStringType.StringType.OCTET_STRING); }
+         |
+         <PRINTABLESTRING_TKN>/*@bgen(jjtree)*/
+                               {
+                                 jjtree.closeNodeScope(jjtn000, true);
+                                 jjtc000 = false;
+                                 jjtreeCloseNodeScope(jjtn000);
+                               }
+/*@egen*/ { jjtn000.setType(ASTOctetStringType.StringType.PRINTABLE_STRING); }
+         |
+         <GENERALIZEDTIME_TKN>/*@bgen(jjtree)*/
+                               {
+                                 jjtree.closeNodeScope(jjtn000, true);
+                                 jjtc000 = false;
+                                 jjtreeCloseNodeScope(jjtn000);
+                               }
+/*@egen*/ { jjtn000.setType(ASTOctetStringType.StringType.GENERALIZED_TIME); }
+         |
+         <GRAPHICSTRING_TKN>/*@bgen(jjtree)*/
+                             {
+                               jjtree.closeNodeScope(jjtn000, true);
+                               jjtc000 = false;
+                               jjtreeCloseNodeScope(jjtn000);
+                             }
+/*@egen*/ { jjtn000.setType(ASTOctetStringType.StringType.GRAPHIC_STRING); }
+        )/*@bgen(jjtree)*/
         } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -1646,6 +1680,39 @@ void ElementTypeList()      : {}
    ElementType() (<COMMA_TKN> ElementType())*
 }
 
+void DefaultValue() : {/*@bgen(jjtree) DefaultValue */
+  ASTDefaultValue jjtn000 = new ASTDefaultValue(JJTDEFAULTVALUE);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+  jjtreeOpenNodeScope(jjtn000);
+/*@egen*/}
+{/*@bgen(jjtree) DefaultValue */
+   try {
+/*@egen*/
+   Value()/*@bgen(jjtree)*/
+   } catch (Throwable jjte000) {
+     if (jjtc000) {
+       jjtree.clearNodeScope(jjtn000);
+       jjtc000 = false;
+     } else {
+       jjtree.popNode();
+     }
+     if (jjte000 instanceof RuntimeException) {
+       throw (RuntimeException)jjte000;
+     }
+     if (jjte000 instanceof ParseException) {
+       throw (ParseException)jjte000;
+     }
+     throw (Error)jjte000;
+   } finally {
+     if (jjtc000) {
+       jjtree.closeNodeScope(jjtn000, true);
+       jjtreeCloseNodeScope(jjtn000);
+     }
+   }
+/*@egen*/
+}
+
 void ElementType() : {/*@bgen(jjtree) ElementType */
   ASTElementType jjtn000 = new ASTElementType(JJTELEMENTTYPE);
   boolean jjtc000 = true;
@@ -1653,31 +1720,36 @@ void ElementType() : {/*@bgen(jjtree) ElementType */
   jjtreeOpenNodeScope(jjtn000);
 /*@egen*/}
 {/*@bgen(jjtree) ElementType */
-  try {
+   try {
 /*@egen*/ 
-  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtn000.setOptional(true); }  ) | ( <DEFAULT_TKN> Value() ) ] )
-
-| ComponentsType()/*@bgen(jjtree)*/
-  } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      throw (RuntimeException)jjte000;
-    }
-    if (jjte000 instanceof ParseException) {
-      throw (ParseException)jjte000;
-    }
-    throw (Error)jjte000;
-  } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-      jjtreeCloseNodeScope(jjtn000);
-    }
-  }
+   ( NamedType() [
+                  ( <OPTIONAL_TKN> { jjtn000.setOptional(true); } )
+                  |
+                  ( ( <DEFAULT_TKN> { jjtn000.setDefault(true); } ) DefaultValue() )
+                 ]
+   )
+   |
+   ( ComponentsType() )/*@bgen(jjtree)*/
+   } catch (Throwable jjte000) {
+     if (jjtc000) {
+       jjtree.clearNodeScope(jjtn000);
+       jjtc000 = false;
+     } else {
+       jjtree.popNode();
+     }
+     if (jjte000 instanceof RuntimeException) {
+       throw (RuntimeException)jjte000;
+     }
+     if (jjte000 instanceof ParseException) {
+       throw (ParseException)jjte000;
+     }
+     throw (Error)jjte000;
+   } finally {
+     if (jjtc000) {
+       jjtree.closeNodeScope(jjtn000, true);
+       jjtreeCloseNodeScope(jjtn000);
+     }
+   }
 /*@egen*/
 }
 

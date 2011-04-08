@@ -43,7 +43,18 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
 
    @Override
    public Object visit(ASTOctetStringType node, Object data) {
-      builder.append(asn1NameSpace).append("OctetStringType");
+      if (node.getType() == ASTOctetStringType.StringType.OCTET_STRING) {
+         builder.append(asn1NameSpace).append("OctetStringType");
+      } else if (node.getType() == ASTOctetStringType.StringType.PRINTABLE_STRING) {
+         builder.append(asn1NameSpace).append("PrintableStringType");
+      } else if (node.getType() == ASTOctetStringType.StringType.GENERALIZED_TIME) {
+         builder.append(asn1NameSpace).append("GeneralizedTimeType");
+      } else if (node.getType() == ASTOctetStringType.StringType.GRAPHIC_STRING) {
+         builder.append(asn1NameSpace).append("GraphicStringType");
+      } else {
+         throw new GeneratorException("Octet string subtype " + node.getFirstToken().toString()
+                 + " is unknown");
+      }
       return data;
    }
 

@@ -299,6 +299,9 @@ TOKEN :
 | <IMPLICIT_TKN: "IMPLICIT">
 | <CHOICE_TKN: "CHOICE">
 | <ANY_TKN: "ANY">
+| <PRINTABLESTRING_TKN: "PrintableString">
+| <GENERALIZEDTIME_TKN: "GeneralizedTime">
+| <GRAPHICSTRING_TKN: "GraphicString">
 | <OPTIONAL_TKN: "OPTIONAL">
 | <DEFAULT_TKN: "DEFAULT">
 | <COMPONENTS_TKN: "COMPONENTS">
@@ -571,7 +574,14 @@ void ObjectIdentifierType() : {}
 
 void OctetStringType() : {}
 {
-	<OCTET_TKN> <STRING_TKN>
+	((<OCTET_TKN> <STRING_TKN>) { jjtThis.setType(ASTOctetStringType.StringType.OCTET_STRING); }
+         |
+         <PRINTABLESTRING_TKN> { jjtThis.setType(ASTOctetStringType.StringType.PRINTABLE_STRING); }
+         |
+         <GENERALIZEDTIME_TKN> { jjtThis.setType(ASTOctetStringType.StringType.GENERALIZED_TIME); }
+         |
+         <GRAPHICSTRING_TKN> { jjtThis.setType(ASTOctetStringType.StringType.GRAPHIC_STRING); }
+        )
 }
 
 void EnumeratedType() : {} 
@@ -641,11 +651,21 @@ void ElementTypeList() #void: {}
    ElementType() (<COMMA_TKN> ElementType())*
 }
 
+void DefaultValue() : {}
+{
+   Value()
+}
+
 void ElementType() : {}
 { 
-  ( NamedType()  [ ( <OPTIONAL_TKN> { jjtThis.setOptional(true); }  ) | ( <DEFAULT_TKN> Value() ) ] )
-
-| ComponentsType()
+   ( NamedType() [
+                  ( <OPTIONAL_TKN> { jjtThis.setOptional(true); } )
+                  |
+                  ( ( <DEFAULT_TKN> { jjtThis.setDefault(true); } ) DefaultValue() )
+                 ]
+   )
+   |
+   ( ComponentsType() )
 }
 
 void ComponentsType() : {  }

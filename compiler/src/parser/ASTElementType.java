@@ -5,6 +5,7 @@ package parser;
 public class ASTElementType extends SimpleNode {
 
    private boolean isOptional = false;
+   private boolean hasDefault = false;
 
    public ASTElementType(int id) {
       super(id);
@@ -22,7 +23,16 @@ public class ASTElementType extends SimpleNode {
       return isOptional;
    }
 
+   public void setDefault(boolean hasDefault) {
+      this.hasDefault = hasDefault;
+   }
+
+   public boolean hasDefault() {
+      return hasDefault;
+   }
+
    /** Accept the visitor. **/
+   @Override
    public Object jjtAccept(AsnParserVisitor visitor, Object data) {
       return visitor.visit(this, data);
    }

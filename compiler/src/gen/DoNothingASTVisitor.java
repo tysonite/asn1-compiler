@@ -383,4 +383,8 @@ public class DoNothingASTVisitor implements AsnParserVisitor {
    public Object visit(ASTDisplayHint node, Object data) {
       return data;
    }
+
+   public Object visit(ASTDefaultValue node, Object data) {
+      return data;
+   }
 }

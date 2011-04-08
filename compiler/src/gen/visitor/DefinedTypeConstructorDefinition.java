@@ -42,9 +42,7 @@ public class DefinedTypeConstructorDefinition extends DoNothingASTVisitor
       ASTTypeAssignment refAssignment = VisitorUtils.searchForAssignmentNodeByName(node,
               referencedType);
       if (null == refAssignment) {
-         if (!referencedType.equals("PrintableString")) {
-            throw new GeneratorException("Unable to resolve node " + referencedType);
-         }
+         throw new GeneratorException("Unable to resolve node " + referencedType);
       } else {
 
          if (VisitorUtils.visitChildsAndAccept(builder, refAssignment, new IsIntegerType())) {
