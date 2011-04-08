@@ -19,6 +19,7 @@ class TaggingType : public Type
 public:
 
    typedef typename TypeItemType::ValueType ValueType;
+   typedef TypeItemType InnerType;
 
    // Constructor
    explicit TaggingType(TypeItemType* innerType)

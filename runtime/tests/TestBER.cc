@@ -4685,7 +4685,7 @@ struct SetOfSetOfFixture
    Type type;
 };
 
-// ASN.1: S ::= SET OF SET OF INTEGER
+// ASN.1: SET OF SET OF INTEGER
 BOOST_FIXTURE_TEST_CASE(TestBERSetOfSetOfInteger, SetOfSetOfFixture<asn1::SetOfType<asn1::SetOfType<asn1::IntegerType> > >)
 {
    // encoding
