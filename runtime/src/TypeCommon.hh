@@ -32,10 +32,14 @@ class VisibleStringType;
 class GraphicStringType;
 class GeneralizedTimeType;
 class PrintableStringType;
-class SequenceType;
 class ChoiceType;
+class SequenceType;
+class BaseSequenceOfType;
+class SetType;
+class BaseSetOfType;
 template <typename TypeItemType> class TaggingType;
 template <typename TypeItemType> class SequenceOfType;
+template <typename TypeItemType> class SetOfType;
 
 }
 

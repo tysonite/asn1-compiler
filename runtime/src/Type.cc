@@ -38,8 +38,12 @@ std::string Type::typeName() const
       return "CHOICE";
    case SEQUENCE_TYPE:
       return "SEQUENCE";
+   case SET_TYPE:
+      return "SET";
    case SEQUENCE_OF_TYPE:
       return "SEQUENCE OF";
+   case SET_OF_TYPE:
+      return "SET OF";
    default:
       return "Unknown Type";
    }

@@ -178,12 +178,12 @@ void BERValueWriter::writeSequenceEnd(const SequenceType& type)
    _writeLastCompositionEnd();
 }
 
-void BERValueWriter::writeSequenceOfBegin(const SequenceType& type)
+void BERValueWriter::writeSequenceOfBegin(const BaseSequenceOfType& type)
 {
    writeSequenceBegin(type);
 }
 
-void BERValueWriter::writeSequenceOfEnd(const SequenceType& type)
+void BERValueWriter::writeSequenceOfEnd(const BaseSequenceOfType& type)
 {
    writeSequenceEnd(type);
 }

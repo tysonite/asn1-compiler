@@ -21,7 +21,8 @@ set (SOURCES
    SequenceType.cc
    Type.cc
    VisibleStringType.cc
-   BitString.cc)
+   BitString.cc
+   SizeConstraintsHolder.cc)
 
 set (HEADERS
    ASN1Exception.hh
@@ -54,7 +55,12 @@ set (HEADERS
    VisibleStringType.hh
    XERBuffer.hh
    XERValueWriter.hh
-   BitString.hh)
+   BitString.hh
+   SizeConstraintsHolder.hh
+   BaseSequenceOfType.hh
+   SetType.hh
+   BaseSetOfType.hh
+   SetOfType.hh)
 
 if (CMAKE_COMPILER_IS_GNUCC)
    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")

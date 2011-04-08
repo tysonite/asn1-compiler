@@ -264,6 +264,29 @@ void BERValueReader::readPrintableString(OctetString& value, const PrintableStri
    }
 }
 
+// Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
+void BERValueReader::isComponentPresent(const Type& type, bool& isPresent)
+{
+   if (_nestedReader)
+      _nestedReader->isComponentPresent(type, isPresent);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.lookupIdentifierOctets(tag, pc, cl);
+
+      isPresent = false;
+      if (type.tagClass() == cl)
+      {
+         if (type.hasTagNumber() && (type.tagNumber() == tag))
+            isPresent = true;
+         else if (!type.hasTagNumber() && type.typeID() == tag)
+            isPresent = true;
+      }
+   }
+}
+
 // Reads SEQUENCE value
 void BERValueReader::readSequenceBegin(const SequenceType& type)
 {
@@ -291,28 +314,6 @@ void BERValueReader::readSequenceBegin(const SequenceType& type)
    }
 }
 
-void BERValueReader::isSequenceComponentPresent(const Type& type, bool& isPresent)
-{
-   if (_nestedReader)
-      _nestedReader->isSequenceComponentPresent(type, isPresent);
-   else
-   {
-      TagType tag;
-      PCType pc;
-      CLType cl;
-      _buffer.lookupIdentifierOctets(tag, pc, cl);
-
-      isPresent = false;
-      if (type.tagClass() == cl)
-      {
-         if (type.hasTagNumber() && (type.tagNumber() == tag))
-            isPresent = true;
-         else if (!type.hasTagNumber() && type.typeID() == tag)
-            isPresent = true;
-      }
-   }
-}
-
 bool BERValueReader::isSequenceEnd(const SequenceType& type)
 {
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
@@ -323,6 +324,8 @@ bool BERValueReader::isSequenceEnd(const SequenceType& type)
 
 void BERValueReader::readSequenceEnd(const SequenceType& type)
 {
+   assert(_nestedReader != NULL && _sequenceEndPos > 0);
+
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       _nestedReader->readSequenceEnd(type);
    else
@@ -336,37 +339,86 @@ void BERValueReader::readSequenceEnd(const SequenceType& type)
 }
 
 // Reads SEQUENCE OF value
-void BERValueReader::readSequenceOfBegin(const SequenceType& type)
+void BERValueReader::readSequenceOfBegin(const BaseSequenceOfType& type)
 {
    readSequenceBegin(type);
 }
 
-bool BERValueReader::isSequenceOfEnd(const SequenceType& type)
+bool BERValueReader::isSequenceOfEnd(const BaseSequenceOfType& type)
 {
    return isSequenceEnd(type);
 }
 
-void BERValueReader::readSequenceOfEnd(const SequenceType& type)
+void BERValueReader::readSequenceOfEnd(const BaseSequenceOfType& type)
 {
    readSequenceEnd(type);
 }
 
 // Reads SET value
-void BERValueReader::readSetBegin()
+void BERValueReader::readSetBegin(const SetType& type)
 {
+   if (_nestedReader)
+      _nestedReader->readSetBegin(type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      int64_t length;
+      _buffer.decodeIL(tag, pc, cl, length);
+
+      // save position of the sequence end
+      _setEndPos = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
+
+      // check tag
+      _checkTagTagging(tag, cl, BERBuffer::SET_BERTYPE, type);
+      if (pc != BERBuffer::CONSTRUCTED_OBJECTYPE)
+         throw BERBufferException("BER " + type.toString() + " must be CONSTRUCTED");
+
+      // create reader for nested operations
+      _nestedReader = _prototype();
+      assert(_nestedReader != NULL);
+   }
 }
 
-void BERValueReader::readSetEnd()
+bool BERValueReader::isSetEnd(const SetType& type)
 {
+   if (_nestedReader && _nestedReader->_nestedReader != NULL)
+      return _nestedReader->isSetEnd(type);
+   else
+      return (_buffer.current() < _setEndPos) ? false : true;
+}
+
+void BERValueReader::readSetEnd(const SetType& type)
+{
+   assert(_nestedReader != NULL && _setEndPos > 0);
+
+   if (_nestedReader && _nestedReader->_nestedReader != NULL)
+      _nestedReader->readSetEnd(type);
+   else
+   {
+      delete _nestedReader;
+      _nestedReader = NULL;
+
+      if (_setEndPos < _buffer.current())
+         throw BERBufferException("More BER " + type.toString() + " items are expected");
+   }
 }
 
 // Reads SET OF value
-void BERValueReader::readSetOfBegin()
+void BERValueReader::readSetOfBegin(const BaseSetOfType& type)
 {
+   readSetBegin(type);
 }
 
-void BERValueReader::readSetOfEnd()
+bool BERValueReader::isSetOfEnd(const BaseSetOfType& type)
 {
+   return isSetEnd(type);
+}
+
+void BERValueReader::readSetOfEnd(const BaseSetOfType& type)
+{
+   readSetEnd(type);
 }
 
 // Reads CHOICE value

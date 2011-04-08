@@ -18,6 +18,8 @@
 #include "GeneralizedTimeType.hh"
 #include "SequenceOfType.hh"
 #include "SequenceType.hh"
+#include "SetOfType.hh"
+#include "SetType.hh"
 #include "TaggingType.hh"
 #include "ChoiceType.hh"
 

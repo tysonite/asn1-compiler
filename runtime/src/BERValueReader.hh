@@ -17,7 +17,7 @@ public:
 
    // Constructor
    explicit BERValueReader(BERBuffer& buffer)
-      : _nestedReader(NULL), _buffer(buffer), _sequenceEndPos(0) {}
+      : _nestedReader(NULL), _buffer(buffer), _sequenceEndPos(0), _setEndPos(0) {}
 
    // Destructor
    ~BERValueReader() { delete _nestedReader; }
@@ -52,24 +52,28 @@ public:
    // Reads PRINTABLE STRING value
    void readPrintableString(OctetString& value, const PrintableStringType& type);
 
+   // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
+   void isComponentPresent(const Type& type, bool& isPresent);
+
    // Reads SEQUENCE value
    void readSequenceBegin(const SequenceType& type);
-   void isSequenceComponentPresent(const Type& type, bool& isPresent);
    bool isSequenceEnd(const SequenceType& type);
    void readSequenceEnd(const SequenceType& type);
 
    // Reads SEQUENCE OF value (the same as SET)
-   void readSequenceOfBegin(const SequenceType& type);
-   bool isSequenceOfEnd(const SequenceType& type);
-   void readSequenceOfEnd(const SequenceType& type);
+   void readSequenceOfBegin(const BaseSequenceOfType& type);
+   bool isSequenceOfEnd(const BaseSequenceOfType& type);
+   void readSequenceOfEnd(const BaseSequenceOfType& type);
 
    // Reads SET value
-   void readSetBegin();
-   void readSetEnd();
+   void readSetBegin(const SetType& type);
+   bool isSetEnd(const SetType& type);
+   void readSetEnd(const SetType& type);
 
    // Reads SET OF value (the same as SET)
-   void readSetOfBegin();
-   void readSetOfEnd();
+   void readSetOfBegin(const BaseSetOfType& type);
+   bool isSetOfEnd(const BaseSetOfType& type);
+   void readSetOfEnd(const BaseSetOfType& type);
 
    // Reads CHOICE value
    void readChoice(const ChoiceType& type, Type** choosenType);
@@ -102,7 +106,7 @@ protected:
 
 private:
 
-   BERBuffer::SizeType _sequenceEndPos;
+   BERBuffer::SizeType _sequenceEndPos, _setEndPos;
 
    DISALLOW_COPY_AND_ASSIGN(BERValueReader);
 };

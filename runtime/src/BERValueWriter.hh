@@ -57,8 +57,8 @@ public:
    void writeSequenceEnd(const SequenceType& type);
    
    // Writes SEQUENCE OF value (the same as SET)
-   void writeSequenceOfBegin(const SequenceType& type);
-   void writeSequenceOfEnd(const SequenceType& type);
+   void writeSequenceOfBegin(const BaseSequenceOfType& type);
+   void writeSequenceOfEnd(const BaseSequenceOfType& type);
 
    // Writes SET value
    void writeSetBegin();

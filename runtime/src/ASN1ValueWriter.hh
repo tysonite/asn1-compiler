@@ -46,8 +46,8 @@ public:
    virtual void writeSequenceEnd(const SequenceType& type) = 0;
 
    // Writes SEQUENCE OF value (the same as SET)
-   virtual void writeSequenceOfBegin(const SequenceType& type) = 0;
-   virtual void writeSequenceOfEnd(const SequenceType& type) = 0;
+   virtual void writeSequenceOfBegin(const BaseSequenceOfType& type) = 0;
+   virtual void writeSequenceOfEnd(const BaseSequenceOfType& type) = 0;
 
    // Writes SET value
    virtual void writeSetBegin() = 0;

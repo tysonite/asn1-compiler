@@ -1,34 +1,34 @@
-#ifndef __SEQUENCE_OF_TYPE_HH
-#define __SEQUENCE_OF_TYPE_HH
+#ifndef __SET_OF_TYPE_HH
+#define __SET_OF_TYPE_HH
 
 #include <vector>
 
 #include "ASN1ValueReader.hh"
 #include "ASN1ValueWriter.hh"
 
-#include "BaseSequenceOfType.hh"
+#include "BaseSetOfType.hh"
 
 namespace asn1
 {
 
 template <typename TypeItemType>
-class SequenceOfType : public BaseSequenceOfType
+class SetOfType : public BaseSetOfType
 {
 public:
 
    typedef std::vector<typename TypeItemType::ValueType> ValueType;
 
    // Constructor
-   explicit SequenceOfType(TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)
-      : BaseSequenceOfType(minSize, maxSize), _innerType(innerType) {}
+   explicit SetOfType(TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)
+      : BaseSetOfType(minSize, maxSize), _innerType(innerType) {}
 
    // Destructor
-   ~SequenceOfType() { delete _innerType; }
+   ~SetOfType() { delete _innerType; }
 
    // Returns string representation of type
    std::string toString() const
    {
-      return BaseSequenceOfType::toString() + " { " + _innerType->toString() + " }";
+      return BaseSetOfType::toString() + " { " + _innerType->toString() + " }";
    }
 
    // Returns reference to inner type
@@ -44,11 +44,11 @@ private:
 
    TypeItemType* _innerType;
 
-   DISALLOW_COPY_AND_ASSIGN(SequenceOfType);
+   DISALLOW_COPY_AND_ASSIGN(SetOfType);
 };
 
 template <typename TypeItemType>
-void SequenceOfType<TypeItemType>::checkType(const ValueType& value) const
+void SetOfType<TypeItemType>::checkType(const ValueType& value) const
 {
    checkSize(value.size());
    for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
@@ -56,7 +56,7 @@ void SequenceOfType<TypeItemType>::checkType(const ValueType& value) const
 }
 
 template <typename TypeItemType>
-void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) const
+void SetOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) const
 {
    ValueRestorer<ValueType> restorer(value);
 
@@ -68,28 +68,28 @@ void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& valu
       value.reserve(static_cast<typename ValueType::size_type>(minSize()));
 
    // perform read of components
-   reader.readSequenceOfBegin(*this);
-   while (!reader.isSequenceOfEnd(*this))
+   reader.readSetOfBegin(*this);
+   while (!reader.isSetOfEnd(*this))
    {
       typename TypeItemType::ValueType item;
       _innerType->read(reader, item);
       value.push_back(item);
    }
-   reader.readSequenceOfEnd(*this);
+   reader.readSetOfEnd(*this);
 
    // do not restore value if reading completed without exceptions
    restorer.restoreNotNeeded();
 }
 
 template <typename TypeItemType>
-void SequenceOfType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& value) const
+void SetOfType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
-   writer.writeSequenceOfBegin(*this);
+   writer.writeSetOfBegin(*this);
    for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
       _innerType->write(writer, *p);
-   writer.writeSequenceOfEnd(*this);
+   writer.writeSetOfEnd(*this);
 }
 
 }
 
-#endif // __SEQUENCE_OF_TYPE_HH
+#endif // __SET_OF_TYPE_HH

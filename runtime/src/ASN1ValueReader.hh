@@ -41,24 +41,28 @@ public:
    // Reads PRINTABLE STRING value
    virtual void readPrintableString(OctetString& value, const PrintableStringType& type) = 0;
 
+   // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
+   virtual void isComponentPresent(const Type& type, bool& isPresent) = 0;
+
    // Reads SEQUENCE value
    virtual void readSequenceBegin(const SequenceType& type) = 0;
-   virtual void isSequenceComponentPresent(const Type& type, bool& isPresent) = 0;
    virtual bool isSequenceEnd(const SequenceType& type) = 0;
    virtual void readSequenceEnd(const SequenceType& type) = 0;
 
    // Reads SEQUENCE OF value (the same as SET)
-   virtual void readSequenceOfBegin(const SequenceType& type) = 0;
-   virtual bool isSequenceOfEnd(const SequenceType& type) = 0;
-   virtual void readSequenceOfEnd(const SequenceType& type) = 0;
+   virtual void readSequenceOfBegin(const BaseSequenceOfType& type) = 0;
+   virtual bool isSequenceOfEnd(const BaseSequenceOfType& type) = 0;
+   virtual void readSequenceOfEnd(const BaseSequenceOfType& type) = 0;
 
    // Reads SET value
-   virtual void readSetBegin() = 0;
-   virtual void readSetEnd() = 0;
+   virtual void readSetBegin(const SetType& type) = 0;
+   virtual bool isSetEnd(const SetType& type) = 0;
+   virtual void readSetEnd(const SetType& type) = 0;
 
    // Reads SET OF value (the same as SET)
-   virtual void readSetOfBegin() = 0;
-   virtual void readSetOfEnd() = 0;
+   virtual void readSetOfBegin(const BaseSetOfType& type) = 0;
+   virtual bool isSetOfEnd(const BaseSetOfType& type) = 0;
+   virtual void readSetOfEnd(const BaseSetOfType& type) = 0;
 
    // Reads CHOICE value
    virtual void readChoice(const ChoiceType& type, Type** choosenType) = 0;
