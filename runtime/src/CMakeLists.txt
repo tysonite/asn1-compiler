@@ -18,7 +18,6 @@ set (SOURCES
    ObjectIdentifier.cc
    OctetStringType.cc
    PrintableStringType.cc
-   SequenceType.cc
    Type.cc
    VisibleStringType.cc
    BitString.cc
