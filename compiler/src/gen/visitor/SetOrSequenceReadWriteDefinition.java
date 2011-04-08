@@ -175,13 +175,21 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
               append("::read(ASN1ValueReader& reader, ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
-      builder.append(1, "reader.readSequenceBegin(*this);").newLine();
+      if (node.isSequence()) {
+         builder.append(1, "reader.readSequenceBegin(*this);").newLine();
+      } else if (node.isSet()) {
+         builder.append(1, "reader.readSetBegin(*this);").newLine();
+      }
       builder.newLine();
 
       VisitorUtils.visitChildsAndAccept(builder, node, new ReadDefinition());
 
       builder.newLine();
-      builder.append(1, "reader.readSequenceEnd(*this);").newLine();
+      if (node.isSequence()) {
+         builder.append(1, "reader.readSequenceEnd(*this);").newLine();
+      } else if (node.isSet()) {
+         builder.append(1, "reader.readSetEnd(*this);").newLine();
+      }
       builder.append("}").newLine();
       builder.newLine();
 
@@ -189,13 +197,21 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
               append("::write(ASN1ValueWriter& writer, const ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
-      builder.append(1, "writer.writeSequenceBegin(*this);").newLine();
+      if (node.isSequence()) {
+         builder.append(1, "writer.writeSequenceBegin(*this);").newLine();
+      } else if (node.isSet()) {
+         builder.append(1, "writer.writeSetBegin(*this);").newLine();
+      }
       builder.newLine();
 
       VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinition());
 
       builder.newLine();
-      builder.append(1, "writer.writeSequenceEnd(*this);").newLine();
+      if (node.isSequence()) {
+         builder.append(1, "writer.writeSequenceEnd(*this);").newLine();
+      } else if (node.isSet()) {
+         builder.append(1, "writer.writeSetEnd(*this);").newLine();
+      }
       builder.append("}").newLine();
 
       builder.newLine();
