@@ -47,7 +47,7 @@ public class CPPCodeGenerator {
       builder.newLine();
 
       // add include
-      builder.append("#include <type/Types.hh>").newLine();
+      builder.append("#include <Types.hh>").newLine();
       builder.newLine();
 
       builder.append("namespace asn1").newLine();

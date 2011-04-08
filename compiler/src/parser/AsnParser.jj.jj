@@ -1532,8 +1532,8 @@ int SetOrSequenceOfType() : {/*@bgen(jjtree) SetOrSequenceOfType */
 {/*@bgen(jjtree) SetOrSequenceOfType */
    try {
 /*@egen*/ 
-   ( ( <SET_TKN> { rc = 4; }
-     | <SEQUENCE_TKN> { rc = 5; } ) [[<LEFTPAREN_TKN>] SizeConstraint() [<RIGHTPAREN_TKN>]] <OF_TKN> )
+   ( ( <SET_TKN> { jjtn000.setType(ASTSetOrSequenceOfType.SET); rc = 4; }
+     | <SEQUENCE_TKN> { jjtn000.setType(ASTSetOrSequenceOfType.SEQUENCE); rc = 5; } ) [[<LEFTPAREN_TKN>] SizeConstraint() [<RIGHTPAREN_TKN>]] <OF_TKN> )
     Type()/*@bgen(jjtree)*/
            {
              jjtree.closeNodeScope(jjtn000, true);

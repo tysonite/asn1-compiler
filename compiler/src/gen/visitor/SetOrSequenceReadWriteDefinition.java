@@ -100,7 +100,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
          builder.newLine();
          builder.append(1, "bool is_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Present(false);").newLine();
-         builder.append(1, "reader.isSequenceComponentPresent(_").
+         builder.append(1, "reader.isComponentPresent(_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type, is_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).

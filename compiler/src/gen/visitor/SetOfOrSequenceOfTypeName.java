@@ -21,7 +21,11 @@ public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements Co
 
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
-      builder.append("SequenceOfType<");
+      if (node.isSequence()) {
+         builder.append("SequenceOfType<");
+      } else if (node.isSet()) {
+         builder.append("SetOfType<");
+      }
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new DefinedCPPTypeName(),

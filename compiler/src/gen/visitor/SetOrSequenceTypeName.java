@@ -16,7 +16,13 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTSetOrSequenceType node, Object data) {
-      builder.append("SequenceType");
+      if (node.isSequence()) {
+         builder.append("SequenceType");
+      } else if (node.isSet()) {
+         builder.append("SetType");
+      } else {
+         throw new GeneratorException("Expected SEQUENCE or SET type");
+      }
       return data;
    }
 

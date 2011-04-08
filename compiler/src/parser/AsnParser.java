@@ -1586,11 +1586,11 @@ try {Token tok;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SET_TKN:
         jj_consume_token(SET_TKN);
-                   rc = 4;
+                   jjtn000.setType(ASTSetOrSequenceOfType.SET); rc = 4;
         break;
       case SEQUENCE_TKN:
         jj_consume_token(SEQUENCE_TKN);
-                        rc = 5;
+                        jjtn000.setType(ASTSetOrSequenceOfType.SEQUENCE); rc = 5;
         break;
       default:
         jj_la1[30] = jj_gen;
@@ -4372,6 +4372,14 @@ try {Token tok;
     return false;
   }
 
+  static private boolean jj_3R_73() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(18)) jj_scanpos = xsp;
+    if (jj_3R_84()) return true;
+    return false;
+  }
+
   static private boolean jj_3R_35() {
     if (jj_3R_60()) return true;
     return false;
@@ -4561,14 +4569,6 @@ try {Token tok;
 
   static private boolean jj_3_1() {
     if (jj_3R_12()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_73() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(18)) jj_scanpos = xsp;
-    if (jj_3R_84()) return true;
     return false;
   }
 

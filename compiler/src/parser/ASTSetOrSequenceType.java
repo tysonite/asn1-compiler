@@ -6,6 +6,7 @@ public class ASTSetOrSequenceType extends SimpleNode {
 
    public static final int SEQUENCE = 0;
    public static final int SET = 1;
+   int choosenType = -1;
 
    public ASTSetOrSequenceType(int id) {
       super(id);
@@ -15,7 +16,16 @@ public class ASTSetOrSequenceType extends SimpleNode {
       super(p, id);
    }
 
-   protected void setType(int seq) {
+   public void setType(int type) {
+      choosenType = type;
+   }
+
+   public boolean isSequence() {
+      return choosenType == SEQUENCE;
+   }
+
+   public boolean isSet() {
+      return choosenType == SET;
    }
 
    /** Accept the visitor. **/

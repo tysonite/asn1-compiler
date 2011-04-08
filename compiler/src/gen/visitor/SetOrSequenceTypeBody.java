@@ -104,9 +104,9 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
          builder.append(2, "void set_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
-                 append("_Present(bool isPresent = true) { ");
+                 append("_Present(bool present = true) { ");
          builder.append("_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
-                 append("_Present = isPresent; }").newLine();
+                 append("_Present = present; }").newLine();
 
          builder.append(2, "bool is_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).

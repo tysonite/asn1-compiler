@@ -2,20 +2,35 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package parser;
 
-public
-class ASTSetOrSequenceOfType extends SimpleNode {
-  public ASTSetOrSequenceOfType(int id) {
-    super(id);
-  }
+public class ASTSetOrSequenceOfType extends SimpleNode {
 
-  public ASTSetOrSequenceOfType(AsnParser p, int id) {
-    super(p, id);
-  }
+   public static final int SEQUENCE = 0;
+   public static final int SET = 1;
+   int choosenType = -1;
 
+   public ASTSetOrSequenceOfType(int id) {
+      super(id);
+   }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(AsnParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+   public ASTSetOrSequenceOfType(AsnParser p, int id) {
+      super(p, id);
+   }
+
+   public void setType(int type) {
+      choosenType = type;
+   }
+
+   public boolean isSequence() {
+      return choosenType == SEQUENCE;
+   }
+
+   public boolean isSet() {
+      return choosenType == SET;
+   }
+
+   /** Accept the visitor. **/
+   public Object jjtAccept(AsnParserVisitor visitor, Object data) {
+      return visitor.visit(this, data);
+   }
 }
 /* JavaCC - OriginalChecksum=6022c53bc86695d1f79f8752b9e37002 (do not edit this line) */

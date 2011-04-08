@@ -616,8 +616,8 @@ void SignedNumber() :
  */
 int SetOrSequenceOfType() : { int rc; }
 { 
-   ( ( <SET_TKN> { rc = 4; }
-     | <SEQUENCE_TKN> { rc = 5; } ) [[<LEFTPAREN_TKN>] SizeConstraint() [<RIGHTPAREN_TKN>]] <OF_TKN> )
+   ( ( <SET_TKN> { jjtThis.setType(ASTSetOrSequenceOfType.SET); rc = 4; }
+     | <SEQUENCE_TKN> { jjtThis.setType(ASTSetOrSequenceOfType.SEQUENCE); rc = 5; } ) [[<LEFTPAREN_TKN>] SizeConstraint() [<RIGHTPAREN_TKN>]] <OF_TKN> )
     Type() { return rc; }
 }
 
