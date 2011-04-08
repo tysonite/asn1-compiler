@@ -61,12 +61,12 @@ public:
    void writeSequenceOfEnd(const BaseSequenceOfType& type);
 
    // Writes SET value
-   void writeSetBegin();
-   void writeSetEnd();
+   void writeSetBegin(const SetType& type);
+   void writeSetEnd(const SetType& type);
 
    // Writes SET OF value (the same as SET)
-   void writeSetOfBegin();
-   void writeSetOfEnd();
+   void writeSetOfBegin(const BaseSetOfType& type);
+   void writeSetOfEnd(const BaseSetOfType& type);
 
    // Writes EXPLICIT tag
    void writeExplicitBegin(const Type& type);

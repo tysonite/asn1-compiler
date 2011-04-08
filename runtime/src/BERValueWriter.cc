@@ -189,32 +189,34 @@ void BERValueWriter::writeSequenceOfEnd(const BaseSequenceOfType& type)
 }
 
 // Writes SET value
-void BERValueWriter::writeSetBegin()
+void BERValueWriter::writeSetBegin(const SetType& type)
 {
    if (_nestedWriter)
-      _nestedWriter->writeSetBegin();
+      _nestedWriter->writeSetBegin(type);
    else
    {
       assert(_compositionStart == 0);
-      _compositionStart = _buffer.encodeIL(BERBuffer::SET_BERTYPE, BERBuffer::CONSTRUCTED_OBJECTYPE);
+      _compositionStart = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::SET_BERTYPE,
+         BERBuffer::CONSTRUCTED_OBJECTYPE, type.tagClass());
+
       _nestedWriter = _prototype();
    }
 }
 
-void BERValueWriter::writeSetEnd()
+void BERValueWriter::writeSetEnd(const SetType& type)
 {
    _writeLastCompositionEnd();
 }
 
 // Writes SET OF value
-void BERValueWriter::writeSetOfBegin()
+void BERValueWriter::writeSetOfBegin(const BaseSetOfType& type)
 {
-   writeSetBegin();
+   writeSetBegin(type);
 }
 
-void BERValueWriter::writeSetOfEnd()
+void BERValueWriter::writeSetOfEnd(const BaseSetOfType& type)
 {
-   writeSetEnd();
+   writeSetEnd(type);
 }
 
 // Writes EXPLICIT tag

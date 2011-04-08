@@ -50,12 +50,12 @@ public:
    virtual void writeSequenceOfEnd(const BaseSequenceOfType& type) = 0;
 
    // Writes SET value
-   virtual void writeSetBegin() = 0;
-   virtual void writeSetEnd() = 0;
+   virtual void writeSetBegin(const SetType& type) = 0;
+   virtual void writeSetEnd(const SetType& type) = 0;
 
    // Writes SET OF value (the same as SET)
-   virtual void writeSetOfBegin() = 0;
-   virtual void writeSetOfEnd() = 0;
+   virtual void writeSetOfBegin(const BaseSetOfType& type) = 0;
+   virtual void writeSetOfEnd(const BaseSetOfType& type) = 0;
 
    // Writes EXPLICIT tag
    virtual void writeExplicitBegin(const Type& type) = 0;

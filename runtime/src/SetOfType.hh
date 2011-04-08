@@ -17,6 +17,7 @@ class SetOfType : public BaseSetOfType
 public:
 
    typedef std::vector<typename TypeItemType::ValueType> ValueType;
+   typedef TypeItemType InnerType;
 
    // Constructor
    explicit SetOfType(TypeItemType* innerType, uint64_t minSize = 0, uint64_t maxSize = 0)

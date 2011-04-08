@@ -4612,6 +4612,100 @@ BOOST_FIXTURE_TEST_CASE(TestBerBitStringType9, BitStringFixture<Type9>)
 
 }
 
+namespace set_of_tests
+{
+
+template <typename Type>
+struct SetOfFixture
+{
+   SetOfFixture() : type(new typename Type::InnerType())
+   {
+      vToWrite.push_back(-1);
+      vToWrite.push_back(1);
+      vToWrite.push_back(0);
+   }
+   ~SetOfFixture()
+   {
+      BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite.begin(), vToWrite.end(), vToRead.begin(), vToRead.end());
+   }
+
+   typename Type::ValueType vToWrite, vToRead;
+   Type type;
+};
+
+// ASN.1: SET OF INTEGER
+BOOST_FIXTURE_TEST_CASE(TestBERSetOfInteger, SetOfFixture<asn1::SetOfType<asn1::IntegerType> >)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+   BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
+}
+
+template <typename Type>
+struct SetOfSetOfFixture
+{
+   SetOfSetOfFixture() : type(new typename Type::InnerType(new typename Type::InnerType::InnerType))
+   {
+      typename Type::InnerType::ValueType element;
+
+      element.push_back(-1);
+      element.push_back(0);
+      element.push_back(1);
+      vToWrite.push_back(element);
+
+      element.clear();
+      element.push_back(-2);
+      element.push_back(0);
+      element.push_back(2);
+      vToWrite.push_back(element);
+   }
+   ~SetOfSetOfFixture()
+   {
+      BOOST_REQUIRE_EQUAL(vToWrite.size(), vToRead.size());
+      for (std::size_t i = 0; i < vToWrite.size(); ++i)
+      {
+         BOOST_CHECK_EQUAL(vToWrite[i].size(), vToRead[i].size());
+         BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite[i].begin(), vToWrite[i].end(), vToRead[i].begin(), vToRead[i].end());
+      }
+   }
+
+   typename Type::ValueType vToWrite, vToRead;
+   Type type;
+};
+
+// ASN.1: S ::= SET OF SET OF INTEGER
+BOOST_FIXTURE_TEST_CASE(TestBERSetOfSetOfInteger, SetOfSetOfFixture<asn1::SetOfType<asn1::SetOfType<asn1::IntegerType> > >)
+{
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+   BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
+}
+
+}
+
 /*ut::test_suite* init_unit_test_suite(int argc, char* argv[])
 {
    ut::test_suite* test = BOOST_TEST_SUITE("BER encoding/decoding test suite");
