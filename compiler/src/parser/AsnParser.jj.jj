@@ -31,180 +31,11 @@ OUTPUT_DIRECTORY="..\\src\\parser";
 PARSER_BEGIN(AsnParser)
 package parser;
 
-import java.io.*;
-import java.util.*;
-import gen.*;
-
 public class AsnParser/*@bgen(jjtree)*/implements AsnParserTreeConstants/*@egen*/
 {/*@bgen(jjtree)*/
   protected static JJTAsnParserState jjtree = new JJTAsnParserState();
 
 /*@egen*/
-	/**
-	 * The base package name for the generated classes.
-	 *<p>
-	 * This package is prepended to the module name to get the final package
-	 * name for the generated classes.
-	 *<p>
-	 * For example, if "-p foo.bar" is given on the command line, the classes
-	 * generated from the module X509 will be in the package foo.bar.x509.
-	 */
-	public static String outputPackage;
-
-	/**
-	 * The name of the directory to create for the package.
-	 */
-	public static String packageDirectory;
-
-	/**
-	 * The name of the final output directory.
-	 *
-	 * This is the base output directory plus the package name.
-	 */
-	public static String outputDirectory;
-
-	/**
-	 * The directory where the classes are created.
-	 *<p>
-	 * This is the top level directory. Each of the directories necessary
-	 * for the packages are created under this directory.
-	 *<p>
-	 * The default is the current directory.
-	 */
-	public static String directory;
-
-	public static void main(String args[]) throws ParseException
-	{
-		boolean showUsage = true;
-
-		AsnParser parser;
-		try
-		{
-			int i;
-			for(i = 0; i < args.length; i++)
-			{
-				if(args[i].equals("-p"))
-				{
-					i++;
-					if(i >= args.length)
-					{
-						usage();
-						System.exit(1);
-					}
-
-					outputPackage = args[i];
-					continue;
-				}
-
-				if(args[i].equals("-d"))
-				{
-					i++;
-					if(i >= args.length)
-					{
-						usage();
-						System.exit(1);
-					}
-
-					directory = args[i];
-					continue;
-				}
-
-				parser = new AsnParser(new FileInputStream(args[i]));
-				parser.Input();
-				System.out.println("ASN.1 file parsed successfully.");
-
-				if(directory != null)
-				{
-					File outputDir = new File(directory);
-					if(outputDir.exists() == true)
-					{
-						if(outputDir.isDirectory() != true)
-						{
-							System.err.println(directory + " is not a directory, cannot continue");
-							System.exit(1);
-						}
-					}
-					else
-					{
-						boolean x = outputDir.mkdirs();
-						if(x != true)
-						{
-							System.err.println("could not create directory " + directory + ", cannot continue");
-							System.exit(1);
-						}
-					}
-				}
-
-				if(outputPackage != null)
-				{
-					packageDirectory = new String(outputPackage);
-					String fileSeparator = System.getProperty("file.separator");
-					char[] fileSepArray = fileSeparator.toCharArray();
-					if(fileSepArray.length == 1)
-						packageDirectory = packageDirectory.replace('.', fileSepArray[0]);
-					//else
-						// don't know what to do in this case!
-
-					outputDirectory = new String(directory + fileSeparator + packageDirectory);
-					File f = new File(outputDirectory);
-					boolean x = f.mkdirs();
-					if(x != true)
-					{
-						System.err.println("could not create directory " + outputDirectory + ", cannot continue");
-						System.exit(1);
-					}
-				}
-				else
-					outputDirectory = directory;
-
-				SimpleNode root = (SimpleNode)jjtree.rootNode();
-				root.dump("\t");
-
-            CPPCodeGenerator generator = new CPPCodeGenerator(root, outputDirectory);
-            generator.generate();
-
-				showUsage = false;
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		if(showUsage == true)
-		{
-			usage();
-			System.exit(1);
-		}
-	}
-
-	static void
-	usage()
-	{
-		System.out.println("arc - ASN.1 compiler");
-		System.out.println("Copyright 1999 FORGE Research Pty Ltd\n");
-		System.out.println("usage: java AsnParser [-d directory] [-p package] source files...");
-	}
-
-   static void lookForAssignment(Node n) {
-      int numChildren = n.jjtGetNumChildren();
-      for (int i = 0; i < numChildren; i++) {
-         SimpleNode node = (SimpleNode) n.jjtGetChild(i);
-         if (node instanceof ASTTypeAssignment) {
-            //new TypeGenerator().generate((ASTTypeAssignment) node);
-         } else {
-            lookForAssignment(node);
-         }
-      }
-   }
-
-	static String
-	returnRecursive(Node n)
-	{
-		String s = new String("");
-		return s;
-	}
-
    public static void jjtreeOpenNodeScope(Node n) {
       ((SimpleNode) n).setFirstToken(getToken(1));
    }
@@ -213,10 +44,9 @@ public class AsnParser/*@bgen(jjtree)*/implements AsnParserTreeConstants/*@egen*
       ((SimpleNode) n).setLastToken(getToken(0));
    }
 
-	private static String usefulTypes[] = {
-		"GraphicString",  "NumericString", "PrintableString",
-		"TeletexString", "T61String", "VideotexString", "IA5String",
-		"VisibleString", "ISO646String", "GeneralizedTime", "UniversalString", "BMPString" };
+   public SimpleNode getTreeRootNode() {
+      return (SimpleNode) jjtree.rootNode();
+   }
 }
 
 PARSER_END(AsnParser)
