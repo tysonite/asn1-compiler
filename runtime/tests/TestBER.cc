@@ -2853,8 +2853,10 @@ public:
       explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
 
       void set_i(const asn1::IntegerType::ValueType& v) { _i = v; _id = i_ID; }
-      const asn1::IntegerType::ValueType& get_i() const { return _i; }
+      const asn1::IntegerType::ValueType& get_i() const { assert(_id == i_ID); return _i; }
+      asn1::IntegerType::ValueType& get_i() { assert(_id == i_ID); return _i; }
       bool has_i_Choosen() const { return _id == i_ID; }
+      void choose_i() { _id = i_ID; }
 
       void set_b(const asn1::BooleanType::ValueType& v) { _b = v; _id = b_ID; }
       const asn1::BooleanType::ValueType& get_b() const { return _b; }
