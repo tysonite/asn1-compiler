@@ -16,6 +16,9 @@ public:
    // Default constructor
    ObjectIdentifier() {}
 
+   // Constructor
+   ObjectIdentifier(const std::vector<uint16_t>& value) { assign(value.begin(), value.end()); }
+
    // Constructor: value is a string representation of the object identifier.
    // i.e.: value = "1.2.3.4.5"
    ObjectIdentifier(const std::string& value) { setValue(value); }
