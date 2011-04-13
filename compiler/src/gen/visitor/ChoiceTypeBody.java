@@ -10,7 +10,8 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
    private final GeneratorContext context;
    private int nextId = 0;
 
-   protected class SetGetHasDeclaration extends DoNothingASTVisitor implements ContentProvider {
+   protected class SetGetHasChooseDeclaration extends DoNothingASTVisitor
+           implements ContentProvider {
 
       private CodeBuilder builder = new CodeBuilder();
 
@@ -36,7 +37,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
                  append(" }");
          builder.newLine();
 
-         // getter
+         // getter (const)
          builder.append(2, "const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())) {
@@ -45,7 +46,27 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
          }
          builder.append("::ValueType& get_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
-                 append("() const { return _").
+                 append("() const { assert(_id == ").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_ID); ").
+                 append("return _").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("; }");
+         builder.newLine();
+
+         // getter (non-const)
+         builder.append(2, "");
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+                 new DefinedCPPTypeName())) {
+            builder.append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context)));
+         }
+         builder.append("::ValueType& get_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("() { assert(_id == ").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_ID); ").
+                 append("return _").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("; }");
          builder.newLine();
@@ -54,6 +75,15 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
          builder.append(2, "bool has_");
          builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Choosen() const { return _id == ").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_ID").
+                 append("; }");
+         builder.newLine();
+         
+         // choose
+         builder.append(2, "void choose_");
+         builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("() { _id = ").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_ID").
                  append("; }");
@@ -148,7 +178,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
       builder.newLine();
 
       // write setters/getters
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetGetHasDeclaration());
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetGetHasChooseDeclaration());
 
       builder.append(1, "private:").newLine();
       builder.newLine();

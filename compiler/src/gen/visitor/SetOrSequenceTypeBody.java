@@ -35,7 +35,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          builder.append(" }");
          builder.newLine();
 
-         // getter
+         // getter (const)
          builder.append(2, "const ");
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())
@@ -46,6 +46,21 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          builder.append("::ValueType& get_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("() const { return _").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("; }");
+         builder.newLine();
+
+         // getter (non-const)
+         builder.append(2, "");
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+                 new DefinedCPPTypeName())
+                 || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
+            builder.append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context)));
+         }
+         builder.append("::ValueType& get_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("() { return _").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("; }");
          builder.newLine();
