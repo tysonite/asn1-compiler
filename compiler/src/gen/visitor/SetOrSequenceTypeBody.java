@@ -251,6 +251,74 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       }
    }
 
+   protected class EqualityOperatorDeclaration extends DoNothingASTVisitor
+           implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      protected class CompareComponentDeclaration extends DoNothingASTVisitor
+              implements ContentProvider {
+
+         private CodeBuilder builder = new CodeBuilder();
+
+         @Override
+         public Object visit(ASTElementType node, Object data) {
+            final String componentName = "_"
+                    + GenerationUtils.asCPPToken(node.getFirstToken().toString());
+            final String componentNamePresent = componentName + "_Present";
+
+            if (node.isOptional()) {
+               builder.append(3, "if (").append(componentNamePresent).append(" != ").
+                       append("other.").append(componentNamePresent).append(")").newLine();
+               builder.append(4, "return false;").newLine();
+            }
+
+            builder.append(3, "if (");
+            if (node.isOptional()) {
+               builder.append(componentNamePresent).append(" && ").
+                       append("other.").append(componentNamePresent).append(" && ");
+            }
+            builder.append(componentName).append(" != other.").
+                    append(componentName).append(")").newLine();
+            builder.append(4, "return false;").newLine();
+
+            return data;
+         }
+
+         public String getContent() {
+            return builder.toString();
+         }
+
+         public boolean hasValuableContent() {
+            return true;
+         }
+      }
+
+      @Override
+      public Object visit(ASTSetOrSequenceType node, Object data) {
+         builder.append(2, "bool operator==(const SequenceValue_Type& other) const").newLine();
+         builder.append(2, "{").newLine();
+         builder.append(3, "if (this == &other)").newLine();
+         builder.append(4, "return true;").newLine();
+         builder.newLine();
+
+         VisitorUtils.visitChildsAndAccept(builder, node, new CompareComponentDeclaration());
+
+         builder.newLine();
+         builder.append(3, "return true;").newLine();
+         builder.append(2, "}").newLine();
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return true;
+      }
+   }
+
    public SetOrSequenceTypeBody(final GeneratorContext context) {
       this.context = context;
    }
@@ -282,6 +350,17 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
       // write setters/getters
       VisitorUtils.visitChildsAndAccept(builder, node, new SetGetDeclaration());
+
+      // operator==
+      VisitorUtils.visitNodeAndAccept(builder, node, new EqualityOperatorDeclaration());
+      builder.newLine();
+
+      // operator!=
+      builder.append(2, "bool operator!=(const SequenceValue_Type& other) const").newLine();
+      builder.append(2, "{").newLine();
+      builder.append(3, "return !(*this == other);").newLine();
+      builder.append(2, "}").newLine();
+      builder.newLine();
 
       builder.append(1, "private:").newLine();
       builder.newLine();

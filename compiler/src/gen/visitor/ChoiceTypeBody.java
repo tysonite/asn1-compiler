@@ -79,7 +79,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
                  append("_ID").
                  append("; }");
          builder.newLine();
-         
+
          // choose
          builder.append(2, "void choose_");
          builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
@@ -156,6 +156,73 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
       }
    }
 
+   protected class EqualityOperatorDeclaration extends DoNothingASTVisitor
+           implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      protected class CompareComponentDeclaration extends DoNothingASTVisitor
+              implements ContentProvider {
+
+         private CodeBuilder builder = new CodeBuilder();
+
+         @Override
+         public Object visit(ASTElementType node, Object data) {
+            final String componentName = "_"
+                    + GenerationUtils.asCPPToken(node.getFirstToken().toString());
+            final String componentID = GenerationUtils.asCPPToken(node.getFirstToken().toString())
+                    + "_ID";
+
+            builder.append(3, "case ").append(componentID).append(":").newLine();
+            builder.append(4, "if (").append(componentName).append(" != other.").
+                    append(componentName).append(")").newLine();
+            builder.append(5, "return false;").newLine();
+            builder.append(4, "break;").newLine();
+
+            return data;
+         }
+
+         public String getContent() {
+            return builder.toString();
+         }
+
+         public boolean hasValuableContent() {
+            return true;
+         }
+      }
+
+      @Override
+      public Object visit(ASTChoiceType node, Object data) {
+         builder.append(2, "bool operator==(const ChoiceValue_Type& other) const").newLine();
+         builder.append(2, "{").newLine();
+         builder.append(3, "if (this == &other)").newLine();
+         builder.append(4, "return true;").newLine();
+         builder.newLine();
+
+         builder.append(3, "switch (_id)").newLine();
+         builder.append(3, "{").newLine();
+
+         VisitorUtils.visitChildsAndAccept(builder, node, new CompareComponentDeclaration());
+
+         builder.append(3, "default:").newLine();
+         builder.append(4, "return false;").newLine();
+         builder.append(3, "}").newLine();
+
+         builder.newLine();
+         builder.append(3, "return true;").newLine();
+         builder.append(2, "}").newLine();
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return true;
+      }
+   }
+
    public ChoiceTypeBody(final GeneratorContext context) {
       this.context = context;
    }
@@ -179,6 +246,17 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
       // write setters/getters
       VisitorUtils.visitChildsAndAccept(builder, node, new SetGetHasChooseDeclaration());
+
+      // operator==
+      VisitorUtils.visitNodeAndAccept(builder, node, new EqualityOperatorDeclaration());
+      builder.newLine();
+
+      // operator!=
+      builder.append(2, "bool operator!=(const ChoiceValue_Type& other) const").newLine();
+      builder.append(2, "{").newLine();
+      builder.append(3, "return !(*this == other);").newLine();
+      builder.append(2, "}").newLine();
+      builder.newLine();
 
       builder.append(1, "private:").newLine();
       builder.newLine();
