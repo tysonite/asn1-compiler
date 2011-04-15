@@ -13,7 +13,13 @@ class NullType : public Type
 {
 public:
 
-   class NullValueType {};
+   class NullValueType
+   {
+   public:
+      bool operator==(const NullValueType& other) const { return true; }
+      bool operator!=(const NullValueType& other) const { return !(*this == other); }
+   };
+
    typedef NullValueType ValueType; // represents NULL type, in fact it is not used anywhere
 
    // Constructor

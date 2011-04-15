@@ -2862,6 +2862,33 @@ public:
       const asn1::BooleanType::ValueType& get_b() const { return _b; }
       bool has_b_Choosen() const { return _id == b_ID; }
 
+      bool operator==(const TypeChoice_Value& other) const
+      {
+         if (this == &other)
+            return true;
+
+         switch (_id)
+         {
+         case i_ID:
+            if (_i != other._i)
+               return false;
+            break;
+         case b_ID:
+            if (_b != other._b)
+               return false;
+            break;
+         default:
+            return false;
+         }
+
+         return true;
+      }
+
+      bool operator!=(const TypeChoice_Value& other) const
+      {
+         return !(*this == other);
+      }
+
    private:
 
       enum ChoiceValue_identifier
@@ -3418,62 +3445,84 @@ namespace sequence_type
 // Type9 ::= [5] IMPLICIT TypeSequence
 // Type10 ::= SEQUENCE OF Type9
 
-class SequenceValue_IB_TypeSequence
-{
-public:
-
-   explicit SequenceValue_IB_TypeSequence() {}
-
-   void set_i(const asn1::IntegerType::ValueType& v) { _i = v; }
-   void set_b(const asn1::BooleanType::ValueType& v) { _b = v; }
-
-   const asn1::IntegerType::ValueType& get_i() const { return _i; }
-   const asn1::BooleanType::ValueType& get_b() const { return _b; }
-
-private:
-
-   asn1::IntegerType::ValueType _i;
-   asn1::BooleanType::ValueType _b;
-};
-
 class TypeSequence : public asn1::SequenceType
 {
 public:
 
-   typedef SequenceValue_IB_TypeSequence ValueType;
+   explicit TypeSequence()
+   {
+   }
 
-   explicit TypeSequence() : asn1::SequenceType() {}
+   class SequenceValue_Type
+   {
+   public:
 
-   void read(asn1::ASN1ValueReader& reader, SequenceValue_IB_TypeSequence& value) const
+      explicit SequenceValue_Type() {}
+
+      void set_i(const asn1::IntegerType::ValueType& v) { _i = v; }
+      const asn1::IntegerType::ValueType& get_i() const { return _i; }
+      asn1::IntegerType::ValueType& get_i() { return _i; }
+
+      void set_b(const asn1::BooleanType::ValueType& v) { _b = v; }
+      const asn1::BooleanType::ValueType& get_b() const { return _b; }
+      asn1::BooleanType::ValueType& get_b() { return _b; }
+
+      bool operator==(const SequenceValue_Type& other) const
+      {
+         if (this == &other)
+            return true;
+
+         if (_i != other._i)
+            return false;
+         if (_b != other._b)
+            return false;
+
+         return true;
+      }
+
+      bool operator!=(const SequenceValue_Type& other) const
+      {
+         return !(*this == other);
+      }
+
+   private:
+
+      asn1::IntegerType::ValueType _i;
+      asn1::BooleanType::ValueType _b;
+   };
+
+   typedef SequenceValue_Type ValueType;
+
+   void read(asn1::ASN1ValueReader& reader, ValueType& value) const
    {
       reader.readSequenceBegin(*this);
 
       {
          asn1::IntegerType::ValueType v;
-         _IType.read(reader, v);
+         _i_Type.read(reader, v);
          value.set_i(v);
       }
       {
          asn1::BooleanType::ValueType v;
-         _BType.read(reader, v);
+         _b_Type.read(reader, v);
          value.set_b(v);
       }
 
       reader.readSequenceEnd(*this);
    }
 
-   void write(asn1::ASN1ValueWriter& writer, const SequenceValue_IB_TypeSequence& value) const
+   void write(asn1::ASN1ValueWriter& writer, const ValueType& value) const
    {
       writer.writeSequenceBegin(*this);
-      _IType.write(writer, value.get_i());
-      _BType.write(writer, value.get_b());
+      _i_Type.write(writer, value.get_i());
+      _b_Type.write(writer, value.get_b());
       writer.writeSequenceEnd(*this);
    }
 
 private:
 
-   asn1::IntegerType _IType;
-   asn1::BooleanType _BType;
+   asn1::IntegerType _i_Type;
+   asn1::BooleanType _b_Type;
 };
 
 class Type1 : public TypeSequence
@@ -3574,9 +3623,35 @@ public:
    Type10() : asn1::SequenceOfType<Type9>(new Type9) {}
 };
 
+BOOST_AUTO_TEST_CASE(TestBerTypeSequenceValue)
+{
+   TypeSequence::ValueType value1, value2;
+
+   value1.set_i(1);
+   value1.set_b(true);
+
+   BOOST_CHECK_EQUAL(value1.get_i(), 1);
+   BOOST_CHECK_EQUAL(value1.get_b(), true);
+
+   value2.set_i(1);
+   value2.set_b(true);
+
+   BOOST_CHECK_EQUAL(value2.get_i(), 1);
+   BOOST_CHECK_EQUAL(value2.get_b(), true);
+
+   // check operator==
+   BOOST_CHECK(value1 == value2);
+
+   value2.set_i(2);
+   BOOST_CHECK_EQUAL(value2.get_i(), 2);
+
+   // check operator!=
+   BOOST_CHECK(value1 != value2);
+}
+
 BOOST_AUTO_TEST_CASE(TestBerSequenceTypeSequence)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   TypeSequence::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3610,7 +3685,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceTypeSequence)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType1)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type1::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3644,7 +3719,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType1)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType2)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type2::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3678,7 +3753,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType2)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType3)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type3::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3712,7 +3787,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType3)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType4)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type4::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3746,7 +3821,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType4)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType5)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type5::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3780,7 +3855,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType5)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType6)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type6::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3814,7 +3889,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType6)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType7)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type7::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3848,7 +3923,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType7)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType8)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type8::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3882,7 +3957,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType8)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
 {
-   SequenceValue_IB_TypeSequence vToWrite, vToRead;
+   Type9::ValueType vToWrite, vToRead;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
@@ -3922,14 +3997,14 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType9)
 
 BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
 {
-   SequenceValue_IB_TypeSequence vToWrite;
+   Type10::InnerType::ValueType vToWrite;
 
    vToWrite.set_i(-1);
    vToWrite.set_b(false);
 
-   std::vector<SequenceValue_IB_TypeSequence> outValues;
+   Type10::ValueType outValues;
    outValues.push_back(vToWrite);
-
+   
    BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
    BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
@@ -3958,13 +4033,14 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
    asn1::BERValueReader reader(inbuffer);
 
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   std::vector<SequenceValue_IB_TypeSequence> inValues;
+   
+   Type10::ValueType inValues;
    BOOST_CHECK_NO_THROW(type.read(reader, inValues));
    BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
    
    BOOST_REQUIRE_EQUAL(outValues.size(), inValues.size());
 
-   SequenceValue_IB_TypeSequence vToRead = inValues[0];
+   Type10::InnerType::ValueType vToRead = inValues[0];
    BOOST_CHECK_EQUAL(vToRead.get_i(), -1);
    BOOST_CHECK_EQUAL(vToRead.get_b(), false);
 
