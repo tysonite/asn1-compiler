@@ -265,10 +265,10 @@ void BERValueReader::readPrintableString(OctetString& value, const PrintableStri
 }
 
 // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
-void BERValueReader::isComponentPresent(const Type& type, bool& isPresent)
+bool BERValueReader::isComponentPresent(const Type& type)
 {
    if (_nestedReader)
-      _nestedReader->isComponentPresent(type, isPresent);
+      return _nestedReader->isComponentPresent(type);
    else
    {
       TagType tag;
@@ -276,14 +276,15 @@ void BERValueReader::isComponentPresent(const Type& type, bool& isPresent)
       CLType cl;
       _buffer.lookupIdentifierOctets(tag, pc, cl);
 
-      isPresent = false;
       if (type.tagClass() == cl)
       {
          if (type.hasTagNumber() && (type.tagNumber() == tag))
-            isPresent = true;
+            return true;
          else if (!type.hasTagNumber() && type.typeID() == tag)
-            isPresent = true;
+            return true;
       }
+
+      return false;
    }
 }
 

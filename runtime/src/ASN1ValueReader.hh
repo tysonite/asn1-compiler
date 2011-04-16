@@ -42,7 +42,7 @@ public:
    virtual void readPrintableString(OctetString& value, const PrintableStringType& type) = 0;
 
    // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
-   virtual void isComponentPresent(const Type& type, bool& isPresent) = 0;
+   virtual bool isComponentPresent(const Type& type) = 0;
 
    // Reads SEQUENCE value
    virtual void readSequenceBegin(const SequenceType& type) = 0;

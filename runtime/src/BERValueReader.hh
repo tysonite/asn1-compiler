@@ -53,7 +53,7 @@ public:
    void readPrintableString(OctetString& value, const PrintableStringType& type);
 
    // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
-   void isComponentPresent(const Type& type, bool& isPresent);
+   bool isComponentPresent(const Type& type);
 
    // Reads SEQUENCE value
    void readSequenceBegin(const SequenceType& type);
