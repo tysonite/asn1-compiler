@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implements ContentProvider {
+public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
@@ -135,7 +136,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
               append("::read(ASN1ValueReader& reader, ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
-      builder.append(1, "asn1::Type* choosenType = NULL;").newLine();
+      builder.append(1, asn1NameSpace).append("Type* choosenType = NULL;").newLine();
       builder.append(1, "reader.readChoice(*this, &choosenType);").newLine();
       builder.newLine();
 

@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
@@ -20,7 +21,7 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      builder.append("asn1::TaggingType<");
+      builder.append(asn1NameSpace).append("TaggingType<");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new SetOfOrSequenceOfTypeName(context), new DefinedCPPTypeName())) {
