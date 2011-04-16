@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class SetOrSequenceTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class SetOrSequenceTypeName extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
 
@@ -17,9 +18,9 @@ public class SetOrSequenceTypeName extends DoNothingASTVisitor implements Conten
    @Override
    public Object visit(ASTSetOrSequenceType node, Object data) {
       if (node.isSequence()) {
-         builder.append("SequenceType");
+         builder.append(asn1NameSpace).append("SequenceType");
       } else if (node.isSet()) {
-         builder.append("SetType");
+         builder.append(asn1NameSpace).append("SetType");
       } else {
          throw new GeneratorException("Expected SEQUENCE or SET type");
       }

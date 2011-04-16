@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class ChoiceTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class ChoiceTypeName extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
 
@@ -16,7 +17,7 @@ public class ChoiceTypeName extends DoNothingASTVisitor implements ContentProvid
 
    @Override
    public Object visit(ASTChoiceType node, Object data) {
-      builder.append("ChoiceType");
+      builder.append(asn1NameSpace).append("ChoiceType");
       return data;
    }
 
@@ -28,4 +29,3 @@ public class ChoiceTypeName extends DoNothingASTVisitor implements ContentProvid
       return !builder.toString().isEmpty();
    }
 }
-

@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class EnumeratedTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class EnumeratedTypeName extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
 
@@ -16,7 +17,7 @@ public class EnumeratedTypeName extends DoNothingASTVisitor implements ContentPr
 
    @Override
    public Object visit(ASTEnumeratedType node, Object data) {
-      builder.append("EnumeratedType");
+      builder.append(asn1NameSpace).append("EnumeratedType");
       return data;
    }
 
