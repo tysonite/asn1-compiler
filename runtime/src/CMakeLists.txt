@@ -14,7 +14,6 @@ set (SOURCES
    ChoiceType.cc
    GeneralizedTimeType.cc
    GraphicStringType.cc
-   IntegerType.cc
    ObjectIdentifier.cc
    OctetStringType.cc
    PrintableStringType.cc
@@ -60,7 +59,8 @@ set (HEADERS
    SetType.hh
    BaseSetOfType.hh
    SetOfType.hh
-   UnsignedIntegerType.hh)
+   UnsignedIntegerType.hh
+   ValueConstraintsHolder.hh)
 
 if (CMAKE_COMPILER_IS_GNUCC)
    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")

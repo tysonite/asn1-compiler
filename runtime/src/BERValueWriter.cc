@@ -38,6 +38,21 @@ void BERValueWriter::writeInteger(const Integer& value, const IntegerType& type)
    }
 }
 
+void BERValueWriter::writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeUnsignedInteger(value, type);
+   else
+   {
+      BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::INTEGER_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         type.tagClass());
+
+      _doWriteInteger(value);
+      _buffer.updateLengthOctets(position);
+   }
+}
+
 // Writes ENUMERATED value
 void BERValueWriter::writeEnumerated(const Integer& value, const EnumeratedType& type)
 {
@@ -259,9 +274,10 @@ void BERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuff
 }
 
 // Writes INTEGER value
-void BERValueWriter::_doWriteInteger(const Integer& value)
+template <class NumberType>
+void BERValueWriter::_doWriteInteger(const NumberType& value)
 {
-   Integer tmpValue = (value >= 0 ? value : ~value);
+   NumberType tmpValue = (value >= 0 ? value : ~value);
    tmpValue >>= 7;
    uint8_t valueLength = 1;
 

@@ -27,6 +27,7 @@ public:
 
    // Writes INTEGER value
    void writeInteger(const Integer& value, const IntegerType& type);
+   void writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type);
 
    // Writes ENUMERATED value
    void writeEnumerated(const Integer& value, const EnumeratedType& type);
@@ -81,7 +82,8 @@ protected:
    virtual void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
 
    // Writes INTEGER value
-   void _doWriteInteger(const Integer& value);
+   template <class NumberType>
+   void _doWriteInteger(const NumberType& value);
 
 private:
 

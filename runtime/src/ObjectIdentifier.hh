@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "TypeCommon.hh"
+
 namespace asn1
 {
 

@@ -226,15 +226,16 @@ public:
    }
    
    // Decodes integer value
-   int64_t decodeInteger()
+   template <typename NumberType>
+   NumberType decodeInteger()
    {
-      int64_t number(0);
-      int8_t bytes(0);
+      NumberType number = 0;
+      int8_t bytes = 0;
       ValueType b;
       do
       {
          b = get();
-         if (bytes++ > 8)
+         if (bytes++ > 8) // TODO: is it correct?
             throw BERBufferException("Overflow of int64_t");
          number = (number << 7) | (b & 0x7F);
       } while (b & 0x80);
@@ -260,7 +261,7 @@ public:
       ValueType h = get();
       tag = h & 0x1F;
       if (tag == 0x1F) // Multi-byte type
-         tag = decodeInteger();
+         tag = decodeInteger<TagType>();
 
       pc = h & 0x20;
       cl = h & 0xC0;

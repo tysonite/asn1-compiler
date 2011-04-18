@@ -42,24 +42,20 @@ void BERValueReader::readInteger(Integer& value, const IntegerType& type)
       _nestedReader->readInteger(value, type);
    else
    {
-      TagType tag;
-      PCType pc;
-      CLType cl;
-      int64_t length;
-      _buffer.setEnd(_buffer.decodeIL(tag, pc, cl, length));
+      _doReadNumber(value, type);
 
-      _checkTagIsCorrect(pc, type);
-      _checkTagTagging(tag, cl, BERBuffer::INTEGER_BERTYPE, type);
+      // check received data
+      type.checkType(value);
+   }
+}
 
-      if (length == -1) // INTEGER must always have a definite length
-         throw BERBufferException("Illegal BER " + type.toString() + " length");
-      else if (length == 0)
-      {
-         value = 0LL;
-         return;
-      }
-
-      _doReadInteger(value);
+void BERValueReader::readUnsignedInteger(UnsignedInteger& value, const UnsignedIntegerType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readUnsignedInteger(value, type);
+   else
+   {
+      _doReadNumber(value, type);
 
       // check received data
       type.checkType(value);
@@ -116,7 +112,7 @@ void BERValueReader::readObjectIdentifier(ObjectIdentifier& value, const ObjectI
       value[0] /= 40;
 
       while (_buffer.current() < _buffer.end())
-         value.push_back(static_cast<ObjectIdentifier::value_type>(_buffer.decodeInteger()));
+         value.push_back(_buffer.decodeInteger<ObjectIdentifier::value_type>());
 
       _buffer.clearEnd();
 
@@ -517,12 +513,37 @@ void BERValueReader::_readOctetStringOctets(OctetString& value, const OctetStrin
 }
 
 // Reads INTEGER value
-void BERValueReader::_doReadInteger(Integer& value)
+template <typename NumberType>
+void BERValueReader::_doReadNumber(NumberType& value, const Type& type)
+{
+   TagType tag;
+   PCType pc;
+   CLType cl;
+
+   int64_t length;
+   _buffer.setEnd(_buffer.decodeIL(tag, pc, cl, length));
+
+   _checkTagIsCorrect(pc, type);
+   _checkTagTagging(tag, cl, BERBuffer::INTEGER_BERTYPE, type);
+
+   if (length == -1) // INTEGER must always have a definite length
+      throw BERBufferException("Illegal BER " + type.toString() + " length");
+   else if (length == 0)
+   {
+      value = 0;
+      return;
+   }
+
+   _doReadInteger(value);
+}
+
+template <typename NumberType>
+void BERValueReader::_doReadInteger(NumberType& value)
 {
    bool isFirstByte = true;
    while (_buffer.current() < _buffer.end())
    {
-      Integer b = _buffer.get();
+      BERBuffer::ValueType b = _buffer.get();
       if (isFirstByte)
       {
          value = (b & 0x80) ? ~0LL : 0LL;
@@ -530,7 +551,7 @@ void BERValueReader::_doReadInteger(Integer& value)
       }
 
       value <<= 8;
-      value |= static_cast<Integer>(b);
+      value |= static_cast<NumberType>(b);
    }
 
    _buffer.clearEnd();

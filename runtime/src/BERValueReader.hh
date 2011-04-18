@@ -27,6 +27,7 @@ public:
 
    // Reads INTEGER value
    void readInteger(Integer& value, const IntegerType& type);
+   void readUnsignedInteger(UnsignedInteger& value, const UnsignedIntegerType& type);
 
    // Reads ENUMERATED value
    void readEnumerated(Integer& value, const EnumeratedType& type);
@@ -91,7 +92,10 @@ protected:
    void _readOctetStringOctets(OctetString& value, const OctetStringType& type);
 
    // Reads INTEGER value
-   void _doReadInteger(Integer& value);
+   template <typename NumberType>
+   void _doReadNumber(NumberType& value, const Type& type);
+   template <typename NumberType>
+   void _doReadInteger(NumberType& value);
 
    // Checks tag for correctness
    void _checkTagIsCorrect(PCType pc, const Type& type);

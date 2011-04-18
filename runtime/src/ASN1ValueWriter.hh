@@ -16,6 +16,7 @@ public:
 
    // Writes INTEGER value
    virtual void writeInteger(const Integer& value, const IntegerType& type) = 0;
+   virtual void writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type) = 0;
 
    // Writes ENUMERATED value
    virtual void writeEnumerated(const Integer& value, const EnumeratedType& type) = 0;

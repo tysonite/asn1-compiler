@@ -25,6 +25,7 @@ typedef uint32_t              SubOID;
 class Type;
 class NullType;
 class IntegerType;
+class UnsignedIntegerType;
 class EnumeratedType;
 class BooleanType;
 class ObjectIdentifierType;

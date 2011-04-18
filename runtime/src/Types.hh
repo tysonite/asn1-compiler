@@ -8,6 +8,7 @@
 #include "NullType.hh"
 #include "BooleanType.hh"
 #include "IntegerType.hh"
+#include "UnsignedIntegerType.hh"
 #include "EnumeratedType.hh"
 #include "ObjectIdentifierType.hh"
 #include "BitStringType.hh"
