@@ -16,7 +16,7 @@ void ObjectIdentifier::_parseAndSetOid(const std::string& value)
 
    ObjectIdentifier tmp;
    for (std::vector<std::string>::const_iterator p = tokens.begin(); p != tokens.end(); ++p)
-      tmp.push_back(utils::ston<uint16_t>(*p)); // TODO: take into case when conversation is not possible
+      tmp.push_back(utils::ston<SubOID>(*p)); // TODO: take into case when conversation is not possible
 
    swap(tmp);
 }

@@ -228,11 +228,14 @@ public:
    // Decodes integer value
    int64_t decodeInteger()
    {
-      int64_t number = 0;
+      int64_t number(0);
+      int8_t bytes(0);
       ValueType b;
       do
       {
          b = get();
+         if (bytes++ > 8)
+            throw BERBufferException("Overflow of int64_t");
          number = (number << 7) | (b & 0x7F);
       } while (b & 0x80);
 

@@ -9,7 +9,7 @@
 namespace asn1
 {
 
-class ObjectIdentifier : public std::vector<uint16_t>
+class ObjectIdentifier : public std::vector<SubOID>
 {
 public:
 
@@ -17,7 +17,7 @@ public:
    ObjectIdentifier() {}
 
    // Constructor
-   ObjectIdentifier(const std::vector<uint16_t>& value) { assign(value.begin(), value.end()); }
+   ObjectIdentifier(const std::vector<SubOID>& value) { assign(value.begin(), value.end()); }
 
    // Constructor: value is a string representation of the object identifier.
    // i.e.: value = "1.2.3.4.5"

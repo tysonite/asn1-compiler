@@ -399,7 +399,8 @@ BOOST_AUTO_TEST_CASE(TestBERIntegerConstraints)
    test->add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithValue, (asn1::Integer*) test_data,
       (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
 
-   asn1::Integer test_data_bad[] = { std::numeric_limits<asn1::Integer>::min(), -1, 256, std::numeric_limits<asn1::Integer>::max() };
+   asn1::Integer test_data_bad[] = { std::numeric_limits<asn1::IntegerType::ValueType>::min(), -1, 256,
+      std::numeric_limits<asn1::IntegerType::ValueType>::max() };
    test->add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithBadValue, (asn1::Integer*) test_data_bad,
       (asn1::Integer*) test_data_bad + sizeof(test_data_bad)/sizeof(asn1::Integer)));
 

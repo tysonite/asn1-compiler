@@ -59,7 +59,8 @@ set (HEADERS
    BaseSequenceOfType.hh
    SetType.hh
    BaseSetOfType.hh
-   SetOfType.hh)
+   SetOfType.hh
+   UnsignedIntegerType.hh)
 
 if (CMAKE_COMPILER_IS_GNUCC)
    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")

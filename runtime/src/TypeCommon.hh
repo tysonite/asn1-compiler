@@ -17,7 +17,9 @@ typedef uint8_t CLType;
 // Types of ASN.1 value representation
 typedef bool                  Boolean;
 typedef int64_t               Integer;
+typedef uint64_t              UnsignedInteger;
 typedef std::string           OctetString;
+typedef uint32_t              SubOID;
 
 // Types of ASN.1 value type representation
 class Type;
