@@ -58,20 +58,20 @@ void TaggingType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) 
          std::bind1st(std::mem_fun(&Type::setTagNumber), _innerType),
          _innerType->tagNumber());
 
-      const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
+      _innerType->setTagNumber(tagNumber());
 
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
          std::bind1st(std::mem_fun(&Type::setTagClass), _innerType),
          _innerType->tagClass());
 
-      const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
+      _innerType->setTagClass(tagClass());
 
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
          std::bind1st(std::mem_fun(&Type::setTagging), _innerType),
          _innerType->tagging());
 
       if (!_innerType->hasExplicitTagging())
-         const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
+         _innerType->setTagging(tagging());
       else
          taggingRestorer.restoreNotNeeded();
 
@@ -95,20 +95,20 @@ void TaggingType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& 
          std::bind1st(std::mem_fun(&Type::setTagNumber), _innerType),
          _innerType->tagNumber());
 
-      const_cast<TypeItemType*>(_innerType)->setTagNumber(tagNumber());
+      _innerType->setTagNumber(tagNumber());
 
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, TagClass> > > classRestorer(
          std::bind1st(std::mem_fun(&Type::setTagClass), _innerType),
          _innerType->tagClass());
 
-      const_cast<TypeItemType*>(_innerType)->setTagClass(tagClass());
+      _innerType->setTagClass(tagClass());
 
       ValueRestorerByFunctor<std::binder1st<std::mem_fun1_t<void, Type, Type::TaggingType> > > taggingRestorer(
          std::bind1st(std::mem_fun(&Type::setTagging), _innerType),
          _innerType->tagging());
 
       if (!_innerType->hasExplicitTagging())
-         const_cast<TypeItemType*>(_innerType)->setTagging(tagging());
+         _innerType->setTagging(tagging());
       else
          taggingRestorer.restoreNotNeeded();
 
