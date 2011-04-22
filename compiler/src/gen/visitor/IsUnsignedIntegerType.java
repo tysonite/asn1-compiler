@@ -1,13 +1,15 @@
 package gen.visitor;
 
+import java.math.*;
+import java.util.*;
+
 import gen.*;
-import java.math.BigInteger;
 import parser.*;
 
 public class IsUnsignedIntegerType extends DoNothingASTVisitor
         implements ContentProvider {
 
-   private boolean isUnsignedInteger = true;
+   private List<BigInteger> constraints = new ArrayList<BigInteger>();
 
    @Override
    public Object visit(ASTSubtypeSpec node, Object data) {
@@ -46,9 +48,7 @@ public class IsUnsignedIntegerType extends DoNothingASTVisitor
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
       BigInteger number = new BigInteger(node.getNumber());
-      if (number.compareTo(BigInteger.ZERO) < 0) {
-         isUnsignedInteger = false;
-      }
+      constraints.add(number);
       return data;
    }
 
@@ -57,6 +57,15 @@ public class IsUnsignedIntegerType extends DoNothingASTVisitor
    }
 
    public boolean hasValuableContent() {
-      return isUnsignedInteger;
+      boolean isUnsigned = false;
+      for (BigInteger i : constraints) {
+         if (i.compareTo(BigInteger.ZERO) >= 0) {
+            isUnsigned = true;
+         } else {
+            isUnsigned = false;
+            break;
+         }
+      }
+      return isUnsigned;
    }
 }

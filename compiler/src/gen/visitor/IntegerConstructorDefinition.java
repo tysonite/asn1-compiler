@@ -15,6 +15,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    private boolean isInteger = false;
    private String typeName = null;
    private List<String> namedIdentifiers = new ArrayList<String>();
+   private String minMaxValueSuffix = "LL";
 
    public IntegerConstructorDefinition() {
    }
@@ -44,6 +45,12 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
    @Override
    public Object visit(ASTIntegerType node, Object data) {
       isInteger = true;
+      if (VisitorUtils.visitChildsAndAccept(null, (SimpleNode) node.jjtGetParent().jjtGetParent(),
+              new IsUnsignedIntegerType())) {
+         minMaxValueSuffix = "ULL";
+      } else {
+         minMaxValueSuffix = "LL";
+      }
       return node.childrenAccept(this, data);
    }
 
@@ -113,7 +120,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
       appendInner();
       builder.append("setMinValue(").append(value);
       if (isNumber) {
-         builder.append("LL);");
+         builder.append(minMaxValueSuffix).append(");");
       } else {
          builder.append(");");
       }
@@ -123,7 +130,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
       appendInner();
       builder.append("setMaxValue(").append(value);
       if (isNumber) {
-         builder.append("LL);");
+         builder.append(minMaxValueSuffix).append(");");
       } else {
          builder.append(");");
       }
