@@ -40,7 +40,7 @@ public:
    // Writes the value
    void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
-      //writer.writeUnsignedInteger(value, *this);
+      writer.writeUnsignedInteger(value, *this);
    }
 
 private:
