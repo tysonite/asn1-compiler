@@ -284,7 +284,21 @@ public:
          put(static_cast<uint8_t>(length));
       else // Definite long form
       {
-         assert(0); // TODO: See issue http://code.google.com/p/asn1-compiler/issues/detail?id=9
+         int64_t size = 1;
+         int64_t tmp = length >> 8;
+         while (tmp)
+         {
+            ++size;
+            tmp >>= 8;
+         }
+         put(static_cast<uint8_t>(size | 0x80));
+         tmp = length;
+
+         for (int64_t i = size - 1; i >= 0; --i)
+         {
+            put(static_cast<uint8_t>(tmp & 0xFF));
+            tmp >>= 8;
+         }
       }
    }
 
