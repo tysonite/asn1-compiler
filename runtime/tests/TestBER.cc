@@ -445,7 +445,44 @@ BOOST_AUTO_TEST_CASE(TestBERInteger)
    BOOST_CHECK(!tr.p_aborted);
 }
 
-BOOST_AUTO_TEST_CASE(TestBERSequenceOf)
+namespace sequenceoftype
+{
+
+// ASN.1 (EXPLICIT environment):
+// Type1 ::= SEQUENCE OF OCTET STRING
+
+class Type1 : public asn1::SequenceOfType<asn1::OctetStringType>
+{
+public:
+
+   explicit Type1() : asn1::SequenceOfType<asn1::OctetStringType>(new asn1::OctetStringType) {}
+};
+
+BOOST_AUTO_TEST_CASE(Test_BER_SequenceOf_OctetString_Type1_Huge)
+{
+   // prepare data
+   Type1::ValueType vToWrite(24, Type1::InnerType::ValueType(1024*1024, 'a')), vToRead;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type1 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite.begin(), vToWrite.end(), vToRead.begin(), vToRead.end());
+}
+
+BOOST_AUTO_TEST_CASE(TestBERSequenceOfInteger)
 {
    // ASN.1: S ::= SEQUENCE OF INTEGER
 
@@ -522,6 +559,8 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfSequenceOfInteger)
       BOOST_CHECK_EQUAL(inValues[i].size(), outValues[i].size());
       BOOST_CHECK_EQUAL_COLLECTIONS(inValues[i].begin(), inValues[i].end(), outValues[i].begin(), outValues[i].end());
    }
+}
+
 }
 
 namespace visible_string
@@ -631,12 +670,12 @@ public:
    }
 };
 
-BOOST_AUTO_TEST_CASE(TestBerVisibleStringType1_LongString)
+BOOST_AUTO_TEST_CASE(TestBerVisibleStringType1_LongString128)
 {
-   asn1::OctetString vToWrite = "BEGIN - Long Octect String - Long Octect String - "
+   Type1::ValueType vToWrite = "BEGIN - Long Octect String - Long Octect String - "
       "Long Octect String - Long Octect String - Long Octect String - "
       "Long Octect String - Long Octect String - END"; // more than 128 octets
-   asn1::OctetString vToRead;
+   Type1::ValueType vToRead;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -660,6 +699,29 @@ BOOST_AUTO_TEST_CASE(TestBerVisibleStringType1_LongString)
       0x6E, 0x67, 0x20, 0x2D, 0x20, 0x45, 0x4E, 0x44 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerVisibleStringType1_LongString1024)
+{
+   Type1::ValueType vToWrite(1024, 'a'), vToRead;
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   Type1 type;
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
 
    // decoding
    asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
