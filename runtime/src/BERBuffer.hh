@@ -1,5 +1,5 @@
 #ifndef __BER_BUFFER_HH
-#define __BER_BUFFER_HH 1
+#define __BER_BUFFER_HH
 
 #include <cstdint>
 #include <cassert>
