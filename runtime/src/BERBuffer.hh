@@ -281,7 +281,7 @@ public:
       if (length < 0) // Indefinite form
          put(0x80);
       else if (length <= 127) // Definite short form
-         put(static_cast<uint8_t>(length));
+         put(static_cast<ValueType>(length));
       else // Definite long form
       {
          uint16_t lengthLength = 1;
@@ -290,7 +290,7 @@ public:
 
          reserve(size() + lengthLength + 1);
 
-         put(static_cast<uint8_t>(lengthLength | 0x80));
+         put(static_cast<ValueType>(lengthLength | 0x80));
          for (uint16_t i = 0; i < lengthLength; ++i)
             put(static_cast<uint8_t>((length >> (8*(lengthLength - 1 - i))) & 0xFF));
       }
