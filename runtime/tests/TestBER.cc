@@ -723,6 +723,10 @@ BOOST_AUTO_TEST_CASE(TestBerVisibleStringType1_LongString1024)
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
 
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x1A, 0x82, 0x04, 0x00 }; // content bytes are skipped
+   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + arraysize(dataToTest), dataToTest,
+      dataToTest + arraysize(dataToTest));
+
    // decoding
    asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
    asn1::BERValueReader reader(inbuffer);

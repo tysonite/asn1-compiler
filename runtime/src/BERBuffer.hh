@@ -284,21 +284,15 @@ public:
          put(static_cast<uint8_t>(length));
       else // Definite long form
       {
-         int64_t size = 1;
-         int64_t tmp = length >> 8;
-         while (tmp)
-         {
-            ++size;
-            tmp >>= 8;
-         }
-         put(static_cast<uint8_t>(size | 0x80));
-         tmp = length;
+         uint16_t lengthLength = 1;
+         for (uint64_t tmp = length >> 8; tmp; tmp >>= 8)
+            ++lengthLength;
 
-         for (int64_t i = size - 1; i >= 0; --i)
-         {
-            put(static_cast<uint8_t>(tmp & 0xFF));
-            tmp >>= 8;
-         }
+         reserve(size() + lengthLength + 1);
+
+         put(static_cast<uint8_t>(lengthLength | 0x80));
+         for (uint16_t i = 0; i < lengthLength; ++i)
+            put(static_cast<uint8_t>((length >> (8*(lengthLength - 1 - i))) & 0xFF));
       }
    }
 
