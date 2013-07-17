@@ -2,4 +2,4 @@ language: cpp
 compiler:
   - gcc
   - clang
-script: cd runtime && cmake && make
+script: cd runtime && cmake . && make
