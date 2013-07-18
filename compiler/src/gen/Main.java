@@ -5,14 +5,16 @@ import java.io.*;
 import org.apache.commons.cli.*;
 import parser.*;
 
-public class Main {
+public final class Main {
 
    private final Options options = new Options();
-   private final Option outputDirectory = new Option("o", "output-directory", true,
+   public static final Option outputDirectory = new Option("o", "output-directory", true,
            "Output directory for generated C++ code");
-   private final Option inputFile = new Option("i", "input-asn1-file", true,
+   public static final Option inputFile = new Option("i", "input-asn1-file", true,
            "ASN.1 grammar to process");
-   private final Option help = new Option("h", "help", false,
+   public static final Option methodDER = new Option("der", "der-method", false,
+           "Generate code for DER encoding/decoding");
+   public static final Option help = new Option("h", "help", false,
            "ASN.1 compiler command line options");
 
    private void printHelp() {
@@ -27,6 +29,7 @@ public class Main {
    private void initOptions() {
       options.addOption(outputDirectory);
       options.addOption(inputFile);
+      options.addOption(methodDER);
       options.addOption(help);
    }
 
@@ -51,8 +54,7 @@ public class Main {
             SimpleNode root = parser.getTreeRootNode();
             root.dump("\t");
 
-            CPPCodeGenerator generator = new CPPCodeGenerator(root,
-                    line.getOptionValue(outputDirectory.getOpt()));
+            CPPCodeGenerator generator = new CPPCodeGenerator(root, line);
             generator.generate();
          }
       } catch (org.apache.commons.cli.ParseException e) {

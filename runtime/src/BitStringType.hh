@@ -15,7 +15,9 @@ public:
 
    typedef BitString ValueType;
 
-   explicit BitStringType() {}
+   // Constructor
+   explicit BitStringType(const ValueType& defaultValue = ValueType(), bool hasDefault = false)
+      : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
 
    // Returns type identifier
    virtual TypeID typeID() const { return BITSTRING_TYPE; }
@@ -38,6 +40,11 @@ public:
    {
       writer.writeBitString(value, *this);
    }
+
+private:
+
+   ValueType _defaultValue;
+   bool      _hasDefault;
 
 private:
     

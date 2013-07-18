@@ -4,6 +4,8 @@ package parser;
 
 public class ASTClassNumber extends SimpleNode {
 
+   private int tagNumber;
+
    public ASTClassNumber(int id) {
       super(id);
    }
@@ -12,7 +14,12 @@ public class ASTClassNumber extends SimpleNode {
       super(p, id);
    }
 
-   public void setTagNumber(int x) {
+   public void setTagNumber(int tagNumber) {
+      this.tagNumber = tagNumber;
+   }
+
+   public int getTagNumber() {
+      return this.tagNumber;
    }
 
    /** Accept the visitor. **/

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <cstring>
 
 namespace utils
@@ -121,7 +122,15 @@ namespace
 
 // Converts the given number with any base into the string
 template <typename T>
-inline std::string ntos(T n, unsigned char b = 10)
+inline std::string ntos(T n)
+{
+   std::stringstream s;
+   s << n;
+   return s.str();
+}
+
+template <typename T>
+inline std::string ntos(T n, unsigned char b)
 {
    std::string s;
 

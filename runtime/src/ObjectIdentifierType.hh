@@ -16,7 +16,8 @@ public:
    typedef ObjectIdentifier ValueType;
 
    // Constructor
-   explicit ObjectIdentifierType() {}
+   explicit ObjectIdentifierType(const ValueType& defaultValue = ValueType(), bool hasDefault = false)
+      : _defaultValue(defaultValue), _hasDefault(hasDefault) {}
 
    // Returns type identifier
    virtual TypeID typeID() const { return OBJECT_IDENTIFIER_TYPE; }
@@ -39,6 +40,11 @@ public:
    {
       writer.writeObjectIdentifier(value, *this);
    }
+
+private:
+
+   ValueType _defaultValue;
+   bool      _hasDefault;
 
 private:
     

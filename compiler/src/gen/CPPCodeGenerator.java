@@ -1,12 +1,12 @@
 package gen;
 
-import java.io.*;
-
-import gen.visitor.*;
 import gen.utils.*;
+import gen.visitor.*;
+import java.io.*;
+import org.apache.commons.cli.*;
 import parser.*;
 
-public class CPPCodeGenerator {
+public final class CPPCodeGenerator {
 
    /* root ASN.1 node */
    SimpleNode node = null;
@@ -17,12 +17,19 @@ public class CPPCodeGenerator {
 
    /**
     * Constructs CPP code generator
+    *
     * @param node root ASN.1 node
     */
-   public CPPCodeGenerator(SimpleNode node, String outputDirectory) {
+   public CPPCodeGenerator(SimpleNode node, CommandLine line) {
       this.node = node;
+      this.context.setCommandLine(line);
+      ASTAssignmentList assignmentList = GenerationUtils.findAssignmentList(node);
+      if (null == assignmentList) {
+         throw new GeneratorException("Cannot get list of TypeAssignments");
+      }
 
-      this.outputDirectory = outputDirectory;
+      this.context.setAssignmentList(GenerationUtils.findAssignmentList(node));
+      this.outputDirectory = line.getOptionValue(Main.outputDirectory.getOpt());
       if (!(new File(this.outputDirectory).exists())) {
          if (!(new File(this.outputDirectory)).mkdirs()) {
             throw new GeneratorException("Cannot create output directory \""
@@ -36,14 +43,14 @@ public class CPPCodeGenerator {
     */
    public final void generate() {
       generateHeaderFile(node);
-      generateFile(node);
+      generateSourceFile(node);
    }
 
    private void generateHeaderFile(final SimpleNode node) {
       final CodeBuilder builder = new CodeBuilder();
 
       builder.append("#ifndef __ASN1_TYPES_HH").newLine();
-      builder.append("#define __ASN1_TYPES_HH 1").newLine();
+      builder.append("#define __ASN1_TYPES_HH").newLine();
       builder.newLine();
 
       // add include
@@ -87,7 +94,7 @@ public class CPPCodeGenerator {
       }
    }
 
-   private void generateFile(final SimpleNode node) {
+   private void generateSourceFile(final SimpleNode node) {
       final CodeBuilder builder = new CodeBuilder();
 
       builder.append("#include <ASN1Types.hh>").newLine();

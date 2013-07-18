@@ -17,7 +17,7 @@ public:
 
    // Constructor
    explicit BERValueReader(BERBuffer& buffer)
-      : _nestedReader(NULL), _buffer(buffer), _sequenceEndPos(0), _setEndPos(0) {}
+      : _nestedReader(NULL), _buffer(buffer), _compositionEnd(0) {}
 
    // Destructor
    ~BERValueReader() { delete _nestedReader; }
@@ -52,6 +52,21 @@ public:
 
    // Reads PRINTABLE STRING value
    void readPrintableString(OctetString& value, const PrintableStringType& type);
+
+   // Reads TELETEX STRING value
+   void readTeletexString(OctetString& value, const TeletexStringType& type);
+
+   // Reads NUMERIC STRING value
+   void readNumericString(OctetString& value, const NumericStringType& type);
+
+   // Reads IA5 STRING value
+   void readIA5String(OctetString& value, const IA5StringType& type);
+
+   // Reads UTC TIME value
+   void readUtcTime(OctetString& value, const UTCTimeType& type);
+
+   // Reads ANY value
+   void readAny(OctetString& value, const AnyType& type);
 
    // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
    bool isComponentPresent(const Type& type);
@@ -103,14 +118,17 @@ protected:
    // Checks tag for tagging (IMPLICIT, EXPLICIT, ...)
    void _checkTagTagging(TagType tag, CLType cl, TagType expectedTag, const Type& type);
 
+   // Returns last inner type in chain
+   const Type* _getDeepInnerType(const Type* t) const;
+      
 protected:
 
-   BERValueReader* _nestedReader;  // nested BER reader, used to decode composition types
-   BERBuffer&      _buffer;
+   BERValueReader*     _nestedReader;  // nested BER reader, used to decode composition types
+   BERBuffer&          _buffer;
 
 private:
 
-   BERBuffer::SizeType _sequenceEndPos, _setEndPos;
+   BERBuffer::SizeType _compositionEnd;
 
    DISALLOW_COPY_AND_ASSIGN(BERValueReader);
 };

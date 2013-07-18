@@ -47,10 +47,12 @@ public class EnumeratedTypeBody extends DoNothingASTVisitor implements ContentPr
          return data;
       }
 
+      @Override
       public String getContent() {
          return builder.toString();
       }
 
+      @Override
       public boolean hasValuableContent() {
          return true;
       }
@@ -96,10 +98,12 @@ public class EnumeratedTypeBody extends DoNothingASTVisitor implements ContentPr
       return data;
    }
 
+   @Override
    public String getContent() {
       return builder.toString();
    }
 
+   @Override
    public boolean hasValuableContent() {
       return !builder.toString().isEmpty();
    }

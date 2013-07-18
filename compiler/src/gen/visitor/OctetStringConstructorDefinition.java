@@ -8,26 +8,33 @@ public class OctetStringConstructorDefinition extends DoNothingASTVisitor
         implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
    private boolean isMinSize = true;
    private int innerLevel = 0;
    private boolean isOctetString = false;
    private boolean isSizeConstraints = false;
    private String typeName = null;
    private String minSize = null, maxSize = null;
+   private boolean isMinNumber = false;
+   private boolean isMaxNumber = false;
+   private boolean isMaxFlag = false;
 
-   public OctetStringConstructorDefinition() {
+   public OctetStringConstructorDefinition(final GeneratorContext context) {
+      this.context = context;
    }
 
-   public OctetStringConstructorDefinition(boolean overrideInteger) {
+   public OctetStringConstructorDefinition(final GeneratorContext context, boolean overrideInteger) {
+      this.context = context;
       this.isOctetString = overrideInteger;
    }
 
-   public OctetStringConstructorDefinition(boolean overrideOctetString, int innerLevel) {
-      this(overrideOctetString);
+   public OctetStringConstructorDefinition(final GeneratorContext context, boolean overrideOctetString, int innerLevel) {
+      this(context, overrideOctetString);
       this.innerLevel = innerLevel;
    }
 
-   public OctetStringConstructorDefinition(String typeName) {
+   public OctetStringConstructorDefinition(final GeneratorContext context, String typeName) {
+      this.context = context;
       this.typeName = typeName;
    }
 
@@ -69,6 +76,17 @@ public class OctetStringConstructorDefinition extends DoNothingASTVisitor
    }
 
    @Override
+   public Object visit(ASTDefinedValue node, Object data) {
+      if (isMinSize) {
+         minSize = "k_" + GenerationUtils.asCPPToken(node.getFirstToken().toString());
+         isMinSize = false;
+      } else {
+         maxSize = "k_" + GenerationUtils.asCPPToken(node.getFirstToken().toString());
+      }
+      return data;
+   }
+
+   @Override
    public Object visit(ASTSubtypeValueSet node, Object data) {
       minSize = null;
       maxSize = null;
@@ -86,6 +104,9 @@ public class OctetStringConstructorDefinition extends DoNothingASTVisitor
 
             if (null == maxSize) {
                maxSize = minSize;
+               if (isMinNumber) {
+                  isMaxNumber = true;
+               }
             } else if (null == minSize) {
                minSize = maxSize;
             }
@@ -94,7 +115,23 @@ public class OctetStringConstructorDefinition extends DoNothingASTVisitor
                builder.append("innerType().");
             }
 
-            builder.append("addSize(").append(minSize).append("LL, ").append(maxSize).append("LL);");
+            builder.append("addSize(").append(minSize);
+
+            if (isMinNumber) {
+               builder.append("LL, ");
+            } else {
+               builder.append(", ");
+            }
+            if (isMaxNumber && !isMaxFlag) {
+               builder.append(maxSize).append("LL);");
+            } else {
+               if (isMaxFlag) {
+                  builder.append("std::numeric_limits<").append(context.getTypeName()).append("::").
+                          append("ValueType::size_type>::max());");
+               } else {
+                  builder.append(maxSize).append(");");
+               }
+            }
             builder.newLine();
          }
       }
@@ -104,7 +141,11 @@ public class OctetStringConstructorDefinition extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTValueRange node, Object data) {
-      return node.childrenAccept(this, data);
+      node.childrenAccept(this, data);
+      if (node.isMaxFlag()) {
+         isMaxFlag = true;
+      }
+      return data;
    }
 
    @Override
@@ -126,8 +167,10 @@ public class OctetStringConstructorDefinition extends DoNothingASTVisitor
       if (isMinSize) {
          minSize = node.getNumber();
          isMinSize = false;
+         isMinNumber = true;
       } else {
          maxSize = node.getNumber();
+         isMaxNumber = true;
       }
       return data;
    }

@@ -111,6 +111,12 @@ public final class VisitorUtils {
       return builder;
    }
 
+   /**
+    *
+    * @param node
+    * @param context
+    * @return unique name of the node
+    */
    public static String queueGeneratedCode(final SimpleNode node, final GeneratorContext context) {
       final CodeBuilder uniqueName = new CodeBuilder();
       VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
@@ -128,6 +134,18 @@ public final class VisitorUtils {
       }
 
       return uniqueName.toString();
+   }
+
+   public static String queueGeneratedCodeForTypes(final ASTElementType node,
+           final GeneratorContext context) {
+      final CodeBuilder uniqueName = new CodeBuilder();
+      VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+
+      if (!context.hasExternalized(uniqueName.toString())) {
+         return queueGeneratedCode(node, context);
+      } else {
+         return GenerationUtils.asCPPToken(node.getFirstToken().toString()) + "_Type";
+      }
    }
 
    public static void prependDefinedGeneratedNode(final SimpleNode node,

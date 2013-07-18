@@ -32,15 +32,26 @@ public class ChoiceConstructorDefinition extends DoNothingASTVisitor implements 
       builder.append(2, "_addChoice(&").append(elementTypeName).append(");").newLine();
 
       // internal types
+      final CodeBuilder fieldType = new CodeBuilder();
+      if (!VisitorUtils.visitChildsAndAccept(fieldType, node, new SimpleTypeName(),
+                 new DefinedCPPTypeName())) {
+            fieldType.append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context)));
+      }
+      // store context
+      String prevTypeName = context.getTypeName();
+
+      context.setTypeName(fieldType.toString());
       VisitorUtils.visitChildsAndAccept(builder, node,
               new IntegerConstructorDefinition(elementTypeName),
-              new OctetStringConstructorDefinition(elementTypeName));
+              new OctetStringConstructorDefinition(context, elementTypeName));
 
       if (VisitorUtils.visitChildsAndAccept(builder, node, new IsSimpleType())) {
          VisitorUtils.visitChildsAndAccept(builder, node,
                  new SimpleTypeConstructorDefinition(context, elementTypeName));
       }
-
+      // restore context
+      context.setTypeName(prevTypeName);
       return data;
    }
 

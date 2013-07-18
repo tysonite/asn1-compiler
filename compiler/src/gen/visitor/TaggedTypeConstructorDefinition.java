@@ -21,9 +21,9 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
          return node.childrenAccept(this, data);
       } else {
          VisitorUtils.visitNodeAndAccept(builder, node,
-                 new SetOfOrSequenceOfConstructorDefinition());
+                 new SetOfOrSequenceOfConstructorDefinition(context));
          VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent(),
-                 new IntegerConstructorDefinition(), new OctetStringConstructorDefinition());
+                 new IntegerConstructorDefinition(), new OctetStringConstructorDefinition(context));
          return data;
       }
    }
@@ -34,7 +34,27 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
          if (context.isExplicitModule()) {
             builder.append(2, "setTagging(Type::EXPLICIT_TAGGING);").newLine();
          } else if (context.isImplicitModule()) {
+            CodeBuilder dtname = new CodeBuilder();
+            if (VisitorUtils.visitChildsAndAccept(dtname, node, new DefinedTypeName())) {
+               ASTTypeAssignment ta = VisitorUtils.searchForAssignmentNodeByName(node,
+                       dtname.toString());
+
+               if (null != ta) {
+                  boolean isChoice = VisitorUtils.visitChildsAndAccept(null, ta, new IsChoiceType());
+                  boolean isTaggedChoice = VisitorUtils.visitChildsAndAccept(null, ta,
+                          new IsTaggedType(new IsChoiceType()));
+
+                  if (!isChoice && !isTaggedChoice) {
             builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
+         }
+               } else {
+                  throw new GeneratorException("Tagged type reference unexisting type");
+               }
+            } else if (VisitorUtils.visitChildsAndAccept(null, node, new IsChoiceType())) {
+               // do not set tagging method
+            } else {
+               builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
+            }
          }
       } else if (node.isExplicitTagging()) {
          builder.append(2, "setTagging(Type::EXPLICIT_TAGGING);").newLine();
@@ -86,7 +106,7 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
       if (!(node.jjtGetParent() instanceof ASTDefinedValue)) {
          return data;
       }
-      identifier = GenerationUtils.asCPPToken(node.getFirstToken().toString());
+      identifier = "k_" + GenerationUtils.asCPPToken(node.getFirstToken().toString());
       return data;
    }
 

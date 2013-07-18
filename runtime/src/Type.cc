@@ -30,10 +30,20 @@ std::string Type::typeName() const
       return "BIT STRING";
    case VISIBLE_STRING_TYPE:
       return "VISIBLE STRING";
+   case GENERALIZED_TIME_TYPE:
+      return "GENERALIZED TIME";
+   case UTC_TIME_TYPE:
+      return "UTC TIME";
    case GRAPHIC_STRING_TYPE:
       return "GRAPHIC STRING";
    case PRINTABLE_STRING_TYPE:
       return "PRINTABLE STRING";
+   case TELETEX_STRING_TYPE:
+      return "TELETEX STRING";
+   case NUMERIC_STRING_TYPE:
+      return "NUMERIC STRING";
+   case IA5_STRING_TYPE:
+      return "IA5 STRING";
    case CHOICE_TYPE:
       return "CHOICE";
    case SEQUENCE_TYPE:
@@ -44,6 +54,8 @@ std::string Type::typeName() const
       return "SEQUENCE OF";
    case SET_OF_TYPE:
       return "SET OF";
+   case ANY_TYPE:
+      return "ANY";
    default:
       return "Unknown Type";
    }

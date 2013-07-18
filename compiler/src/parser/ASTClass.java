@@ -37,6 +37,12 @@ public class ASTClass extends SimpleNode {
    public boolean isUniversal() {
       return tagClass == ASTTaggedType.UNIVERSAL;
    }
+   
+   public int getTagClass()
+   {
+      return this.tagClass;
+   }
+           
 
    /** Accept the visitor. **/
    public Object jjtAccept(AsnParserVisitor visitor, Object data) {

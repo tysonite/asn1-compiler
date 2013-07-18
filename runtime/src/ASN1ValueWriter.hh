@@ -42,6 +42,21 @@ public:
    // Writes PRINTABLE STRING value
    virtual void writePrintableString(const OctetString& value, const PrintableStringType& type) = 0;
 
+   // Writes TELETEX STRING value
+   virtual void writeTeletexString(const OctetString& value, const TeletexStringType& type) = 0;
+
+   // Writes NUMERIC STRING value
+   virtual void writeNumericString(const OctetString& value, const NumericStringType& type) = 0;
+
+   // Writes IA5 STRING value
+   virtual void writeIA5String(const OctetString& value, const IA5StringType& type) = 0;
+
+   // Writes UTC TIME value
+   virtual void writeUtcTime(const OctetString& value, const UTCTimeType& type) = 0;
+
+   // Writes ANY value
+   virtual void writeAny(const OctetString& value, const AnyType& type) = 0;
+
    // Writes SEQUENCE value
    virtual void writeSequenceBegin(const SequenceType& type) = 0;
    virtual void writeSequenceEnd(const SequenceType& type) = 0;

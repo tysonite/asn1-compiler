@@ -14,7 +14,7 @@ public:
    explicit SetType() {}
 
    // Returns type identifier
-   TypeID typeID() const { return SET_TYPE; }
+   virtual TypeID typeID() const { return SET_TYPE; }
 
 private:
    

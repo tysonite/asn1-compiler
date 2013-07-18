@@ -54,8 +54,16 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
          builder.append(asn1NameSpace).append("PrintableStringType");
       } else if (node.getType() == ASTOctetStringType.StringType.GENERALIZED_TIME) {
          builder.append(asn1NameSpace).append("GeneralizedTimeType");
+      } else if (node.getType() == ASTOctetStringType.StringType.UTC_TIME) {
+         builder.append(asn1NameSpace).append("UTCTimeType");
       } else if (node.getType() == ASTOctetStringType.StringType.GRAPHIC_STRING) {
          builder.append(asn1NameSpace).append("GraphicStringType");
+      } else if (node.getType() == ASTOctetStringType.StringType.IA5_STRING) {
+         builder.append(asn1NameSpace).append("IA5StringType");
+      } else if (node.getType() == ASTOctetStringType.StringType.NUMERIC_STRING) {
+         builder.append(asn1NameSpace).append("NumericStringType");
+      } else if (node.getType() == ASTOctetStringType.StringType.TELETEX_STRING) {
+         builder.append(asn1NameSpace).append("TeletexStringType");
       } else {
          throw new GeneratorException("Octet string subtype " + node.getFirstToken().toString()
                  + " is unknown");
@@ -66,6 +74,12 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
    @Override
    public Object visit(ASTBitStringType node, Object data) {
       builder.append(asn1NameSpace).append("BitStringType");
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTAnyType node, Object data) {
+      builder.append(asn1NameSpace).append("AnyType");
       return data;
    }
 

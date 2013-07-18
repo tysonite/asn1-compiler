@@ -23,6 +23,11 @@ namespace ut = boost::unit_test;
 #undef max
 #undef min
 
+#include "BerBuffer_tests.cc"
+#include "ChoiceType_tests.cc"
+#include "AnyType_tests.cc"
+#include "Utils_tests.cc"
+
 void TestBEREmptyIntegerWithValue(const asn1::Integer& vToWrite)
 {
    // ASN.1: i ::= INTEGER
@@ -1534,6 +1539,32 @@ BOOST_AUTO_TEST_CASE(TestBerObjectIdentifierType1)
    BOOST_CHECK_EQUAL_COLLECTIONS(vToWrite.begin(), vToWrite.end(), vToRead.begin(), vToRead.end());
 }
 
+BOOST_AUTO_TEST_CASE(TestBerObjectIdentifierTypeWithWrongLength)
+{
+   {
+      asn1::BERBuffer::ValueType dataToTest[] = { 0x06, 0x00 }; // length is incorrect
+
+      asn1::BERBuffer inbuffer(dataToTest, sizeof(dataToTest));
+      asn1::BERValueReader reader(inbuffer);
+
+      Type1 type;
+      Type1::ValueType unused;
+      BOOST_CHECK_THROW(type.read(reader, unused), asn1::ASN1Exception);
+   }
+}
+
+BOOST_AUTO_TEST_CASE(TestBerObjectIdentifierTypeWithWrongFirstByte)
+{
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x06, 0x02, 0x78, 0x00 }; // 0x78 = 120 > 119
+
+   asn1::BERBuffer inbuffer(dataToTest, sizeof(dataToTest));
+   asn1::BERValueReader reader(inbuffer);
+
+   Type1 type;
+   Type1::ValueType unused;
+   BOOST_CHECK_THROW(type.read(reader, unused), asn1::ASN1Exception);
+}
+
 BOOST_AUTO_TEST_CASE(TestBerObjectIdentifierType2)
 {
    asn1::ObjectIdentifier vToWrite, vToRead;
@@ -2244,7 +2275,6 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType10)
 
 }
 
-
 namespace null
 {
 
@@ -2375,6 +2405,18 @@ BOOST_AUTO_TEST_CASE(TestBerNullType1)
 
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.read(reader, unused));
+}
+
+BOOST_AUTO_TEST_CASE(TestBerNullTypeWithWrongLength)
+{
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x05, 0x01 }; // length is incorrect
+
+   asn1::BERBuffer inbuffer(dataToTest, sizeof(dataToTest));
+   asn1::BERValueReader reader(inbuffer);
+
+   Type1 type;
+   Type1::ValueType unused;
+   BOOST_CHECK_THROW(type.read(reader, unused), asn1::ASN1Exception);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerNullType2)
@@ -2577,6 +2619,20 @@ BOOST_AUTO_TEST_CASE(TestBerNullType9)
    BOOST_CHECK_NO_THROW(type.read(reader, unused));
 }
 
+BOOST_AUTO_TEST_CASE(TestBerNullType1DecodeOnly)
+{
+   asn1::NullType::ValueType unused;
+   Type1 type;
+
+   // decoding
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x05, 0x81, 0x00 };
+   asn1::BERBuffer inbuffer(dataToTest, sizeof(dataToTest));
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.read(reader, unused));
+}
+
 }
 
 namespace boolean_type_tests
@@ -2710,6 +2766,30 @@ BOOST_AUTO_TEST_CASE(TestBerBooleanType1)
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
    BOOST_CHECK_EQUAL(vToWrite, vToRead);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType1LengthNotEqualToOne)
+{
+   Type1::ValueType vToRead = false;
+   Type1 type;
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x02, 0xFF };
+   asn1::BERBuffer inbuffer(dataToTest, sizeof(dataToTest));
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_CHECK_THROW(type.read(reader, vToRead), asn1::ASN1Exception);
+}
+
+BOOST_AUTO_TEST_CASE(TestBerBooleanType1ValueIsUnknown)
+{
+   Type1::ValueType vToRead = false;
+   Type1 type;
+
+   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x01, 0x32 };
+   asn1::BERBuffer inbuffer(dataToTest, sizeof(dataToTest));
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_CHECK_THROW(type.read(reader, vToRead), asn1::ASN1Exception);
 }
 
 BOOST_AUTO_TEST_CASE(TestBerBooleanType2)
@@ -2926,612 +3006,6 @@ BOOST_AUTO_TEST_CASE(TestBerBooleanType9)
    BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
 
    BOOST_CHECK_EQUAL(vToWrite, vToRead);
-}
-
-}
-
-namespace choice_type
-{
-
-// ASN.1 (EXPLICIT environment):
-// TypeChoice ::= CHOICE { i INTEGER, b BOOLEAN }
-// Type1 ::= TypeChoice
-// -- IMPLICIT tag is not allowed for CHOICE type -- Type2 ::= [APPLICATION 3] IMPLICIT Type1
-// Type3 ::= [2] Type1
-// Type4 ::= [APPLICATION 7] IMPLICIT Type3
-// Type6 ::= [3] Type3
-// Type7 ::= [4] IMPLICIT Type6
-// Type8 ::= [5] TypeChoice
-
-class TypeChoice : public asn1::ChoiceType
-{
-public:
-
-   explicit TypeChoice() : asn1::ChoiceType()
-   {
-      _addChoice(&_i_Type);
-      _addChoice(&_b_Type);
-   }
-
-   class TypeChoice_Value
-   {
-   public:
-
-      explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
-
-      void set_i(const asn1::IntegerType::ValueType& v) { _i = v; _id = i_ID; }
-      const asn1::IntegerType::ValueType& get_i() const { assert(_id == i_ID); return _i; }
-      asn1::IntegerType::ValueType& get_i() { assert(_id == i_ID); return _i; }
-      bool has_i_Choosen() const { return _id == i_ID; }
-      void choose_i() { _id = i_ID; }
-
-      void set_b(const asn1::BooleanType::ValueType& v) { _b = v; _id = b_ID; }
-      const asn1::BooleanType::ValueType& get_b() const { return _b; }
-      bool has_b_Choosen() const { return _id == b_ID; }
-
-      bool operator==(const TypeChoice_Value& other) const
-      {
-         if (this == &other)
-            return true;
-
-         switch (_id)
-         {
-         case i_ID:
-            if (_i != other._i)
-               return false;
-            break;
-         case b_ID:
-            if (_b != other._b)
-               return false;
-            break;
-         default:
-            return false;
-         }
-
-         return true;
-      }
-
-      bool operator!=(const TypeChoice_Value& other) const
-      {
-         return !(*this == other);
-      }
-
-   private:
-
-      enum ChoiceValue_identifier
-      {
-         i_ID = 1,
-         b_ID = 2,
-         __VALUE_NOT_DEFINED__ = -1
-      };
-
-      asn1::IntegerType::ValueType _i;
-      asn1::BooleanType::ValueType _b;
-
-      ChoiceValue_identifier _id;
-   };
-
-   typedef TypeChoice_Value ValueType;
-
-   void read(asn1::ASN1ValueReader& reader, TypeChoice_Value& value) const
-   {
-      asn1::Type* choosenType = NULL;
-      reader.readChoice(*this, &choosenType);
-
-      if (choosenType == &_i_Type)
-      {
-         asn1::IntegerType::ValueType v;
-         _i_Type.read(reader, v);
-         value.set_i(v);
-      }
-      else if (choosenType == &_b_Type)
-      {
-         asn1::BooleanType::ValueType v;
-         _b_Type.read(reader, v);
-         value.set_b(v);
-      }
-      else
-      {
-         throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
-            _i_Type.toString() + ", " + _b_Type.toString());
-      }
-   }
-
-   void write(asn1::ASN1ValueWriter& writer, const TypeChoice_Value& value) const
-   {
-      assert(value.has_i_Choosen() || value.has_b_Choosen());
-
-      if (value.has_i_Choosen())
-         _i_Type.write(writer, value.get_i());
-      else if (value.has_b_Choosen())
-         _b_Type.write(writer, value.get_b());
-   }
-
-private:
-
-   asn1::IntegerType _i_Type;
-   asn1::BooleanType _b_Type;
-};
-
-class Type1 : public TypeChoice
-{
-};
-
-class Type3 : public asn1::TaggingType<Type1>
-{
-public:
-   Type3() : asn1::TaggingType<Type1>(new Type1)
-   {
-      setTagging(asn1::Type::EXPLICIT_TAGGING);
-      setTagNumber(2);
-      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
-   }
-};
-
-class Type4 : public asn1::TaggingType<Type3>
-{
-public:
-   Type4() : asn1::TaggingType<Type3>(new Type3)
-   {
-      setTagging(asn1::Type::IMPLICIT_TAGGING);
-      setTagNumber(7);
-      setTagClass(asn1::Type::APPLICATION);
-   }
-};
-
-class Type6 : public asn1::TaggingType<Type3>
-{
-public:
-   Type6() : asn1::TaggingType<Type3>(new Type3)
-   {
-      setTagging(asn1::Type::EXPLICIT_TAGGING);
-      setTagNumber(3);
-      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
-   }
-};
-
-class Type7 : public asn1::TaggingType<Type6>
-{
-public:
-   Type7() : asn1::TaggingType<Type6>(new Type6)
-   {
-      setTagging(asn1::Type::IMPLICIT_TAGGING);
-      setTagNumber(4);
-      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
-   }
-};
-
-class Type8 : public asn1::TaggingType<TypeChoice>
-{
-public:
-   Type8() : asn1::TaggingType<TypeChoice>(new TypeChoice)
-   {
-      setTagNumber(5);
-      setTagClass(asn1::Type::CONTEXT_SPECIFIC);
-      setTagging(asn1::Type::EXPLICIT_TAGGING);
-   }
-};
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceTypeChoice)
-{
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
-
-   vToWrite.set_b(true);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
-
-   TypeChoice type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
-}
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceType3)
-{
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
-
-   vToWrite.set_b(true);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
-
-   Type3 type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x03, 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
-}
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceType4)
-{
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
-
-   vToWrite.set_b(true);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
-
-   Type4 type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0x67, 0x03, 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
-}
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceType6)
-{
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
-
-   vToWrite.set_b(true);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
-
-   Type6 type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0xA3, 0x05, 0xA2, 0x03, 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
-}
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceType7)
-{
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
-
-   vToWrite.set_b(true);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
-
-   Type7 type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0xA4, 0x05, 0xA2, 0x03, 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
-}
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceType8)
-{
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToWrite.has_i_Choosen(), false);
-
-   vToWrite.set_b(true);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToWrite.get_b(), true);
-
-   Type8 type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x03, 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_b(), true);
-}
-
-}
-
-namespace choice_choice_type
-{
-
-// ASN.1 (EXPLICIT environment):
-// TypeChoice ::= CHOICE { TypeNestedChoice CHOICE { i INTEGER, b BOOLEAN } }
-
-class TypeNestedChoice : public asn1::ChoiceType
-{
-public:
-
-   explicit TypeNestedChoice() : asn1::ChoiceType()
-   {
-      _addChoice(&_i_Type);
-      _addChoice(&_b_Type);
-   }
-
-   class TypeChoice_Value
-   {
-   public:
-
-      explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
-
-      void set_i(const asn1::IntegerType::ValueType& v) { _i = v; _id = i_ID; }
-      const asn1::IntegerType::ValueType& get_i() const { return _i; }
-      bool has_i_Choosen() const { return _id == i_ID; }
-
-      void set_b(const asn1::BooleanType::ValueType& v) { _b = v; _id = b_ID; }
-      const asn1::BooleanType::ValueType& get_b() const { return _b; }
-      bool has_b_Choosen() const { return _id == b_ID; }
-
-   private:
-
-      enum ChoiceValue_identifier
-      {
-         i_ID = 1,
-         b_ID = 2,
-         __VALUE_NOT_DEFINED__ = -1
-      };
-
-      asn1::IntegerType::ValueType _i;
-      asn1::BooleanType::ValueType _b;
-
-      ChoiceValue_identifier _id;
-   };
-
-   typedef TypeChoice_Value ValueType;
-
-   void read(asn1::ASN1ValueReader& reader, TypeChoice_Value& value) const
-   {
-      asn1::Type* choosenType = NULL;
-      reader.readChoice(*this, &choosenType);
-
-      if (choosenType == &_i_Type)
-      {
-         asn1::IntegerType::ValueType v;
-         _i_Type.read(reader, v);
-         value.set_i(v);
-      }
-      else if (choosenType == &_b_Type)
-      {
-         asn1::BooleanType::ValueType v;
-         _b_Type.read(reader, v);
-         value.set_b(v);
-      }
-      else
-      {
-         throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
-            _i_Type.toString() + ", " + _b_Type.toString());
-      }
-   }
-
-   void write(asn1::ASN1ValueWriter& writer, const TypeChoice_Value& value) const
-   {
-      assert(value.has_i_Choosen() || value.has_b_Choosen());
-
-      if (value.has_i_Choosen())
-         _i_Type.write(writer, value.get_i());
-      else if (value.has_b_Choosen())
-         _b_Type.write(writer, value.get_b());
-   }
-
-private:
-
-   asn1::IntegerType _i_Type;
-   asn1::BooleanType _b_Type;
-};
-
-class TypeChoice : public asn1::ChoiceType
-{
-public:
-
-   explicit TypeChoice() : asn1::ChoiceType()
-   {
-      _addChoice(&_TypeNestedChoice_Type);
-   }
-
-   class TypeChoice_Value
-   {
-   public:
-
-      explicit TypeChoice_Value() : _id(__VALUE_NOT_DEFINED__) {}
-
-      void set_TypeNestedChoice(const TypeNestedChoice::ValueType& v) { _TypeNestedChoice = v; _id = TypeNestedChoice_ID; }
-      const TypeNestedChoice::ValueType& get_TypeNestedChoice() const { return _TypeNestedChoice; }
-      bool has_TypeNestedChoice_Choosen() const { return _id == TypeNestedChoice_ID; }
-
-   private:
-
-      enum ChoiceValue_identifier
-      {
-         TypeNestedChoice_ID = 1,
-         __VALUE_NOT_DEFINED__ = -1
-      };
-
-      TypeNestedChoice::ValueType _TypeNestedChoice;
-
-      ChoiceValue_identifier _id;
-   };
-
-   typedef TypeChoice_Value ValueType;
-
-   void read(asn1::ASN1ValueReader& reader, TypeChoice_Value& value) const
-   {
-      asn1::Type* choosenType = NULL;
-      reader.readChoice(*this, &choosenType);
-
-      if (choosenType == &_TypeNestedChoice_Type)
-      {
-         TypeNestedChoice::ValueType v;
-         _TypeNestedChoice_Type.read(reader, v);
-         value.set_TypeNestedChoice(v);
-      }
-      else
-      {
-         throw asn1::ASN1Exception("Expected " + toString() + " must be one of: " +
-            _TypeNestedChoice_Type.toString());
-      }
-   }
-
-   void write(asn1::ASN1ValueWriter& writer, const TypeChoice_Value& value) const
-   {
-      assert(value.has_TypeNestedChoice_Choosen());
-
-      if (value.has_TypeNestedChoice_Choosen())
-         _TypeNestedChoice_Type.write(writer, value.get_TypeNestedChoice());
-   }
-
-private:
-
-   TypeNestedChoice _TypeNestedChoice_Type;
-};
-
-BOOST_AUTO_TEST_CASE(TestBerChoiceChoiceType1)
-{
-   TypeNestedChoice::ValueType nc;
-
-   BOOST_CHECK_EQUAL(nc.has_b_Choosen(), false);
-   BOOST_CHECK_EQUAL(nc.has_i_Choosen(), false);
-
-   nc.set_b(true);
-
-   BOOST_CHECK_EQUAL(nc.has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(nc.get_b(), true);
-
-   TypeChoice::ValueType vToWrite, vToRead;
-
-   BOOST_CHECK_EQUAL(vToWrite.has_TypeNestedChoice_Choosen(), false);
-
-   vToWrite.set_TypeNestedChoice(nc);
-
-   BOOST_CHECK_EQUAL(vToWrite.has_TypeNestedChoice_Choosen(), true);
-
-   TypeChoice type;
-
-   // encoding
-   asn1::BERBuffer outbuffer;
-   asn1::BERValueWriter writer(outbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
-
-   asn1::BERBuffer::ValueType dataToTest[] = { 0x01, 0x01, 0xFF };
-   BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(),
-      dataToTest, dataToTest + arraysize(dataToTest));
-
-   // decoding
-   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
-   asn1::BERValueReader reader(inbuffer);
-
-   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
-
-   BOOST_CHECK_EQUAL(vToRead.has_TypeNestedChoice_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_TypeNestedChoice().has_i_Choosen(), false);
-   BOOST_CHECK_EQUAL(vToRead.get_TypeNestedChoice().has_b_Choosen(), true);
-   BOOST_CHECK_EQUAL(vToRead.get_TypeNestedChoice().get_b(), true);
 }
 
 }
@@ -4462,6 +3936,45 @@ BOOST_AUTO_TEST_CASE(TestBerEnumeratedType7)
 
 }
 
+namespace numeric_string_tests
+{
+
+BOOST_AUTO_TEST_CASE(TestNumericStringValue)
+{
+   asn1::NumericStringType type;
+
+   BOOST_CHECK_NO_THROW(type.checkType("123 096 3"));
+   BOOST_CHECK_THROW(type.checkType("abcd"), asn1::ASN1Exception);
+}
+
+}
+
+namespace ia5_string_tests
+{
+
+BOOST_AUTO_TEST_CASE(TestIA5StringValue)
+{
+   asn1::IA5StringType::ValueType value("WEah (9-1)*(7+2)&#\n");
+   asn1::IA5StringType type;
+
+   BOOST_CHECK_NO_THROW(type.checkType(value));
+}
+
+}
+
+namespace printable_string_tests
+{
+
+BOOST_AUTO_TEST_CASE(TestPrintableStringValue)
+{
+   asn1::PrintableStringType::ValueType value("hgM r83+ .");
+   asn1::PrintableStringType type;
+
+   BOOST_CHECK_NO_THROW(type.checkType(value));
+}
+
+}
+
 namespace bit_string_tests
 {
 
@@ -4570,41 +4083,64 @@ public:
 
 BOOST_AUTO_TEST_CASE(TestBitStringValue)
 {
-   asn1::BitStringType::ValueType value;
+   {
+      asn1::BitStringType::ValueType value;
 
-   BOOST_CHECK_NO_THROW(value.setValue("01"));
-   BOOST_CHECK_EQUAL(value.size(), 2);
-   BOOST_CHECK_EQUAL(value[0], false);
-   BOOST_CHECK_EQUAL(value[1], true);
-   BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
+      BOOST_CHECK_NO_THROW(value.setValue("01"));
+      BOOST_CHECK_EQUAL(value.size(), 2);
+      BOOST_CHECK_EQUAL(value[0], false);
+      BOOST_CHECK_EQUAL(value[1], true);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
 
-   value.setBit(0);
-   BOOST_CHECK_EQUAL(value[0], true);
-   value.clearBit(0);
-   BOOST_CHECK_EQUAL(value[0], false);
+      BOOST_CHECK_THROW(value.setValue("A"), asn1::ASN1Exception);
+      BOOST_CHECK_EQUAL(value.size(), 2);
+      BOOST_CHECK_EQUAL(value[0], false);
+      BOOST_CHECK_EQUAL(value[1], true);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
 
-   BOOST_CHECK_THROW(value.setValue("A"), asn1::ASN1Exception);
-   BOOST_CHECK_EQUAL(value.size(), 2);
-   BOOST_CHECK_EQUAL(value[0], false);
-   BOOST_CHECK_EQUAL(value[1], true);
-   BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
+      BOOST_CHECK_THROW(value.setValue("102"), asn1::ASN1Exception);
+      BOOST_CHECK_EQUAL(value.size(), 2);
+      BOOST_CHECK_EQUAL(value[0], false);
+      BOOST_CHECK_EQUAL(value[1], true);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
 
-   BOOST_CHECK_THROW(value.setValue("102"), asn1::ASN1Exception);
-   BOOST_CHECK_EQUAL(value.size(), 2);
-   BOOST_CHECK_EQUAL(value[0], false);
-   BOOST_CHECK_EQUAL(value[1], true);
-   BOOST_CHECK_EQUAL(value.getValueAsString(), "01");
+      BOOST_CHECK_NO_THROW(value.setValue("111"));
+      BOOST_CHECK_EQUAL(value.size(), 3);
+      BOOST_CHECK_EQUAL(value[0], true);
+      BOOST_CHECK_EQUAL(value[1], true);
+      BOOST_CHECK_EQUAL(value[2], true);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "111");
 
-   BOOST_CHECK_NO_THROW(value.setValue("111"));
-   BOOST_CHECK_EQUAL(value.size(), 3);
-   BOOST_CHECK_EQUAL(value[0], true);
-   BOOST_CHECK_EQUAL(value[1], true);
-   BOOST_CHECK_EQUAL(value[2], true);
-   BOOST_CHECK_EQUAL(value.getValueAsString(), "111");
+      // constructors
+      BOOST_CHECK_NO_THROW(asn1::BitStringType::ValueType value("01"));
+      BOOST_CHECK_THROW(asn1::BitStringType::ValueType value("012"), asn1::ASN1Exception);
+   }
 
-   // constructors
-   BOOST_CHECK_NO_THROW(asn1::BitStringType::ValueType value("01"));
-   BOOST_CHECK_THROW(asn1::BitStringType::ValueType value("012"), asn1::ASN1Exception);
+   // setBit, clearBit
+   {
+      asn1::BitStringType::ValueType value("0110");
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "0110");
+
+      value.setBit(0);
+      BOOST_CHECK_EQUAL(value[0], true);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "1110");
+
+      value.clearBit(0);
+      BOOST_CHECK_EQUAL(value[0], false);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "011");
+
+      value.setBit(6);
+      BOOST_CHECK_EQUAL(value[6], true);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "0110001");
+
+      value.clearBit(6);
+      BOOST_CHECK_EQUAL(value.size(), 3);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "011");
+
+      value.clearBit(255); // nothing is changed in value
+      BOOST_CHECK_EQUAL(value.size(), 3);
+      BOOST_CHECK_EQUAL(value.getValueAsString(), "011");
+   }
 }
 
 template <typename Type>

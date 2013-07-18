@@ -31,7 +31,7 @@ public class SequenceConstructorDefinition extends DoNothingASTVisitor implement
       // internal types
       VisitorUtils.visitChildsAndAccept(builder, node,
               new IntegerConstructorDefinition(elementTypeName),
-              new OctetStringConstructorDefinition(elementTypeName));
+              new OctetStringConstructorDefinition(context, elementTypeName));
 
       if (VisitorUtils.visitChildsAndAccept(builder, node, new IsSimpleType())) {
          VisitorUtils.visitChildsAndAccept(builder, node,

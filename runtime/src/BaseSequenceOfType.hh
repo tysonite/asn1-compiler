@@ -16,7 +16,7 @@ public:
       : SizeConstraintsHolder(*this, minSize, maxSize) {}
 
    // Returns type identifier
-   TypeID typeID() const { return SEQUENCE_OF_TYPE; }
+   TypeID typeID() const { return SequenceType::typeID(); }
 
 private:
 

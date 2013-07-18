@@ -10,6 +10,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
    private boolean isFirstWriteIf = true;
+   private boolean isFirstAssertOr = true;
    private boolean isFirstReadIf = true;
    private boolean isFirstComma = true;
 
@@ -76,6 +77,40 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
       }
    }
 
+   protected class AssertsForWriteDefinition extends DoNothingASTVisitor
+           implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+
+      public AssertsForWriteDefinition() {
+         builder.append(1, "assert(");
+      }
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (isFirstAssertOr) {
+            builder.append("");
+            isFirstAssertOr = false;
+         } else {
+            builder.append(" || ");
+         }
+
+         builder.append("value.has_").
+                 append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append("_Choosen()");
+
+         return data;
+      }
+
+      public String getContent() {
+         return builder.append(");").newLine().toString();
+      }
+
+      public boolean hasValuableContent() {
+         return true;
+      }
+   }
+
    protected class WriteDefinition extends DoNothingASTVisitor implements ContentProvider {
 
       private CodeBuilder builder = new CodeBuilder();
@@ -122,6 +157,11 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
               new DefinedCPPTypeName())) {
          final CodeBuilder uniqueName = new CodeBuilder();
          VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+         if (context.hasExternalized(uniqueName.toString())) {
+            // TODO: hack, need to understand (I don't remember) why declaration generator generates
+            // also methods definitions. See queueGeneratedCode method.
+            return null;
+         }
 
          context.setTypeName(uniqueName.toString());
       }
@@ -159,6 +199,8 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
               append("& value) const").newLine();
       builder.append("{").newLine();
 
+      VisitorUtils.visitChildsAndAccept(builder, node, new AssertsForWriteDefinition());
+      builder.newLine();
       VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinition());
 
       builder.append("}").newLine();

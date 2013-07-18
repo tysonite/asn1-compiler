@@ -60,7 +60,7 @@ void ValueConstraintsHolder<NumericType>::checkType(const NumericType& value) co
 
    if (_hasMinMax && value > _maxValue)
    {
-      throw ASN1Exception(_type.typeName() + " value '" + utils::ntos(value) + "' is more than maximum '" +
+      throw ASN1Exception(_type.typeName() + " value '" + utils::ntos(value) + "' is greater than maximum '" +
          utils::ntos(_maxValue) + "'");
    }
 }

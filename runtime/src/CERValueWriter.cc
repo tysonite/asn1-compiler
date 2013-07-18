@@ -16,7 +16,8 @@ namespace
 }
 
 // Writes content octets of the OCTET STRING value
-void CERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type)
+void CERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType,
+   const OctetStringType& type)
 {
    if (value.size() <= OCTETSTRING_MAX_LENGTH) // write as primitive (as in BER)
       BERValueWriter::_doWriteOctetString(value, tagType, type);
@@ -30,7 +31,8 @@ void CERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuff
 }
 
 // Writes [OCTET|VISIBLE|etc] STRING by chunks
-void CERValueWriter::_writeOctetsContentOfOctetStringByChunks(uint8_t tag, const OctetString& value, unsigned int maxLength)
+void CERValueWriter::_writeOctetsContentOfOctetStringByChunks(uint8_t tag, const OctetString& value,
+   const BERBuffer::SizeType& maxLength)
 {
    BERBuffer::SizeType off = 0, wlen = 0;
    while (off < value.size())

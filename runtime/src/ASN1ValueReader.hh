@@ -42,6 +42,21 @@ public:
    // Reads PRINTABLE STRING value
    virtual void readPrintableString(OctetString& value, const PrintableStringType& type) = 0;
 
+   // Reads TELETEX STRING value
+   virtual void readTeletexString(OctetString& value, const TeletexStringType& type) = 0;
+
+   // Reads NUMERIC STRING value
+   virtual void readNumericString(OctetString& value, const NumericStringType& type) = 0;
+
+   // Reads IA5 STRING value
+   virtual void readIA5String(OctetString& value, const IA5StringType& type) = 0;
+
+   // Reads UTC TIME value
+   virtual void readUtcTime(OctetString& value, const UTCTimeType& type) = 0;
+
+   // Reads ANY value
+   virtual void readAny(OctetString& value, const AnyType& type) = 0;
+
    // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
    virtual bool isComponentPresent(const Type& type) = 0;
 

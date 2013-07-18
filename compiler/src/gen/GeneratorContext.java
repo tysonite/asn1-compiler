@@ -1,6 +1,7 @@
 package gen;
 
 import java.util.*;
+import org.apache.commons.cli.*;
 
 import gen.utils.*;
 import parser.*;
@@ -18,6 +19,26 @@ public class GeneratorContext {
    private String typeName;
    /* base type name */
    private String baseTypeName;
+   /* command line options */
+   private CommandLine line;
+   /* AssigmentList node */
+   private ASTAssignmentList assignmentList = null;
+
+   public void setAssignmentList(ASTAssignmentList node) {
+      this.assignmentList = node;
+   }
+
+   public ASTAssignmentList getAssignmentList() {
+      return this.assignmentList;
+   }
+
+   public void setCommandLine(CommandLine line) {
+      this.line = line;
+   }
+
+   public CommandLine getCommandLine() {
+      return this.line;
+   }
 
    public void setTypeName(final String typeName) {
       this.typeName = typeName;

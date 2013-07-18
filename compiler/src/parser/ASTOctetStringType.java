@@ -9,7 +9,11 @@ public class ASTOctetStringType extends SimpleNode {
       OCTET_STRING,
       PRINTABLE_STRING,
       GENERALIZED_TIME,
+      UTC_TIME,
       GRAPHIC_STRING,
+      IA5_STRING,
+      NUMERIC_STRING,
+      TELETEX_STRING,
       UNKNOWN,
    };
    private StringType type = StringType.UNKNOWN;

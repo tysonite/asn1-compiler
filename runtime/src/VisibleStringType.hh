@@ -21,7 +21,7 @@ public:
    void checkType(const ValueType& value) const;
 
    // Reads the value
-   void read(ASN1ValueReader& reader, ValueType& value) const
+   virtual void read(ASN1ValueReader& reader, ValueType& value) const
    { 
       ValueRestorer<ValueType> restorer(value);
       
@@ -31,7 +31,7 @@ public:
    }
 
    // Writes the value
-   void write(ASN1ValueWriter& writer, const ValueType& value) const
+   virtual void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
       writer.writeVisibleString(value, *this);
    }

@@ -93,6 +93,20 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTValueRange node, Object data) {
+      if (node.isMaxFlag()) {
+         appendTypeName(2);
+
+         CodeBuilder integerTypeName = new CodeBuilder();
+         if (VisitorUtils.visitChildsAndAccept(integerTypeName,
+                 (SimpleNode) node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent(),
+                 new SimpleTypeName())) {
+            appendMaxValue("std::numeric_limits<" + integerTypeName.toString()
+                    + "::ValueType>::max()", false);
+         } else {
+            throw new GeneratorException("Expected INTEGER type for MAX constraint generation");
+         }
+         builder.newLine();
+      }
       return node.childrenAccept(this, data);
    }
 
@@ -136,13 +150,23 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
       }
    }
 
+   private void appendTypeName() {
+      appendTypeName(0);
+   }
+
+   private void appendTypeName(int indent) {
+      if (null != typeName) {
+         builder.append(indent, typeName).append(".");
+      } else {
+         builder.append(indent, "");
+      }
+   }
+
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(2, "");
 
-      if (null != typeName) {
-         builder.append(typeName).append(".");
-      }
+      appendTypeName();
       if (isMinSize) {
          appendMinValue(node.getNumber(), true);
          isMinSize = false;
@@ -162,14 +186,14 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
       }
 
       String value = node.getFirstToken().toString();
-      if (namedIdentifiers.contains(value)) {
-         value = "k_" + value; // use internal constant
-      }
+//      if (namedIdentifiers.contains(value)) {
+//         value = "k_" + value; // use internal constant
+//      }
       if (isMinSize) {
-         appendMinValue(GenerationUtils.asCPPToken(value), false);
+         appendMinValue("k_" + GenerationUtils.asCPPToken(value), false);
          isMinSize = false;
       } else {
-         appendMaxValue(GenerationUtils.asCPPToken(value), false);
+         appendMaxValue("k_" + GenerationUtils.asCPPToken(value), false);
       }
       builder.newLine();
       return data;

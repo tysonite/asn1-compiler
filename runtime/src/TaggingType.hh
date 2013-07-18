@@ -8,13 +8,21 @@
 namespace asn1
 {
 
+class AbstractTypeGetter
+{
+public:
+
+   // Returns reference to base class of inner type
+   virtual const Type& abstractType() const = 0;
+};
+   
 // Represents an ASN.1 tagged type.
 //
 // Consider the following examples:
 // Type1 ::= [1] INTEGER
 // Type2 ::= EXPLICIT VisibleString
 template <typename TypeItemType>
-class TaggingType : public Type
+class TaggingType : public AbstractTypeGetter, public Type
 {
 public:
 
@@ -37,6 +45,9 @@ public:
    // Returns reference to inner type
    TypeItemType& innerType() { return *_innerType; }
 
+   // Returns reference to base class of inner type
+   const Type& abstractType() const { return *_innerType; }
+
    // Reads/Writes the value
    void read(ASN1ValueReader& reader, ValueType& value) const;
    void write(ASN1ValueWriter& writer, const ValueType& value) const;
@@ -47,6 +58,10 @@ private:
 
    DISALLOW_COPY_AND_ASSIGN(TaggingType);
 };
+
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 template <typename TypeItemType>
 void TaggingType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& value) const
@@ -121,6 +136,10 @@ void TaggingType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& 
       writer.writeExplicitEnd();
    }
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#endif
 
 }
 

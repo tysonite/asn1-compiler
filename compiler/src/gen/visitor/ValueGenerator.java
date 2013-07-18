@@ -7,10 +7,17 @@ import parser.*;
 public class ValueGenerator extends DoNothingASTVisitor implements Generator {
 
    private ASTValueAssignment node = null;
+   private boolean standAlone = false;
    private final CodeBuilder builder = new CodeBuilder();
+   private GeneratorContext context = null;
+   private String currentComponentName = null;
 
    public ValueGenerator(final ASTValueAssignment node) {
       this.node = node;
+   }
+
+   public ValueGenerator(final boolean standAlone) {
+      this.standAlone = standAlone;
    }
 
    @Override
@@ -21,7 +28,8 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
    @Override
    public Object visit(ASTIntegerType node, Object data) {
       builder.append("enum { ");
-      builder.append(GenerationUtils.asCPPToken(this.node.getFirstToken().toString())).append(" = ");
+      builder.append("k_").append(GenerationUtils.asCPPToken(this.node.getFirstToken().toString())).
+              append(" = ");
       return data;
    }
 
@@ -54,7 +62,9 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
       } else {
          throw new GeneratorException("Incorrect value: " + value);
       }
+      if (!standAlone) {
       builder.newLine();
+      }
       return data;
    }
 
@@ -74,6 +84,31 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
          builder.append(octalNumber);
       }
       builder.append("\"");
+      builder.newLine();
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTNameAndNumberForm node, Object data) {
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTNumberForm node, Object data) {
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTCompoundValue node, Object data) {
+      return node.childrenAccept(this, data);
+   }
+
+   @Override
+   public Object visit(ASTObjIdComponentList node, Object data) {
+      builder.append("const ObjectIdentifierType::ValueType ").
+              append(GenerationUtils.asCPPToken(currentComponentName)).append("(\"");
+      VisitorUtils.visitChildsAndAccept(builder, node, new ObjIdComponentList(context));
+      builder.append("\");");
       builder.newLine();
       return data;
    }
@@ -101,15 +136,21 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
 
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
-      builder.append(node.getNumber()).append(" };").newLine();
+      builder.append(node.getNumber());
+      if (!standAlone) {
+         builder.append(" };").newLine();
+      }
       return data;
    }
 
    public void generate(final GeneratorContext context) {
+      this.context = context;
       builder.append("// ValueAssignment for ASN.1 value: ").append(node.getFirstToken().toString());
       builder.newLine();
 
+      currentComponentName = node.getFirstToken().toString();
       node.childrenAccept(this, null);
+      currentComponentName = null;
 
       builder.newLine();
    }

@@ -53,6 +53,21 @@ public:
    // Writes PRINTABLE STRING value
    void writePrintableString(const OctetString& value, const PrintableStringType& type);
 
+   // Writes TELETEX STRING value
+   void writeTeletexString(const OctetString& value, const TeletexStringType& type);
+
+   // Writes NUMERIC STRING value
+   void writeNumericString(const OctetString& value, const NumericStringType& type);
+
+   // Writes IA5 STRING value
+   void writeIA5String(const OctetString& value, const IA5StringType& type);
+
+   // Writes UTC TIME value
+   void writeUtcTime(const OctetString& value, const UTCTimeType& type);
+
+   // Writes ANY value
+   void writeAny(const OctetString& value, const AnyType& type);
+
    // Writes SEQUENCE value
    void writeSequenceBegin(const SequenceType& type);
    void writeSequenceEnd(const SequenceType& type);
@@ -80,6 +95,12 @@ protected:
 
    // Writes OCTET STRING value
    virtual void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
+
+   // Write BIT STRING value
+   virtual void _doWriteBitString(const BitString& value, const BitStringType& type);
+
+   // Write BIT STRING value content octets
+   void _doWriteBitStringContent(const BitString& value);
 
    // Writes INTEGER value
    template <class NumberType>

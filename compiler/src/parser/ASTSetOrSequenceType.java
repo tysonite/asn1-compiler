@@ -20,6 +20,10 @@ public class ASTSetOrSequenceType extends SimpleNode {
       choosenType = type;
    }
 
+   public int getType() {
+      return this.choosenType;
+   }
+
    public boolean isSequence() {
       return choosenType == SEQUENCE;
    }

@@ -8,10 +8,15 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
         implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
    private boolean isMinSize = true;
    private int innerLevel = 0;
    private boolean isSequenceOf = false;
    private boolean isSizeConstraints = false;
+
+   public SetOfOrSequenceOfConstructorDefinition(final GeneratorContext context) {
+         this.context = context;
+      }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -29,7 +34,7 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       isSequenceOf = true;
       VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition(false, 1),
-              new OctetStringConstructorDefinition(false, 1));
+              new OctetStringConstructorDefinition(context, false, 1));
       return node.childrenAccept(this, data);
    }
 
@@ -62,7 +67,11 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
 
    @Override
    public Object visit(ASTValueRange node, Object data) {
-      return node.childrenAccept(this, data);
+      node.childrenAccept(this, data);
+      if (node.isMaxFlag()) {
+         append_MAX_Value();
+      }
+      return data;
    }
 
    @Override
@@ -105,6 +114,13 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
       }
    }
 
+   private void append_MAX_Value() {
+      builder.append(2, "");
+      appendInner();
+      builder.append("setMaxSize(std::numeric_limits<ValueType::size_type>::max());");
+      builder.newLine();
+   }
+
    @Override
    public Object visit(ASTSignedNumber node, Object data) {
       builder.append(2, "");
@@ -123,10 +139,10 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
       builder.append(2, "");
 
       if (isMinSize) {
-         appendMinValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
+         appendMinValue("k_" + GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
          isMinSize = false;
       } else {
-         appendMaxValue(GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
+         appendMaxValue("k_" + GenerationUtils.asCPPToken(node.getFirstToken().toString()), false);
       }
       builder.newLine();
       return data;

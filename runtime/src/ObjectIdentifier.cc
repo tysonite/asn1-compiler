@@ -15,6 +15,8 @@ void ObjectIdentifier::_parseAndSetOid(const std::string& value)
       throw ASN1Exception("Object Identifier value '" + value + "' is incorrect");
 
    ObjectIdentifier tmp;
+   tmp.reserve(tokens.size());
+
    for (std::vector<std::string>::const_iterator p = tokens.begin(); p != tokens.end(); ++p)
       tmp.push_back(utils::ston<SubOID>(*p)); // TODO: take into case when conversation is not possible
 

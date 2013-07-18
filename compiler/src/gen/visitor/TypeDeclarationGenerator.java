@@ -13,6 +13,36 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       this.node = node;
    }
 
+   private void generateConstructorBody(final GeneratorContext context) {
+      // constructor body
+      builder.newLine();
+      builder.append(1, "{").newLine();
+
+      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new SequenceConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedConstructorDefinition());
+      VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition());
+      VisitorUtils.visitChildsAndAccept(builder, node, new OctetStringConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeConstructorDefinition());
+
+      builder.append(1, "}").newLine();
+   }
+
+   private void generateConstructorInitializers(final GeneratorContext context) {
+      /* check whether it is needed to add " : " */
+      VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
+
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new SetOfOrSequenceOfConstructorDeclaration(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new TaggedTypeConstructorDeclaration(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new DefaultValueConstructorDefinition(context));
+   }
+
    public void generate(final GeneratorContext context) {
       if (node.isProcessed()) {
          return;
@@ -40,34 +70,30 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       builder.newLine();
       builder.append("{").newLine();
       builder.append("public:").newLine().newLine();
+
+      // default constructor
       builder.append(1, "explicit ").append(GenerationUtils.asCPPToken(typeName)).append("()");
 
-      /* check whether it is needed to add " : public " */
-      VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
+      generateConstructorInitializers(context);
+      generateConstructorBody(context);
 
-      VisitorUtils.visitChildsAndAccept(builder, node,
-              new SetOfOrSequenceOfConstructorDeclaration(context));
-      VisitorUtils.visitChildsAndAccept(builder, node,
-              new TaggedTypeConstructorDeclaration(context));
-
-      // constructor body
+      // constructor with default values for simple types
+      if ((VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType())
+              || VisitorUtils.visitChildsAndAccept(null, node, new IsNamedIntegerType())
+              || VisitorUtils.visitChildsAndAccept(null, node, new IsEnumeratedType()))
+              && !VisitorUtils.visitChildsAndAccept(null, node, new IsNullType())
+              && !VisitorUtils.visitChildsAndAccept(null, node, new IsAnyType())) {
       builder.newLine();
-      builder.append(1, "{").newLine();
+         builder.append(1, "explicit ").append(GenerationUtils.asCPPToken(typeName)).
+                 append("(").append("const ValueType& defaultValue, bool hasDefault").append(") : ").
+                 append(baseTypeName.toString()).append("(defaultValue, hasDefault)");
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfConstructorDefinition());
-      VisitorUtils.visitChildsAndAccept(builder, node, new SequenceConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedConstructorDefinition());
-      VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition());
-      VisitorUtils.visitChildsAndAccept(builder, node, new OctetStringConstructorDefinition());
-      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeConstructorDefinition());
-
-      builder.append(1, "}").newLine();
+         generateConstructorInitializers(context);
+         generateConstructorBody(context);
+      }
 
       // body of the class
-      VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerValueType(typeName),
+      VisitorUtils.visitChildsAndAccept(builder, node, new NamedIntegerOrBitStringValueType(typeName),
               new SetOrSequenceTypeBody(context), new ChoiceTypeBody(context),
               new EnumeratedTypeBody(context));
 

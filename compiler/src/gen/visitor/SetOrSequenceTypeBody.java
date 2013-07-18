@@ -24,8 +24,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
-            builder.append(GenerationUtils.asCPPToken(
-                    VisitorUtils.queueGeneratedCode(node, context)));
+            builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
 
          builder.append("::ValueType& v) { _").
@@ -40,8 +39,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
-            builder.append(GenerationUtils.asCPPToken(
-                    VisitorUtils.queueGeneratedCode(node, context)));
+            builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
          builder.append("::ValueType& get_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
@@ -55,8 +53,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
-            builder.append(GenerationUtils.asCPPToken(
-                    VisitorUtils.queueGeneratedCode(node, context)));
+            builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
          builder.append("::ValueType& get_").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
@@ -228,8 +225,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
-            builder.append(GenerationUtils.asCPPToken(
-                    VisitorUtils.queueGeneratedCode(node, context)));
+            builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
          builder.append("::ValueType _").
                  append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
@@ -319,6 +315,44 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       }
    }
 
+   protected static class ComplexTypeDefsDeclaration extends DoNothingASTVisitor
+           implements ContentProvider {
+
+      private CodeBuilder builder = new CodeBuilder();
+      private final GeneratorContext context;
+      private boolean atLeastOneTypeDef = false;
+
+      public ComplexTypeDefsDeclaration(final GeneratorContext context) {
+         this.context = context;
+         builder.newLine();
+         builder.append(1, "// Complex types").newLine();
+      }
+
+      @Override
+      public Object visit(ASTElementType node, Object data) {
+         if (!VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType(),
+                 new IsDefinedType())
+                 || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
+            builder.append(1, "typedef ").append(GenerationUtils.asCPPToken(
+                    VisitorUtils.queueGeneratedCode(node, context))).
+                    append(" ").
+                    append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                    append("_Type;").newLine();
+            atLeastOneTypeDef = true;
+         }
+
+         return data;
+      }
+
+      public String getContent() {
+         return builder.toString();
+      }
+
+      public boolean hasValuableContent() {
+         return !builder.toString().isEmpty() && atLeastOneTypeDef;
+      }
+   }
+
    public SetOrSequenceTypeBody(final GeneratorContext context) {
       this.context = context;
    }
@@ -330,6 +364,9 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTSetOrSequenceType node, Object data) {
+      // typedefs
+      VisitorUtils.visitChildsAndAccept(builder, node, new ComplexTypeDefsDeclaration(context));
+
       // write sequence value definition
       builder.newLine();
       builder.append(1, "class SequenceValue_Type").newLine();
@@ -393,11 +430,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
               new DefinedCPPTypeName())
               || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
-         builder.append("typedef ").append(GenerationUtils.asCPPToken(
-                 VisitorUtils.queueGeneratedCode(node, context))).
-                 append(" ").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
-                 append("_Type;").newLine();
-         builder.append(1, GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+         builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
                  append("_Type");
       } else {
          VisitorUtils.prependDefinedGeneratedNode(node, context);

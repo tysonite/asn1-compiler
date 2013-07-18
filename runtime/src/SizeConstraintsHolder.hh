@@ -15,7 +15,7 @@ public:
    
    // Constructor
    explicit SizeConstraintsHolder(const Type& type, uint64_t minSize = 0, uint64_t maxSize = 0)
-      : _minSize(minSize), _hasMinSize(false), _maxSize(maxSize), _hasMaxSize(false), _type(type) {}
+      : _minSize(minSize), _maxSize(maxSize), _hasMinSize(false), _hasMaxSize(false), _type(type) {}
 
    // Returns minimal size
    uint64_t minSize() const { return _minSize; }
@@ -41,8 +41,8 @@ public:
 protected:
 
    uint64_t    _minSize;
-   bool        _hasMinSize;
    uint64_t    _maxSize;
+   bool        _hasMinSize;
    bool        _hasMaxSize;
 
    // reference to type which is known to include size constraints

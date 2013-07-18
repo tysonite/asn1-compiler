@@ -40,10 +40,10 @@ public:
    // Swaps the buffers
    void swap(BERBuffer& other)
    {
-      SizeType currPosition = _current;
-      _current = other._current;
-      other._current = currPosition;
-      _data.swap(other._data);
+      std::swap(_current, other._current);
+      std::swap(_data, other._data);
+      // It is correct, that _end variable is not swaped here, because
+      // it is used as a temporary variable inside BERBuffer
    }
 
    // Returns the size of the buffer
@@ -61,11 +61,11 @@ public:
    // Returns the buffer data
    const ValueType* data() const { return &_data[0]; }
 
-   // Writes/reads the data
+   // Writes/reads the data, throws BERBufferException exception in case of failure
    void write(const BERBuffer& from) { write(from.data(), from.size()); }
    void write(const ValueType* from, SizeType size)
    {
-      if (size)
+      if (size > 0)
       {
          SizeType currSize = _data.size();
          _data.resize(currSize + size);
@@ -75,7 +75,7 @@ public:
    void write(SizeType pos, const BERBuffer& from) { write(pos, from.data(), from.size()); }
    void write(SizeType pos, const ValueType* from, SizeType size)
    {
-      if (size)
+      if (size > 0)
       {
          extend(pos, size);
          std::memcpy(&_data[pos], from, size);
@@ -83,7 +83,7 @@ public:
    }
    void read(BERBuffer& to, SizeType size)
    {
-      if (size)
+      if (size > 0)
       {
          if (_current + size > (_end ? _end : _data.size()))
             throw BERBufferException("Unexpected end of BER buffer");
@@ -93,7 +93,7 @@ public:
    } 
    void read(ValueType* to, SizeType size)
    {
-      if (size)
+      if (size > 0)
       {
          if (_current + size > (_end ? _end : _data.size()))
             throw BERBufferException("Unexpected end of BER buffer");
@@ -125,6 +125,13 @@ public:
    // delta > 0 - add space to buffer, delta < 0 - remove space from buffer
    void extend(SizeType pos, int32_t delta)
    {
+      assert(!_data.empty()); // not allowed to extend empty buffer, use resize() instead
+
+      if (delta == 0) // nothing to do with the buffer
+         return;
+      if (pos >= _data.size())
+         throw BERBufferException("BER buffer overflow");
+
       if (delta < 0)
       {
          // remove space from buffer [pos, pos - delta)
@@ -208,11 +215,11 @@ public:
       BMPSTRING_BERTYPE        = 0x1E, // string type
    };
 
-   // Encodes integer value
-   void encodeInteger(int64_t number)
+   // Encodes unsigned integer value
+   void encodeUnsignedInteger(uint64_t number)
    {
       int len;
-      int64_t tmpNumber;
+      uint64_t tmpNumber;
       for (len = 1, tmpNumber = number >> 7; tmpNumber; tmpNumber >>= 7)
          ++len;
 
@@ -224,10 +231,10 @@ public:
          put(bufferSize + (--len) - 1, (tmpNumber & 0x7f) | 0x80);
       put(number & 0x7f);
    }
-   
-   // Decodes integer value
+
+   // Decodes unsigned integer value
    template <typename NumberType>
-   NumberType decodeInteger()
+   NumberType decodeUnsignedInteger()
    {
       NumberType number = 0;
       int8_t bytes = 0;
@@ -235,7 +242,7 @@ public:
       do
       {
          b = get();
-         if (bytes++ > 8) // TODO: is it correct?
+         if (bytes++ > 9) // TODO: is it correct?
             throw BERBufferException("Overflow of int64_t");
          number = (number << 7) | (b & 0x7F);
       } while (b & 0x80);
@@ -251,7 +258,7 @@ public:
       else // Tag long form
       {
          put((cl & 0xC0) | (pc & 0x20) | 0x1F);
-         encodeInteger(tag);
+         encodeUnsignedInteger(tag);
       }
    }
 
@@ -261,7 +268,7 @@ public:
       ValueType h = get();
       tag = h & 0x1F;
       if (tag == 0x1F) // Multi-byte type
-         tag = decodeInteger<TagType>();
+         tag = decodeUnsignedInteger<TagType>();
 
       pc = h & 0x20;
       cl = h & 0xC0;
@@ -275,7 +282,7 @@ public:
       _current = currPos;
    }
 
-   // Encodes length octets
+   // Encodes length octets (use length < 0 for indefinite form, otherwise definite form will be used)
    void encodeLengthOctets(int64_t length)
    {
       if (length < 0) // Indefinite form
@@ -300,14 +307,14 @@ public:
    void decodeLengthOctets(int64_t& length)
    {
       ValueType h = get();
-      if (0 == (0x80 & h)) // definite short form
+      if (0 == (0x80 & h)) // Definite short form
       {
          length = h;
          return;
       }
 
-      h &= 0x7F; // definite long form; pull data
-      if (h == 0) // indefinite long form
+      h &= 0x7F; // Definite long form; pull data
+      if (h == 0) // Indefinite long form
       {
          length = -1;
          return;

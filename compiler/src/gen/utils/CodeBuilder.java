@@ -27,6 +27,11 @@ public class CodeBuilder {
       return this;
    }
 
+   public CodeBuilder assign(String str) {
+      builder = new StringBuilder(str);
+      return this;
+   }
+
    @Override
    public String toString() {
       return builder.toString();

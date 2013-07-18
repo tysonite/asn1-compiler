@@ -80,13 +80,12 @@ void BERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
          ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
          type.tagClass());
 
-      if (value.size() < 2)
-         return;
+      assert(value.size() >= 2);
 
       _buffer.reserve(_buffer.size() + value.size());
       _buffer.put((value[0] * 40 + value[1]) & 0x00FF);
       for (ObjectIdentifier::size_type i = 2; i < value.size(); ++i)
-         _buffer.encodeInteger(value[i]);
+         _buffer.encodeUnsignedInteger(value[i]);
 
       _buffer.updateLengthOctets(position);
    }
@@ -98,29 +97,7 @@ void BERValueWriter::writeBitString(const BitString& value, const BitStringType&
    if (_nestedWriter)
       _nestedWriter->writeBitString(value, type);
    else
-   {
-      BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::BITSTRING_BERTYPE,
-         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
-         type.tagClass());
-
-      _buffer.put(7 & (8 - value.size()));
-      for (BitString::size_type i = 0; i < value.size(); i += 8)
-      {
-         BERBuffer::ValueType b = 0;
-         BERBuffer::SizeType l = value.size() - i;
-         if (l > 8)
-            l = 8;
-
-         for (BitString::size_type j = 0; j < l; ++j)
-         {
-            if (value[i + j] == true)
-               b |= 0x80 >> j;
-         }
-         _buffer.put(b);
-      }
-
-      _buffer.updateLengthOctets(position);
-   }
+      _doWriteBitString(value, type);
 }
 
 // Writes NULL value
@@ -152,7 +129,14 @@ void BERValueWriter::writeVisibleString(const OctetString& value, const VisibleS
    if (_nestedWriter)
       _nestedWriter->writeVisibleString(value, type);
    else
-      _doWriteOctetString(value, BERBuffer::VISIBLESTRING_BERTYPE, type);
+   {
+      if (type.typeID() == VISIBLE_STRING_TYPE)
+         _doWriteOctetString(value, BERBuffer::VISIBLESTRING_BERTYPE, type);
+      else if (type.typeID() == GENERALIZED_TIME_TYPE)
+         _doWriteOctetString(value, BERBuffer::GENERALTIME_BERTYPE, type);
+      else
+         assert(false); // not supported other derived types (not needed at all?)
+   }
 }
 
 // Writes GRAPHIC STRING value
@@ -171,6 +155,56 @@ void BERValueWriter::writePrintableString(const OctetString& value, const Printa
       _nestedWriter->writePrintableString(value, type);
    else
       _doWriteOctetString(value, BERBuffer::PRINTABLESTRING_BERTYPE, type);
+}
+
+// Writes TELETEX STRING value
+void BERValueWriter::writeTeletexString(const OctetString& value, const TeletexStringType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeTeletexString(value, type);
+   else
+      _doWriteOctetString(value, BERBuffer::TELETEXSTRING_BERTYPE, type);
+}
+
+// Writes NUMERIC STRING value
+void BERValueWriter::writeNumericString(const OctetString& value, const NumericStringType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeNumericString(value, type);
+   else
+      _doWriteOctetString(value, BERBuffer::NUMERICSTRING_BERTYPE, type);
+}
+
+// Writes IA5 STRING value
+void BERValueWriter::writeIA5String(const OctetString& value, const IA5StringType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeIA5String(value, type);
+   else
+      _doWriteOctetString(value, BERBuffer::IA5STRING_BERTYPE, type);
+}
+
+// Writes UTC TIME value
+void BERValueWriter::writeUtcTime(const OctetString& value, const UTCTimeType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeUtcTime(value, type);
+   else
+      _doWriteOctetString(value, BERBuffer::UTCTIME_BERTYPE, type);
+}
+
+// Writes ANY value
+void BERValueWriter::writeAny(const OctetString& value, const AnyType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeAny(value, type);
+   else // value must be a valid BER-encoded data
+   {
+      assert(value.size() >= 2); // simple check for validness of the ANY value.
+                                 // i.e.: NULL type value can be represented as 2 octets,
+                                 // it is a minimal encoding case
+      _buffer.write(reinterpret_cast<const BERBuffer::ValueType*>(value.data()), value.size());
+   }
 }
 
 // Writes SEQUENCE value
@@ -271,6 +305,40 @@ void BERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuff
    _buffer.encodeLengthOctets(value.size());
    _buffer.reserve(_buffer.size() + value.size());
    _buffer.write(reinterpret_cast<const BERBuffer::ValueType*>(value.data()), value.size());
+}
+
+// Write BIT STRING value
+void BERValueWriter::_doWriteBitString(const BitString& value, const BitStringType& type)
+{
+   BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::BITSTRING_BERTYPE,
+      ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+      type.tagClass());
+
+   // write actual content bytes
+   _doWriteBitStringContent(value);
+
+   // update length of previously written bytes
+   _buffer.updateLengthOctets(position);
+}
+
+// Write BIT STRING value content octets
+void BERValueWriter::_doWriteBitStringContent(const BitString& value)
+{
+   _buffer.put(7 & (8 - value.size()));
+   for (BitString::size_type i = 0; i < value.size(); i += 8)
+   {
+      BERBuffer::ValueType b = 0;
+      BERBuffer::SizeType l = value.size() - i;
+      if (l > 8)
+         l = 8;
+
+      for (BitString::size_type j = 0; j < l; ++j)
+      {
+         if (value[i + j] == true)
+            b |= 0x80 >> j;
+      }
+      _buffer.put(b);
+   }
 }
 
 // Writes INTEGER value

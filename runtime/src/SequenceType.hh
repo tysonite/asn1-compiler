@@ -14,7 +14,7 @@ public:
    explicit SequenceType() {}
 
    // Returns type identifier
-   TypeID typeID() const { return SEQUENCE_TYPE; }
+   virtual TypeID typeID() const { return SEQUENCE_TYPE; }
 
 private:
    

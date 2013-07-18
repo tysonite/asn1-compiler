@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "BitString.hh"
 #include "ASN1Exception.hh"
 
@@ -9,17 +11,36 @@ void BitString::setBit(size_type bitNumber)
 {
    if (bitNumber < size())
       (*this)[bitNumber] = true;
+   else
+   {
+      this->reserve(bitNumber);
 
-   // TODO: expand vector to bitNumber size
+      // fill all bits before 'bitNumber' with 'zero's
+      for (size_type i = size(); i <= bitNumber - 1; ++i)
+         this->push_back(false);
+
+      // sets bit 'bitNumber' to true
+      this->push_back(true);
+   }
+}
+
+// Returns true if bit is set and false otherwise
+bool BitString::getBit(size_type bitNumber) const
+{
+   if (bitNumber < size())
+      return (*this)[bitNumber];
+   else
+      return false;
 }
 
 // Clears specified bit
 void BitString::clearBit(size_type bitNumber)
 {
    if (bitNumber < size())
+   {
       (*this)[bitNumber] = false;
-
-   // TODO: expand vector to bitNumber size
+      _repack();
+   }
 }
 
 // Returns bit string represented as string (i.e. "11001")
@@ -61,5 +82,22 @@ void BitString::_parseAndSetBitString(const std::string& value)
    // apply value
    swap(tmp);
 }
+
+ // Repacks bit string (exclude trailing 'zero' bits)
+ void BitString::_repack()
+ {
+    // repack bit string in order to exclude trailing 'zero'ed bits
+    BitString tmp(*this);
+    for (const_reverse_iterator p = rbegin(); p < rend(); ++p)
+    {
+       if (*p == true)
+          break;
+       else
+          tmp.pop_back();
+    }
+
+    if (tmp.size() != size()) // apply value
+      swap(tmp);
+ }
 
 }

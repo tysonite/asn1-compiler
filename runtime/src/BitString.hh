@@ -24,6 +24,9 @@ public:
    // Sets specified bit
    void setBit(size_type bitNumber);
 
+   // Returns true if bit is set and false otherwise
+   bool getBit(size_type bitNumber) const;
+
    // Clears specified bit
    void clearBit(size_type bitNumber);
 
@@ -34,6 +37,9 @@ private:
 
    // Parses and sets bit string
    void _parseAndSetBitString(const std::string& value);
+
+   // Repacks bit string (exclude trailing 'zero' bits)
+   void _repack();
 };
 
 }

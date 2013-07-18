@@ -18,12 +18,14 @@ protected:
    CERValueWriter* _prototype();
 
    // Writes OCTET STRING value
-   void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
+   void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType,
+      const OctetStringType& type);
 
 private:
 
    // Writes [OCTET|VISIBLE|etc] STRING by chunks
-   void _writeOctetsContentOfOctetStringByChunks(uint8_t tag, const OctetString& value, unsigned int maxLength);
+   void _writeOctetsContentOfOctetStringByChunks(uint8_t tag, const OctetString& value,
+      const BERBuffer::SizeType& maxLength);
 
    DISALLOW_COPY_AND_ASSIGN(CERValueWriter);
 };

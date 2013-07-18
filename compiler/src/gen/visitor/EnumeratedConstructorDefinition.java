@@ -42,10 +42,12 @@ public class EnumeratedConstructorDefinition extends DoNothingASTVisitor impleme
       return data;
    }
 
+   @Override
    public String getContent() {
       return builder.toString();
    }
 
+   @Override
    public boolean hasValuableContent() {
       return true;
    }

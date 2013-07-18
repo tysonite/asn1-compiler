@@ -1,8 +1,8 @@
 /*
- *
  *  ASN.1 grammar  for JavaCC
  *
  *  Contributed by Helena Sarin (hsarin@lucent.com)
+ *  Modified by Mikhail Kulinich (tysonite@gmail.com)
  *
  *  Derived in part from the following work: snacc - a freeware ASN.1 to C or C++ compiler, v 1.3,
  *  yacc/lex source code ( parse-asn1.y, lex-asn1.l), 
@@ -131,7 +131,11 @@ TOKEN :
 | <ANY_TKN: "ANY">
 | <PRINTABLESTRING_TKN: "PrintableString">
 | <GENERALIZEDTIME_TKN: "GeneralizedTime">
+| <UTCTIME_TKN: "UTCTime">
 | <GRAPHICSTRING_TKN: "GraphicString">
+| <IA5STRING_TKN: "IA5String">
+| <NUMERICSTRING_TKN: "NumericString">
+| <TELETEXSTRING_TKN: "TeletexString">
 | <OPTIONAL_TKN: "OPTIONAL">
 | <DEFAULT_TKN: "DEFAULT">
 | <COMPONENTS_TKN: "COMPONENTS">
@@ -410,7 +414,15 @@ void OctetStringType() : {}
          |
          <GENERALIZEDTIME_TKN> { jjtThis.setType(ASTOctetStringType.StringType.GENERALIZED_TIME); }
          |
+         <UTCTIME_TKN> { jjtThis.setType(ASTOctetStringType.StringType.UTC_TIME); }
+         |
          <GRAPHICSTRING_TKN> { jjtThis.setType(ASTOctetStringType.StringType.GRAPHIC_STRING); }
+         |
+         <IA5STRING_TKN> { jjtThis.setType(ASTOctetStringType.StringType.IA5_STRING); }
+         |
+         <NUMERICSTRING_TKN> { jjtThis.setType(ASTOctetStringType.StringType.NUMERIC_STRING); }
+         |
+         <TELETEXSTRING_TKN> { jjtThis.setType(ASTOctetStringType.StringType.TELETEX_STRING); }
         )
 }
 
@@ -575,7 +587,7 @@ void SingleValue() : {}
 
 void ValueRange() : {} 
 { 
- ( Value() | <MIN_TKN> ) [ [ <LESSTHAN_TKN> ]  <DOT_TKN> <DOT_TKN> [ <LESSTHAN_TKN> ] (Value() | <MAX_TKN> ) ]
+   ( Value() | <MIN_TKN> { jjtThis.setMinFlag(true); } ) [ [ <LESSTHAN_TKN> ]  <DOT_TKN> <DOT_TKN> [ <LESSTHAN_TKN> ] (Value() | <MAX_TKN> { jjtThis.setMaxFlag(true); } ) ]
 }
 
 void SizeConstraint() : {} 

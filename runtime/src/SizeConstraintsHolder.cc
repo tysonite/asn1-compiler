@@ -10,7 +10,7 @@ void SizeConstraintsHolder::checkSize(uint64_t size) const
    if (_hasMinSize && size < _minSize)
       throw ASN1Exception(_type.toString() + " size must be not less than " + utils::ntos(_minSize));
    if (_hasMaxSize && size > _maxSize)
-      throw ASN1Exception(_type.toString() + " size must be not more than " + utils::ntos(_maxSize));
+      throw ASN1Exception(_type.toString() + " size must be not greater than " + utils::ntos(_maxSize));
 }
 
 }

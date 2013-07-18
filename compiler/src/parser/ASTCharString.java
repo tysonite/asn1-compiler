@@ -4,6 +4,7 @@ package parser;
 
 public
 class ASTCharString extends SimpleNode {
+
   public ASTCharString(int id) {
     super(id);
   }
@@ -11,7 +12,6 @@ class ASTCharString extends SimpleNode {
   public ASTCharString(AsnParser p, int id) {
     super(p, id);
   }
-
 
   /** Accept the visitor. **/
   public Object jjtAccept(AsnParserVisitor visitor, Object data) {

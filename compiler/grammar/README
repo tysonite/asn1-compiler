@@ -1,0 +1,9 @@
+= Prerequisites =
+  * JavaCC 5.0 or later (http://javacc.java.net/)
+
+= How to re-generate a grammar parser (Windows) =
+  Launch 'grammar.bat'
+  Launch 'compiler.bat'
+
+= How to re-generate a grammar parser (Unix) =
+  Launch ./gen.sh

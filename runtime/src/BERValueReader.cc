@@ -112,7 +112,7 @@ void BERValueReader::readObjectIdentifier(ObjectIdentifier& value, const ObjectI
       value[0] /= 40;
 
       while (_buffer.current() < _buffer.end())
-         value.push_back(_buffer.decodeInteger<ObjectIdentifier::value_type>());
+         value.push_back(_buffer.decodeUnsignedInteger<ObjectIdentifier::value_type>());
 
       _buffer.clearEnd();
 
@@ -140,6 +140,9 @@ void BERValueReader::readBitString(BitString& value, const BitStringType& type)
       BERBuffer::ValueType b = _buffer.get();
       _buffer.setEnd(_buffer.end() - 1);
 
+      // allocate space for value
+      value.reserve((static_cast<BitString::size_type>(length) - 1) * 8);
+
       while (_buffer.current() < _buffer.end())
       {
          BERBuffer::ValueType m = _buffer.get();
@@ -164,6 +167,8 @@ void BERValueReader::readBitString(BitString& value, const BitStringType& type)
          else
             value.push_back(false);
       }
+
+      _buffer.clearEnd();
    }
 }
 
@@ -218,7 +223,12 @@ void BERValueReader::readVisibleString(OctetString& value, const VisibleStringTy
       CLType cl;
       _buffer.decodeIdentifierOctets(tag, pc, cl);
 
-      _checkTagTagging(tag, cl, BERBuffer::VISIBLESTRING_BERTYPE, type);
+      if (type.typeID() == VISIBLE_STRING_TYPE)
+         _checkTagTagging(tag, cl, BERBuffer::VISIBLESTRING_BERTYPE, type);
+      else if (type.typeID() == GENERALIZED_TIME_TYPE)
+         _checkTagTagging(tag, cl, BERBuffer::GENERALTIME_BERTYPE, type);
+      else
+         throw BERBufferException("BER " + type.toString() + " is expected");
 
       _readOctetStringOctets(value, type);
    }
@@ -260,11 +270,135 @@ void BERValueReader::readPrintableString(OctetString& value, const PrintableStri
    }
 }
 
+// Reads TELETEX STRING value
+void BERValueReader::readTeletexString(OctetString& value, const TeletexStringType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readTeletexString(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      _checkTagTagging(tag, cl, BERBuffer::TELETEXSTRING_BERTYPE, type);
+
+      _readOctetStringOctets(value, type);
+   }
+}
+
+// Reads NUMERIC STRING value
+void BERValueReader::readNumericString(OctetString& value, const NumericStringType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readNumericString(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      _checkTagTagging(tag, cl, BERBuffer::NUMERICSTRING_BERTYPE, type);
+
+      _readOctetStringOctets(value, type);
+   }
+}
+
+// Reads IA5 STRING value
+void BERValueReader::readIA5String(OctetString& value, const IA5StringType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readIA5String(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      _checkTagTagging(tag, cl, BERBuffer::IA5STRING_BERTYPE, type);
+
+      _readOctetStringOctets(value, type);
+   }
+}
+
+// Reads UTC TIME value
+void BERValueReader::readUtcTime(OctetString& value, const UTCTimeType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readUtcTime(value, type);
+   else
+   {
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      _checkTagTagging(tag, cl, BERBuffer::UTCTIME_BERTYPE, type);
+
+      _readOctetStringOctets(value, type);
+   }
+}
+
+// Reads ANY value
+void BERValueReader::readAny(OctetString& value, const AnyType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readAny(value, type);
+   else
+   {
+      BERBuffer::SizeType startAnyTypePos = _buffer.current();
+
+      // decode identifier (but not use it)
+      TagType tag;
+      PCType pc;
+      CLType cl;
+      _buffer.decodeIdentifierOctets(tag, pc, cl);
+
+      // save position of beggining of type content
+      BERBuffer::SizeType endIdentifierPos = _buffer.current();
+
+      // read raw data
+      BERBuffer::ContentType rawValue;
+      _buffer.decodeContentOctets(rawValue);
+
+      // assign data to value;
+      // '(endIdentifierPos - startAnyTypePos) > 0' check is needed, because
+      // ANY type value must include a correctly encoded BER data, the minimal
+      // encoding size is equal to 2 bytes (i.e. NullType value BER encoding)
+      if (rawValue.size() > 0 || (endIdentifierPos - startAnyTypePos) > 0)
+      {
+         // end position of ANY type
+         BERBuffer::SizeType endAnyTypePos = _buffer.current();
+
+         // read identifier and length octets
+         _buffer.setCurrent(startAnyTypePos);
+
+         BERBuffer::ContentType anyRaw;
+         anyRaw.resize(static_cast<BERBuffer::SizeType>(endAnyTypePos - startAnyTypePos));
+         _buffer.read(anyRaw.data(), static_cast<BERBuffer::SizeType>(endAnyTypePos - startAnyTypePos));
+
+         // assign data to value (the receiver is responsible for further decoding)
+         value.assign(reinterpret_cast<OctetString::value_type*>(anyRaw.data()), anyRaw.size());
+
+         // reset position
+         _buffer.setCurrent(endAnyTypePos);
+      }
+   }
+}
+
 // Checks whether component represented by type present or not (usefull for SEQUENCE/SET)
 bool BERValueReader::isComponentPresent(const Type& type)
 {
    if (_nestedReader)
+   {
+      if (_buffer.current() >= _compositionEnd) // case for OPTIONAL components inside empty SEQUENCE
+         return false;
+
       return _nestedReader->isComponentPresent(type);
+   }
    else
    {
       TagType tag;
@@ -272,7 +406,31 @@ bool BERValueReader::isComponentPresent(const Type& type)
       CLType cl;
       _buffer.lookupIdentifierOctets(tag, pc, cl);
 
-      if (type.tagClass() == cl)
+      if (type.typeID() == ANY_TYPE)
+      {
+         return true;
+      }
+      else if (type.typeID() == CHOICE_TYPE)
+      {
+         if (type.hasTagNumber() && type.tagClass() == cl)
+         {
+            if (type.tagNumber() == tag)
+               return true;
+         }
+         else
+         {
+            const ChoiceType* choice = static_cast<const ChoiceType*>(_getDeepInnerType(&type));
+            const ChoiceType::ChoicesType& types = choice->getChoices();
+
+            for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)
+            {
+               if (isComponentPresent(*(*p)))
+                  return true;
+            }
+            return false;
+         }
+      }
+      else if (type.tagClass() == cl)
       {
          if (type.hasTagNumber() && (type.tagNumber() == tag))
             return true;
@@ -298,7 +456,7 @@ void BERValueReader::readSequenceBegin(const SequenceType& type)
       _buffer.decodeIL(tag, pc, cl, length);
 
       // save position of the sequence end
-      _sequenceEndPos = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
+      _compositionEnd = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
 
       // check tag
       _checkTagTagging(tag, cl, BERBuffer::SEQUENCE_BERTYPE, type);
@@ -316,12 +474,12 @@ bool BERValueReader::isSequenceEnd(const SequenceType& type)
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       return _nestedReader->isSequenceEnd(type);
    else
-      return (_buffer.current() < _sequenceEndPos) ? false : true;
+      return (_buffer.current() < _compositionEnd) ? false : true;
 }
 
 void BERValueReader::readSequenceEnd(const SequenceType& type)
 {
-   assert(_nestedReader != NULL && _sequenceEndPos > 0);
+   assert(_nestedReader != NULL && _compositionEnd > 0);
 
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       _nestedReader->readSequenceEnd(type);
@@ -330,7 +488,7 @@ void BERValueReader::readSequenceEnd(const SequenceType& type)
       delete _nestedReader;
       _nestedReader = NULL;
 
-      if (_sequenceEndPos < _buffer.current())
+      if (_buffer.current() < _compositionEnd)
          throw BERBufferException("More BER " + type.toString() + " items are expected");
    }
 }
@@ -365,7 +523,7 @@ void BERValueReader::readSetBegin(const SetType& type)
       _buffer.decodeIL(tag, pc, cl, length);
 
       // save position of the sequence end
-      _setEndPos = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
+      _compositionEnd = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
 
       // check tag
       _checkTagTagging(tag, cl, BERBuffer::SET_BERTYPE, type);
@@ -383,12 +541,12 @@ bool BERValueReader::isSetEnd(const SetType& type)
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       return _nestedReader->isSetEnd(type);
    else
-      return (_buffer.current() < _setEndPos) ? false : true;
+      return (_buffer.current() < _compositionEnd) ? false : true;
 }
 
 void BERValueReader::readSetEnd(const SetType& type)
 {
-   assert(_nestedReader != NULL && _setEndPos > 0);
+   assert(_nestedReader != NULL && _compositionEnd > 0);
 
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       _nestedReader->readSetEnd(type);
@@ -397,7 +555,7 @@ void BERValueReader::readSetEnd(const SetType& type)
       delete _nestedReader;
       _nestedReader = NULL;
 
-      if (_setEndPos < _buffer.current())
+      if (_buffer.current() < _compositionEnd)
          throw BERBufferException("More BER " + type.toString() + " items are expected");
    }
 }
@@ -418,6 +576,15 @@ void BERValueReader::readSetOfEnd(const BaseSetOfType& type)
    readSetEnd(type);
 }
 
+const Type* BERValueReader::_getDeepInnerType(const Type* t) const
+{
+   const AbstractTypeGetter* abstractGetter = dynamic_cast<const AbstractTypeGetter*>(t);
+   if (!abstractGetter)
+      return t;
+
+   return _getDeepInnerType(&abstractGetter->abstractType());
+}
+
 // Reads CHOICE value
 void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
 {
@@ -430,35 +597,52 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
       CLType cl;
       _buffer.lookupIdentifierOctets(tag, pc, cl);
 
+      *choosenType = NULL;
+
       const ChoiceType::ChoicesType& types = type.getChoices();
       for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)
       {
-         Type* t = *p;
+         const Type* t = *p;
+
          if (t->typeID() == CHOICE_TYPE)
          {
-            try
+            if (t->hasTagNumber())
             {
-               readChoice(*((ChoiceType*) t), choosenType);
-               *choosenType = t;
-               return;
+               if (t->tagClass() == cl)
+               {
+                  if (t->hasTagNumber() && (t->tagNumber() == tag))
+                     *choosenType = const_cast<Type*>(t);
+                  if (!t->hasTagNumber() && (t->typeID() == tag))
+                     *choosenType = const_cast<Type*>(t);
+               }
+               else
+               {
+                  readChoice(*(static_cast<const ChoiceType*>(_getDeepInnerType(t))), choosenType);
+                  if (*choosenType != NULL)
+                  {
+                     *choosenType = const_cast<Type*>(t);
+                     break;
+                  }
+               }
             }
-            catch (...)
+            else
             {
-               /* Do not process an exception, because it is issued by nested CHOICE,
-                  if the type cannot be distingushed.
-                  TODO: Find another way to check nested CHOICE.
-               */
+               readChoice(*(static_cast<const ChoiceType*>(_getDeepInnerType(t))), choosenType);
+               if (*choosenType != NULL)
+               {
+                  *choosenType = const_cast<Type*>(t);
+                  break;
+               }
             }
          }
-         else if (t->tagClass() == cl && ((t->hasTagNumber() && t->tagNumber() == tag)
-             || (!t->hasTagNumber() && t->typeID() == tag)))
+         else if (t->tagClass() == cl)
          {
-            *choosenType = t;
-            return;
+            if (t->hasTagNumber() && (t->tagNumber() == tag))
+               *choosenType = const_cast<Type*>(t);
+            if (!t->hasTagNumber() && (t->typeID() == tag))
+               *choosenType = const_cast<Type*>(t);
          }
       }
-
-      throw BERBufferException("BER " + type.toString() + " is expected");
    }
 }
 
@@ -504,7 +688,7 @@ void BERValueReader::_readOctetStringOctets(OctetString& value, const OctetStrin
    BERBuffer::ContentType rawValue;
    _buffer.decodeContentOctets(rawValue);
 
-   // assign data to temporary variable
+   // assign temporary data to actual value
    if (rawValue.size())
       value.assign(reinterpret_cast<OctetString::value_type*>(rawValue.data()), rawValue.size());
 

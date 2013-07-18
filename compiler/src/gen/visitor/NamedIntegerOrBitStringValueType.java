@@ -4,13 +4,13 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class NamedIntegerValueType extends DoNothingASTVisitor implements ContentProvider {
+public class NamedIntegerOrBitStringValueType extends DoNothingASTVisitor implements ContentProvider {
 
    private CodeBuilder builder = new CodeBuilder();
    private String assignmentTypeName = null;
    private boolean isValueAble = false;
 
-   public NamedIntegerValueType(String assignmentTypeName) {
+   public NamedIntegerOrBitStringValueType(String assignmentTypeName) {
       this.assignmentTypeName = assignmentTypeName;
    }
 
@@ -21,6 +21,22 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTIntegerType node, Object data) {
+      builder.newLine();
+
+      final String typeValueName = GenerationUtils.asCPPToken(assignmentTypeName) + "_Value";
+      builder.append(1, "enum ").append(typeValueName).newLine();
+      builder.append(1, "{").newLine();
+
+      node.childrenAccept(this, data);
+
+      builder.append(1, "};").newLine();
+
+      builder.newLine();
+      return data;
+   }
+
+   @Override
+   public Object visit(ASTBitStringType node, Object data) {
       builder.newLine();
 
       final String typeValueName = GenerationUtils.asCPPToken(assignmentTypeName) + "_Value";
@@ -47,14 +63,16 @@ public class NamedIntegerValueType extends DoNothingASTVisitor implements Conten
 
    @Override
    public Object visit(ASTidentifier node, Object data) {
-      builder.append(2, "k_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(" = ");
+      builder.append(2, "k_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+              append(" = ");
       return data;
    }
 
    @Override
    public Object visit(ASTDefinedValue node, Object data) {
       if (node.jjtGetParent() instanceof ASTNamedNumber) {
-         builder.append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).append(",");
+         builder.append("k_").append(GenerationUtils.asCPPToken(node.getFirstToken().toString())).
+                 append(",");
          builder.newLine();
 
          isValueAble = true;

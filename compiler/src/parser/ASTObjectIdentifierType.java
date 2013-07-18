@@ -2,20 +2,19 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=true,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package parser;
 
-public
-class ASTObjectIdentifierType extends SimpleNode {
-  public ASTObjectIdentifierType(int id) {
-    super(id);
-  }
+public class ASTObjectIdentifierType extends SimpleNode {
 
-  public ASTObjectIdentifierType(AsnParser p, int id) {
-    super(p, id);
-  }
+   public ASTObjectIdentifierType(int id) {
+      super(id);
+   }
 
+   public ASTObjectIdentifierType(AsnParser p, int id) {
+      super(p, id);
+   }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(AsnParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+   /** Accept the visitor. **/
+   public Object jjtAccept(AsnParserVisitor visitor, Object data) {
+      return visitor.visit(this, data);
+   }
 }
 /* JavaCC - OriginalChecksum=2d8f6ffa0b7f485751ac2d6b550bb5a7 (do not edit this line) */

@@ -4,7 +4,8 @@ import gen.*;
 import gen.utils.*;
 import parser.*;
 
-public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements ContentProvider {
+public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements ContentProvider,
+        ConstantsForGeneration {
 
    private CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
@@ -22,9 +23,9 @@ public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements Co
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       if (node.isSequence()) {
-         builder.append("SequenceOfType<");
+         builder.append(asn1NameSpace).append("SequenceOfType<");
       } else if (node.isSet()) {
-         builder.append("SetOfType<");
+         builder.append(asn1NameSpace).append("SetOfType<");
       }
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),

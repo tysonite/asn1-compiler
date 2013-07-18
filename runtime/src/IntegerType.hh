@@ -29,8 +29,16 @@ public:
    // Reads the value
    void read(ASN1ValueReader& reader, ValueType& value) const
    { 
-      ValueRestorer<Integer> restorer(value);
+      ValueRestorer<ValueType> restorer(value);
       
+      if (_hasDefault)
+      {
+         if (reader.isComponentPresent(*this))
+            reader.readInteger(value, *this);
+         else
+            value = _defaultValue;
+      }
+      else
       reader.readInteger(value, *this); 
 
       restorer.restoreNotNeeded();
@@ -39,6 +47,12 @@ public:
    // Writes the value
    void write(ASN1ValueWriter& writer, const ValueType& value) const
    {
+      if (_hasDefault)
+      {
+         if (_defaultValue != value)
+            writer.writeInteger(value, *this);
+      }
+      else
       writer.writeInteger(value, *this);
    }
 

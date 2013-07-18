@@ -9,6 +9,8 @@ set (ASN1_RUNTIME_INCLUDE_DIRS
 set (SOURCES
    BERValueReader.cc
    BERValueWriter.cc
+   DERValueReader.cc
+   DERValueWriter.cc
    CERValueWriter.cc
    XERValueWriter.cc
    ChoiceType.cc
@@ -20,18 +22,26 @@ set (SOURCES
    Type.cc
    VisibleStringType.cc
    BitString.cc
-   SizeConstraintsHolder.cc)
+   SizeConstraintsHolder.cc
+   UTCTimeType.cc
+   TeletexStringType.cc
+   NumericStringType.cc
+   IA5StringType.cc)
 
 set (HEADERS
    ASN1Exception.hh
    ASN1ValueReader.hh
    ASN1ValueWriter.hh
-   BERBuffer.hh
    BERValueReader.hh
    BERValueWriter.hh
+   DERValueReader.hh
+   DERValueWriter.hh
+   CERValueWriter.hh
+   XERValueWriter.hh
+   BERBuffer.hh
+   XERBuffer.hh
    BitStringType.hh
    BooleanType.hh
-   CERValueWriter.hh
    ChoiceType.hh
    EnumeratedType.hh
    GeneralizedTimeType.hh
@@ -51,8 +61,6 @@ set (HEADERS
    Utils.hh
    Values.hh
    VisibleStringType.hh
-   XERBuffer.hh
-   XERValueWriter.hh
    BitString.hh
    SizeConstraintsHolder.hh
    BaseSequenceOfType.hh
@@ -60,7 +68,12 @@ set (HEADERS
    BaseSetOfType.hh
    SetOfType.hh
    UnsignedIntegerType.hh
-   ValueConstraintsHolder.hh)
+   ValueConstraintsHolder.hh
+   UTCTimeType.hh
+   TeletexStringType.hh
+   NumericStringType.hh
+   IA5StringType.hh
+   AnyType.hh)
 
 if (CMAKE_COMPILER_IS_GNUCC)
    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")
