@@ -24,7 +24,7 @@ void DERValueWriter::_doWriteOctetString(const OctetString& value, const BERBuff
    _buffer.write(reinterpret_cast<const BERBuffer::ValueType*>(value.data()), value.size());
 }
 
-// Write BIT STRING value
+// Writes BIT STRING value
 void DERValueWriter::_doWriteBitString(const BitString& value, const BitStringType& type)
 {
    // X.690: 10.2: the constructed form of encoding shall not be used.

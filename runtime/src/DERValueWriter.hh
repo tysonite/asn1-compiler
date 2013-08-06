@@ -22,7 +22,7 @@ protected:
    // Writes OCTET STRING value
    void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
 
-   // Write BIT STRING value
+   // Writes BIT STRING value
    void _doWriteBitString(const BitString& value, const BitStringType& type);
 
 private:
