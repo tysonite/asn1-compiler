@@ -13,6 +13,7 @@ public final class VisitorUtils {
     * @param builder
     * @param node
     * @param visitor
+    * @return
     */
    public static <T extends AsnParserVisitor & ContentProvider> boolean visitNodeAndAccept(
            CodeBuilder builder, SimpleNode node, T visitor) {
@@ -25,12 +26,35 @@ public final class VisitorUtils {
    }
 
    /**
-    * Visits childs nodes of the node and apply visitor to all of them.
     *
     * @param <T>
     * @param builder
     * @param node
     * @param visitor
+    * @return
+    */
+   public static <T extends AsnParserVisitor & ContentProvider> boolean visitNodeAndParents(
+           CodeBuilder builder, SimpleNode node, T visitor) {
+      Node parent = node;
+      do {
+         parent.jjtAccept(visitor, null);
+         parent = parent.jjtGetParent();
+      } while (null != parent);
+
+      if (null != builder) {
+         builder.append(visitor.getContent());
+      }
+      return visitor.hasValuableContent();
+   }
+
+   /**
+    * Visits child nodes of the node and apply visitor to all of them.
+    *
+    * @param <T>
+    * @param builder
+    * @param node
+    * @param visitor
+    * @return
     */
    public static <T extends AsnParserVisitor & ContentProvider> boolean visitChildsAndAccept(
            CodeBuilder builder, SimpleNode node, T visitor) {

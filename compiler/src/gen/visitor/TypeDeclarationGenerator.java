@@ -7,7 +7,7 @@ import parser.*;
 public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Generator {
 
    private ASTTypeAssignment node = null;
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
 
    public TypeDeclarationGenerator(final ASTTypeAssignment node) {
       this.node = node;
@@ -33,7 +33,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
    private void generateConstructorInitializers(final GeneratorContext context) {
       /* check whether it is needed to add " : " */
-      VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded());
+      VisitorUtils.visitChildsAndAccept(builder, node, new AddColonIfNeeded(context));
 
       VisitorUtils.visitChildsAndAccept(builder, node,
               new SetOfOrSequenceOfConstructorDeclaration(context));
@@ -43,6 +43,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
               new DefaultValueConstructorDefinition(context));
    }
 
+   @Override
    public void generate(final GeneratorContext context) {
       if (node.isProcessed()) {
          return;
@@ -83,7 +84,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
               || VisitorUtils.visitChildsAndAccept(null, node, new IsEnumeratedType()))
               && !VisitorUtils.visitChildsAndAccept(null, node, new IsNullType())
               && !VisitorUtils.visitChildsAndAccept(null, node, new IsAnyType())) {
-      builder.newLine();
+         builder.newLine();
          builder.append(1, "explicit ").append(GenerationUtils.asCPPToken(typeName)).
                  append("(").append("const ValueType& defaultValue, bool hasDefault").append(") : ").
                  append(baseTypeName.toString()).append("(defaultValue, hasDefault)");
@@ -117,10 +118,12 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       node.markAsProcessed();
    }
 
+   @Override
    public String getContent() {
       return builder.toString();
    }
 
+   @Override
    public boolean hasValuableContent() {
       return true;
    }

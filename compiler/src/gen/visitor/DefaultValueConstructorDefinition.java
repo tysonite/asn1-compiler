@@ -7,7 +7,7 @@ import parser.*;
 public class DefaultValueConstructorDefinition extends DoNothingASTVisitor
         implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
    /**
     * Element type name currently being processed.
@@ -52,9 +52,16 @@ public class DefaultValueConstructorDefinition extends DoNothingASTVisitor
       if (!builder.toString().isEmpty()) {
          builder.append(", ");
       }
+
+      if (!GenerationUtils.isNestedLevelOfSeqOrSetEqual(node,
+              (SimpleNode) context.getQueuedNode())) {
+         return data;
+      }
+
       builder.append(elementTypeName).append("(");
       VisitorUtils.visitChildsAndAccept(builder, node, new ValueGenerator(true));
       builder.append(", true)");
+
       return data;
    }
 
@@ -79,10 +86,12 @@ public class DefaultValueConstructorDefinition extends DoNothingASTVisitor
       return data;
    }
 
+   @Override
    public String getContent() {
       return builder.toString();
    }
 
+   @Override
    public boolean hasValuableContent() {
       return !builder.toString().isEmpty();
    }

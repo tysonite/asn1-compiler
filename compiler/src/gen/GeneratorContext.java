@@ -23,6 +23,8 @@ public class GeneratorContext {
    private CommandLine line;
    /* AssigmentList node */
    private ASTAssignmentList assignmentList = null;
+   /* Current node scheduled for coe generation in complex types */
+   private Node queuedNode = null;
 
    public void setAssignmentList(ASTAssignmentList node) {
       this.assignmentList = node;
@@ -96,5 +98,13 @@ public class GeneratorContext {
          builder.append(b.toString());
       }
       externalDefContent.clear();
+   }
+
+   public void setQueuedNode(Node node) {
+      queuedNode = node;
+   }
+
+   public Node getQueuedNode() {
+      return queuedNode;
    }
 }

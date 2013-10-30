@@ -63,7 +63,7 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
          throw new GeneratorException("Incorrect value: " + value);
       }
       if (!standAlone) {
-      builder.newLine();
+         builder.newLine();
       }
       return data;
    }
@@ -143,6 +143,7 @@ public class ValueGenerator extends DoNothingASTVisitor implements Generator {
       return data;
    }
 
+   @Override
    public void generate(final GeneratorContext context) {
       this.context = context;
       builder.append("// ValueAssignment for ASN.1 value: ").append(node.getFirstToken().toString());
