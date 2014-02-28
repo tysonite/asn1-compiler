@@ -26,6 +26,7 @@ namespace ut = boost::unit_test;
 #include "BerBuffer_tests.cc"
 #include "ChoiceType_tests.cc"
 #include "AnyType_tests.cc"
+#include "OctetStringType_tests.cc"
 #include "Utils_tests.cc"
 
 void TestBEREmptyIntegerWithValue(const asn1::Integer& vToWrite)

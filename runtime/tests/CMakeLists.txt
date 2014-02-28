@@ -2,7 +2,7 @@ project (asn1-runtime)
 
 cmake_minimum_required (VERSION 2.6)
 
-set (SOURCES_NOT_COMPILABLE BerBuffer_tests.cc ChoiceType_tests.cc Utils_tests.cc AnyType_tests.cc)
+set (SOURCES_NOT_COMPILABLE BerBuffer_tests.cc ChoiceType_tests.cc OctetStringType_tests.cc Utils_tests.cc AnyType_tests.cc)
 
 set (SOURCES TestBER.cc ${SOURCES_NOT_COMPILABLE})
 set_source_files_properties (${SOURCES_NOT_COMPILABLE}
