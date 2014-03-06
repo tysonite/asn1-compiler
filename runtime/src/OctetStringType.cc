@@ -3,7 +3,7 @@
 #include "OctetStringType.hh"
 
 // The size of value part to be reported in the exception message
-#define VALUE_PART_SIZE 10U
+#define VALUE_PART_SIZE 10UL
 
 namespace asn1
 {
