@@ -11,6 +11,9 @@ namespace asn1
 class ASN1ValueReader
 {
 public:
+   // Destructor
+   virtual ~ASN1ValueReader() {}
+
    // Reads BOOLEAN value
    virtual void readBoolean(Boolean& value, const BooleanType& type) = 0;
 

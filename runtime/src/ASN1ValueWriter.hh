@@ -11,6 +11,9 @@ namespace asn1
 class ASN1ValueWriter
 {
 public:
+   // Destructor
+   virtual ~ASN1ValueWriter() {}
+
    // Writes BOOLEAN value
    virtual void writeBoolean(const Boolean& value, const BooleanType& type) = 0;
 
