@@ -3,5 +3,7 @@ compiler:
   - gcc
   - clang
 before_install:
-  - sudo apt-get install libboost-dev
-script: cd runtime && cmake . && make
+  - sudo apt-get install libboost-dev libboost-test-dev lcov
+  - sudo pip install cpp-coveralls
+script:
+  - cd runtime && cmake -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && make coverage
