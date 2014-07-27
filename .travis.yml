@@ -7,4 +7,4 @@ before_install:
 script:
   - cd runtime && cmake -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && ./tests/TestBER
 after_success:
-  - coveralls --exclude cmake --exclude tests --exclude CMakeFiles
+  - coveralls --exclude cmake --exclude tests --exclude CMakeFiles --gcov-options '\-lp'
