@@ -5,6 +5,6 @@ before_install:
   - sudo apt-get install libboost-dev libboost-test-dev lcov
   - sudo pip install cpp-coveralls
 script:
-  - cd runtime && cmake -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && make coverage
+  - cd runtime && cmake -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && ./tests/TestBER
 after_success:
   - coveralls --exclude cmake --exclude tests --exclude CMakeFiles
