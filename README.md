@@ -12,7 +12,7 @@ The top directory consists of these sub-directories:
 * compiler -- A Java ASN.1 to C++ compiler
 * runtime  -- C++ runtime library for encoding/decoding of the data
 
-# Compilte & Test runtime library
+# Compile & Test runtime library
 The runtime library uses [CMake](http://www.cmake.org/) to build itself. As a result of compilation static and shared libraries will be produced.
 
 1. Ensure that you are located in the directory with runtime library sources;
