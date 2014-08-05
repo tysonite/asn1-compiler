@@ -28,4 +28,4 @@ Coverage data can be calculated, if CMake command line contains option `-DDO_COV
 To run unit tests execute command: `./tests/TestBER`.
 
 # Generate Debian/Ubuntu runtime package
-The runtime library uses CPack (feature of CMake) to generate an installable Debian package. If compilation of runtime library was succeded, execute `make package` to create it.
+The runtime library uses CPack (feature of CMake) to generate an installable Debian package. If compilation of runtime library was successful, execute `make package` to create it.
