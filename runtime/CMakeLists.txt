@@ -18,6 +18,10 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif ()
 
 if (DO_COVERAGE)
+   if (NOT (CMAKE_COMPILER_IS_GNUCXX))
+      message (FATAL_ERROR "GNU GCC is required for code coverage statistic")
+   endif()
+
    include (CodeCoverage)
    set (CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
    setup_target_for_coverage (coverage ./tests/TestBER coverage)
@@ -28,8 +32,17 @@ endif ()
 add_subdirectory (src)
 
 if (BUILD_UNIT_TESTS)
-   find_package (Boost COMPONENTS unit_test_framework)
-   add_subdirectory (tests)
+   # On Windows, set env. variable BOOST_ROOT to your Boost installation
+   # directory (e.g. BOOST_ROOT="c:\boost_1_55_0")
+   find_package (Boost) # Only unit_test_framework component is required,
+			# but since unit tests use only header files, it is
+			# not specified here
+   if (Boost_FOUND)
+      include_directories (${Boost_INCLUDE_DIRS})
+      add_subdirectory (tests)
+   else ()
+      message (FATAL_ERROR "Boost (unit test framework) was not found, unit tests can't be built")
+   endif ()
 endif ()
 
 set (CPACK_GENERATOR "DEB")
