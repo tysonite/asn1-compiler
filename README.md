@@ -21,7 +21,7 @@ The runtime library uses [CMake](http://www.cmake.org/) to build itself. As a re
 4. Execute CMake to create Makefile: `cmake ..`;
 5. Execute GNU make to build static and shared libraries: `make`;
 
-Unit tests can be built during library compilation, if CMake command line contains option `-DBUILD_UNIT_TESTS=1`.
+Unit tests can be built during library compilation, if CMake command line contains option `-DBUILD_UNIT_TESTS=1`. Unit tests require Boost test framework, on Windows set environment variable BOOST_ROOT equal to your Boost installation path (e.g. BOOST_ROOT="c:\boost_1_55_0").
 
 Coverage data can be calculated, if CMake command line contains option `-DDO_COVERAGE=1`. There is no need to specify `-DBUILD_UNIT_TESTS=1` if you are going to see coverage data, because it will be enabled automatically. For example, to compile unit tests and collect coverage data during their running, execute `cmake -DDO_COVERAGE=1 ..` instead of command in step 4 above.
 
