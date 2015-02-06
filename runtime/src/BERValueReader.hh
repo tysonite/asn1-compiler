@@ -17,7 +17,7 @@ public:
 
    // Constructor
    explicit BERValueReader(BERBuffer& buffer)
-      : _nestedReader(NULL), _buffer(buffer), _compositionEnd(0) {}
+      : _nestedReader(NULL), _buffer(buffer), _compositionEnd(0), _eofc(false) {}
 
    // Destructor
    ~BERValueReader() { delete _nestedReader; }
@@ -118,6 +118,9 @@ protected:
    // Checks tag for tagging (IMPLICIT, EXPLICIT, ...)
    void _checkTagTagging(TagType tag, CLType cl, TagType expectedTag, const Type& type);
 
+   // Checks indefinite length form constraints
+   void _checkIndefiniteConstraints(PCType pc, int64_t length, const Type& type);
+
    // Returns last inner type in chain
    const Type* _getDeepInnerType(const Type* t) const;
       
@@ -129,6 +132,7 @@ protected:
 private:
 
    BERBuffer::SizeType _compositionEnd;
+   bool                _eofc;
 
    DISALLOW_COPY_AND_ASSIGN(BERValueReader);
 };

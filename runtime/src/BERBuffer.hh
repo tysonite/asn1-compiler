@@ -121,6 +121,14 @@ public:
       return _data[_current++];  
    }
 
+   // Gets the byte from the buffer relatively current position
+   ValueType get(SizeType pos)
+   {
+      if (_current + pos + 1 > (_end ? _end : _data.size()))
+         throw BERBufferException("Unexpected end of BER buffer");
+      return _data[_current + pos];
+   }
+
    // Extends space of the buffer on the specified position
    // delta > 0 - add space to buffer, delta < 0 - remove space from buffer
    void extend(SizeType pos, int32_t delta)

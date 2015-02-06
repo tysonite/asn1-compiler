@@ -455,8 +455,20 @@ void BERValueReader::readSequenceBegin(const SequenceType& type)
       int64_t length;
       _buffer.decodeIL(tag, pc, cl, length);
 
-      // save position of the sequence end
-      _compositionEnd = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
+      // check indefinite length contraints
+      _checkIndefiniteConstraints(pc, length, type);
+
+      if (length != -1)
+      {
+         // save position of the sequence end
+         _compositionEnd = _buffer.current() + static_cast<BERBuffer::SizeType>(length);
+         _eofc = false;
+      }
+      else
+      {
+         _compositionEnd = 0;
+         _eofc = true;
+      }
 
       // check tag
       _checkTagTagging(tag, cl, BERBuffer::SEQUENCE_BERTYPE, type);
@@ -474,13 +486,23 @@ bool BERValueReader::isSequenceEnd(const SequenceType& type)
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       return _nestedReader->isSequenceEnd(type);
    else
-      return (_buffer.current() < _compositionEnd) ? false : true;
+   {
+      if (_eofc)
+      {
+         if (_buffer.get(0) == 0 && _buffer.get(1) == 0)
+            return true;
+         else
+            return false;
+      }
+      else
+         return (_buffer.current() < _compositionEnd) ? false : true;
+   }
 }
 
 void BERValueReader::readSequenceEnd(const SequenceType& type)
 {
-   assert(_nestedReader != NULL && _compositionEnd > 0);
-
+   assert(_nestedReader != NULL);
+ 
    if (_nestedReader && _nestedReader->_nestedReader != NULL)
       _nestedReader->readSequenceEnd(type);
    else
@@ -488,8 +510,19 @@ void BERValueReader::readSequenceEnd(const SequenceType& type)
       delete _nestedReader;
       _nestedReader = NULL;
 
-      if (_buffer.current() < _compositionEnd)
-         throw BERBufferException("More BER " + type.toString() + " items are expected");
+      if (_eofc == true)
+      {
+         // read 2 zero-ed bytes
+         if (_buffer.get() != 0)
+            throw BERBufferException("First EOC byte is expected");
+         if (_buffer.get() != 0)
+            throw BERBufferException("Second EOC byte is expected");
+      }
+      else
+      {
+         if (_buffer.current() < _compositionEnd)
+            throw BERBufferException("More BER " + type.toString() + " items are expected");
+      }
    }
 }
 
@@ -775,6 +808,16 @@ void BERValueReader::_checkTagTagging(TagType tag, CLType cl, TagType expectedTa
 
    if (cl != type.tagClass())
       throw BERBufferException("BER " + type.toString() + " is expected");
+}
+
+// Checks indefinite length form constraints
+void BERValueReader::_checkIndefiniteConstraints(PCType pc, int64_t length, const Type& type)
+{
+   if (length == -1 && pc != BERBuffer::CONSTRUCTED_OBJECTYPE)
+   {
+      throw BERBufferException("BER " + type.toString() + " must be constructed"
+         + ", if indefinite length form is used");
+   }
 }
 
 }
