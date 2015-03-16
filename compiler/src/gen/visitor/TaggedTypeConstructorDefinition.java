@@ -6,7 +6,7 @@ import parser.*;
 
 public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private boolean wasTagClass = false;
    private String identifier = null;
    private final GeneratorContext context;
@@ -45,8 +45,8 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
                           new IsTaggedType(new IsChoiceType()));
 
                   if (!isChoice && !isTaggedChoice) {
-            builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
-         }
+                     builder.append(2, "setTagging(Type::IMPLICIT_TAGGING);").newLine();
+                  }
                } else {
                   throw new GeneratorException("Tagged type reference unexisting type");
                }
@@ -141,10 +141,12 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
       return data;
    }
 
+   @Override
    public String getContent() {
       return builder.toString();
    }
 
+   @Override
    public boolean hasValuableContent() {
       return true;
    }
