@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/tysonite/asn1-compiler.png?branch=master)](https://travis-ci.org/tysonite/asn1-compiler)
-[![Coverage Status](https://coveralls.io/repos/tysonite/asn1-compiler/badge.png?branch=master)](https://coveralls.io/r/tysonite/asn1-compiler?branch=master)
+[![Coverage Status](https://coveralls.io/repos/tysonite/asn1-compiler/badge.svg?branch=master&service=github)](https://coveralls.io/github/tysonite/asn1-compiler?branch=master)
 
 # Description
 
