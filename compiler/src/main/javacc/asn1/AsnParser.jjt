@@ -22,22 +22,22 @@ DEBUG_PARSER=false;
 DEBUG_TOKEN_MANAGER=false;
 MULTI=true;
 VISITOR=true;
+TRACK_TOKENS=true;
 NODE_SCOPE_HOOK=true;
-/*OUTPUT_DIRECTORY="..\\src\\parser";*/
-NODE_PACKAGE="parser";
+NODE_PACKAGE="org.tysonite.asn1.parser";
 }
 
 PARSER_BEGIN(AsnParser)
-package parser;
+package org.tysonite.asn1.parser;
 
 public class AsnParser
 {
    public static void jjtreeOpenNodeScope(Node n) {
-      ((SimpleNode) n).setFirstToken(getToken(1));
+      ((SimpleNode) n).jjtSetFirstToken(getToken(1));
    }
 
    public static void jjtreeCloseNodeScope(Node n) {
-      ((SimpleNode) n).setLastToken(getToken(0));
+      ((SimpleNode) n).jjtSetLastToken(getToken(0));
    }
 
    public SimpleNode getTreeRootNode() {
