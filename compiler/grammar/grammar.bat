@@ -1,3 +1,0 @@
-jjtree.bat AsnParser.jj
-
-
