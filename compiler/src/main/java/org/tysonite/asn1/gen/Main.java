@@ -42,7 +42,7 @@ public final class Main {
       initOptions();
 
       try {
-         final CommandLineParser argsParser = new PosixParser();
+         final CommandLineParser argsParser = new DefaultParser();
          final CommandLine line = argsParser.parse(options, args);
 
          if (line.hasOption(help.getOpt()) || !mandatoryOptionsPresent(line)) {
