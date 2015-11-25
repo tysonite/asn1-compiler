@@ -46,6 +46,24 @@
                </execution>
             </executions>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>ant-fix-crlf</id>
+                  <phase>process-sources</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <tasks>
+                        <fixcrlf srcdir="src/main/java/org/tysonite/asn1/parser" includes="*.java" eol="crlf"/>
+                     </tasks>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
 </project>
