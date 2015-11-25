@@ -1,4 +1,0 @@
-IA5STRING_SIZE_FROM DEFINITIONS TAGS ::=
-BEGIN
-   PushButtonDialSequence ::= IA5String (SIZE(1..24)) (FROM ("0".."9"|"*"|"#"))
-END
