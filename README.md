@@ -29,9 +29,9 @@ To run unit tests execute command: `./tests/TestBER`.
 
 # Running ASN.1 compiler
 1. Move to `compiler` directory
-1. Execute 'mvn package'
-1. Move to 'target' directory if no errors
-1. Execute 'java -jar asn1-compiler-<...>.jar' and follow on-screen instructions
+1. Execute `mvn package`
+1. Move to `target` directory if no errors
+1. Execute `java -jar asn1-compiler-<...>.jar` and follow on-screen instructions
 
 # Generate Debian/Ubuntu runtime package
 The runtime library uses CPack (feature of CMake) to generate an installable Debian package. If compilation of runtime library was successful, execute `make package` to create package.
