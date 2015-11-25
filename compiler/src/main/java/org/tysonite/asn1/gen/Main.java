@@ -17,6 +17,8 @@ public final class Main {
            "Generate code for DER encoding/decoding");
    public static final Option help = new Option("h", "help", false,
            "ASN.1 compiler command line options");
+   public static final Option noCppCode = new Option("ncpp", "no-cpp", false,
+           "Do not generation C++ code, only parser ASN.1");
 
    private void printHelp() {
       final HelpFormatter h = new HelpFormatter();
@@ -24,13 +26,15 @@ public final class Main {
    }
 
    private boolean mandatoryOptionsPresent(CommandLine line) {
-      return line.hasOption(inputFile.getOpt()) && line.hasOption(outputDirectory.getOpt());
+      return line.hasOption(inputFile.getOpt()) && line.hasOption(outputDirectory.getOpt())
+              || (line.hasOption(inputFile.getOpt()) && line.hasOption(noCppCode.getOpt()));
    }
 
    private void initOptions() {
       options.addOption(outputDirectory);
       options.addOption(inputFile);
       options.addOption(methodDER);
+      options.addOption(noCppCode);
       options.addOption(help);
    }
 
@@ -54,8 +58,10 @@ public final class Main {
          SimpleNode root = parser.getTreeRootNode();
          root.dump("\t");
 
-         CPPCodeGenerator generator = new CPPCodeGenerator(root, line);
-         generator.generate();
+         if (!line.hasOption(noCppCode.getOpt())) {
+            CPPCodeGenerator generator = new CPPCodeGenerator(root, line);
+            generator.generate();
+         }
       } catch (org.apache.commons.cli.ParseException e) {
          printHelp();
       } catch (org.tysonite.asn1.parser.ParseException e) {
