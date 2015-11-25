@@ -18,7 +18,7 @@ public final class Main {
    public static final Option help = new Option("h", "help", false,
            "ASN.1 compiler command line options");
    public static final Option noCppCode = new Option("ncpp", "no-cpp", false,
-           "Do not generation C++ code, only parser ASN.1");
+           "Do not generate C++ code, only parser ASN.1");
 
    private void printHelp() {
       final HelpFormatter h = new HelpFormatter();
