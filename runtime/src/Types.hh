@@ -9,6 +9,9 @@
 #include "BooleanType.hh"
 #include "IntegerType.hh"
 #include "UnsignedIntegerType.hh"
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+#include "BigIntegerType.hh"
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 #include "EnumeratedType.hh"
 #include "ObjectIdentifierType.hh"
 #include "BitStringType.hh"

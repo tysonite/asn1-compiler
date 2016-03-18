@@ -75,6 +75,12 @@ set (HEADERS
    IA5StringType.hh
    AnyType.hh)
 
+if (VAR_INT_SUPPORT)
+   set (HEADERS
+      ${HEADERS}
+      BigIntegerType.hh)
+endif ()
+
 if (CMAKE_COMPILER_IS_GNUCC)
    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")
 endif ()
@@ -106,4 +112,3 @@ set_target_properties (${ASN1_RUNTIME_LIBRARY_SHARED}
 install (TARGETS ${ASN1_RUNTIME_LIBRARY_STATIC} DESTINATION /usr/lib)
 install (TARGETS ${ASN1_RUNTIME_LIBRARY_SHARED} DESTINATION /usr/lib)
 install (FILES ${HEADERS} DESTINATION /usr/include/libasn1-runtime)
-

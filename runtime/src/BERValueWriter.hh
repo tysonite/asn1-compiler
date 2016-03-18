@@ -28,6 +28,9 @@ public:
    // Writes INTEGER value
    void writeInteger(const Integer& value, const IntegerType& type);
    void writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type);
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+   void writeBigInteger(const BigInteger& value, const BigIntegerType& type);
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Writes ENUMERATED value
    void writeEnumerated(const Integer& value, const EnumeratedType& type);
@@ -94,7 +97,8 @@ protected:
    virtual BERValueWriter* _prototype() const;
 
    // Writes OCTET STRING value
-   virtual void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType, const OctetStringType& type);
+   virtual void _doWriteOctetString(const OctetString& value, const BERBuffer::BERType& tagType,
+      const OctetStringType& type);
 
    // Write BIT STRING value
    virtual void _doWriteBitString(const BitString& value, const BitStringType& type);
@@ -107,6 +111,15 @@ protected:
    void _doWriteInteger(const NumberType& value);
 
 private:
+
+   template <class NumberType>
+   void _doWriteIntegerValue(const NumberType& value, uint8_t valueLength,
+      BERBuffer::SizeType bufferSize);
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+   template <>
+   void _doWriteIntegerValue(const BigInteger& value, uint8_t valueLength,
+      BERBuffer::SizeType bufferSize);
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Writes SEQUENCE/SET value end
    // Returns true if last nested SEQUENCE/SET value end was written, otherwise returns false

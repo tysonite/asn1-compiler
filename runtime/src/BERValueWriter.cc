@@ -53,6 +53,23 @@ void BERValueWriter::writeUnsignedInteger(const UnsignedInteger& value, const Un
    }
 }
 
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+void BERValueWriter::writeBigInteger(const BigInteger& value, const BigIntegerType& type)
+{
+   if (_nestedWriter)
+      _nestedWriter->writeBigInteger(value, type);
+   else
+   {
+      BERBuffer::SizeType position = _buffer.encodeIL(type.hasTagNumber() ? type.tagNumber() : BERBuffer::INTEGER_BERTYPE,
+         ((type.hasTagNumber() && type.hasEmptyTagging()) || type.hasExplicitTagging()) ? BERBuffer::CONSTRUCTED_OBJECTYPE : BERBuffer::PRIMITIVE_OBJECTYPE,
+         type.tagClass());
+
+      _doWriteInteger(value);
+      _buffer.updateLengthOctets(position);
+   }
+}
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
+
 // Writes ENUMERATED value
 void BERValueWriter::writeEnumerated(const Integer& value, const EnumeratedType& type)
 {
@@ -361,13 +378,34 @@ void BERValueWriter::_doWriteInteger(const NumberType& value)
    _buffer.resize(bufferSize + valueLength);
 
    // write INTEGER value
-   tmpValue = value;
+   _doWriteIntegerValue(value, valueLength, bufferSize);
+}
+
+template <class NumberType>
+void BERValueWriter::_doWriteIntegerValue(const NumberType& value, uint8_t valueLength,
+                                          BERBuffer::SizeType bufferSize)
+{
+   NumberType tmpValue = value;
    for (BERBuffer::SizeType i = valueLength; i > 0; --i)
    {
       _buffer.put(bufferSize + (i - 1), tmpValue & 0xFF);
       tmpValue >>= 8;
    }
 }
+
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+template <>
+void BERValueWriter::_doWriteIntegerValue(const BigInteger& value, uint8_t valueLength,
+                                          BERBuffer::SizeType bufferSize)
+{
+   BigInteger tmpValue = value;
+   for (BERBuffer::SizeType i = valueLength; i > 0; --i)
+   {
+      _buffer.put(bufferSize + (i - 1), tmpValue.convert_to<uint8_t>() & 0xFF);
+      tmpValue >>= 8;
+   }
+}
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
 // Writes SEQUENCE/SET value end
 // Returns true if last nested SEQUENCE/SET value end was written, otherwise returns false

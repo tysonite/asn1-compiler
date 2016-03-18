@@ -62,6 +62,21 @@ void BERValueReader::readUnsignedInteger(UnsignedInteger& value, const UnsignedI
    }
 }
 
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+void BERValueReader::readBigInteger(BigInteger& value, const BigIntegerType& type)
+{
+   if (_nestedReader)
+      _nestedReader->readBigInteger(value, type);
+   else
+   {
+      _doReadNumber(value, type);
+
+      // check received data
+      type.checkType(value);
+   }
+}
+#endif
+
 // Reads ENUMERATED value
 void BERValueReader::readEnumerated(Integer& value, const EnumeratedType& type)
 {

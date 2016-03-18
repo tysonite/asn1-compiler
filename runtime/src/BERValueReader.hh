@@ -28,6 +28,9 @@ public:
    // Reads INTEGER value
    void readInteger(Integer& value, const IntegerType& type);
    void readUnsignedInteger(UnsignedInteger& value, const UnsignedIntegerType& type);
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+   void readBigInteger(BigInteger& value, const BigIntegerType& type);
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Reads ENUMERATED value
    void readEnumerated(Integer& value, const EnumeratedType& type);

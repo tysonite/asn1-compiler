@@ -1,12 +1,15 @@
 language: cpp
+env:
+  - BIG_INT="-DVAR_INT_SUPPORT=0"
+  - BIT_INT="-DVAR_INT_SUPPORT=1"
 compiler:
   - gcc
 before_install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install libboost-dev libboost-test-dev lcov; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo pip install cpp-coveralls; fi
 script:
-  - if [ $TRAVIS_OS_NAME == linux ]; then cd runtime && cmake -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && ./tests/TestBER; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then cd runtime && cmake -DCMAKE_BUILD_TYPE=Debug . && make; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && ./tests/TestBER; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug . && make; fi
 after_success:
   - if [ $TRAVIS_OS_NAME == linux ]; then coveralls --gcov-options '\-lp'; fi
 os:

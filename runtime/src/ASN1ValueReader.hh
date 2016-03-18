@@ -20,6 +20,9 @@ public:
    // Reads INTEGER value
    virtual void readInteger(Integer& value, const IntegerType& type) = 0;
    virtual void readUnsignedInteger(UnsignedInteger& value, const UnsignedIntegerType& type) = 0;
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+   virtual void readBigInteger(BigInteger& value, const BigIntegerType& type) = 0;
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Reads ENUMERATED value
    virtual void readEnumerated(Integer& value, const EnumeratedType& type) = 0;

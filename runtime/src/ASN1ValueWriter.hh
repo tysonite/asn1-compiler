@@ -20,6 +20,9 @@ public:
    // Writes INTEGER value
    virtual void writeInteger(const Integer& value, const IntegerType& type) = 0;
    virtual void writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type) = 0;
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+   virtual void writeBigInteger(const BigInteger& value, const BigIntegerType& type) = 0;
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Writes ENUMERATED value
    virtual void writeEnumerated(const Integer& value, const EnumeratedType& type) = 0;

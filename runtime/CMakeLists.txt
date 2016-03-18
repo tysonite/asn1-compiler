@@ -10,6 +10,7 @@ set (ASN1_RUNTIME_LIBRARY_VERSION
 
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+option (VAR_INT_SUPPORT "Use integers with variable length" OFF)
 option (BUILD_UNIT_TESTS "Build unit tests" OFF)
 option (DO_COVERAGE "Build unit tests" OFF)
 
@@ -29,16 +30,27 @@ if (DO_COVERAGE)
    set (BUILD_UNIT_TESTS ON)
 endif ()
 
-add_subdirectory (src)
-
-if (BUILD_UNIT_TESTS)
+if (VAR_INT_SUPPORT OR BUILD_UNIT_TESTS)
    # On Windows, set env. variable BOOST_ROOT to your Boost installation
    # directory (e.g. BOOST_ROOT="c:\boost_1_55_0")
    find_package (Boost) # Only unit_test_framework component is required,
 			# but since unit tests use only header files, it is
 			# not specified here
+   include_directories (${Boost_INCLUDE_DIRS})
+endif ()
+
+if (VAR_INT_SUPPORT)
    if (Boost_FOUND)
-      include_directories (${Boost_INCLUDE_DIRS})
+      add_definitions (-DVARIABLE_LENGTH_INTEGER_SUPPORT)
+   else ()
+      message (FATAL_ERROR "Boost (mp framework) was not found, integers with variable length can't be used")
+   endif ()
+endif()
+
+add_subdirectory (src)
+
+if (BUILD_UNIT_TESTS)
+   if (Boost_FOUND)
       add_subdirectory (tests)
    else ()
       message (FATAL_ERROR "Boost (unit test framework) was not found, unit tests can't be built")
@@ -69,4 +81,3 @@ else (DPKG_PROGRAM)
 endif (DPKG_PROGRAM)
 
 include (CPack)
-

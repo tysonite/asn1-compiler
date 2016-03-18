@@ -1,5 +1,5 @@
-#ifndef __INTEGER_TYPE_HH
-#define __INTEGER_TYPE_HH
+#ifndef __BIG_INTEGER_TYPE_HH
+#define __BIG_INTEGER_TYPE_HH
 
 #include "ASN1ValueReader.hh"
 #include "ASN1ValueWriter.hh"
@@ -10,13 +10,13 @@
 namespace asn1
 {
 
-class IntegerType : public Type, public ValueConstraintsHolder<Integer>
+class BigIntegerType : public Type, public ValueConstraintsHolder<BigInteger>
 {
 public:
 
-   typedef Integer ValueType;
+   typedef BigInteger ValueType;
    
-   explicit IntegerType(const ValueType& defaultValue = 0, bool hasDefault = false)
+   explicit BigIntegerType(const ValueType& defaultValue = 0, bool hasDefault = false)
       : ValueConstraintsHolder<ValueType>(*this, 0, 0), _defaultValue(defaultValue),
       _hasDefault(hasDefault) {}
 
@@ -34,12 +34,12 @@ public:
       if (_hasDefault)
       {
          if (reader.isComponentPresent(*this))
-            reader.readInteger(value, *this);
+            reader.readBigInteger(value, *this);
          else
             value = _defaultValue;
       }
       else
-         reader.readInteger(value, *this); 
+         reader.readBigInteger(value, *this); 
 
       restorer.restoreNotNeeded();
    }
@@ -50,10 +50,10 @@ public:
       if (_hasDefault)
       {
          if (_defaultValue != value)
-            writer.writeInteger(value, *this);
+            writer.writeBigInteger(value, *this);
       }
       else
-         writer.writeInteger(value, *this);
+         writer.writeBigInteger(value, *this);
    }
 
 private:
@@ -63,9 +63,9 @@ private:
 
 private:
     
-   DISALLOW_COPY_AND_ASSIGN(IntegerType);
+   DISALLOW_COPY_AND_ASSIGN(BigIntegerType);
 };
 
 }
 
-#endif // __INTEGER_TYPE_HH
+#endif // __BIG_INTEGER_TYPE_HH
