@@ -395,8 +395,9 @@ void BERValueWriter::_doWriteIntegerValue(const NumberType& value, uint8_t value
 
 #if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
 template <>
-void BERValueWriter::_doWriteIntegerValue(const BigInteger& value, uint8_t valueLength,
-                                          BERBuffer::SizeType bufferSize)
+void BERValueWriter::_doWriteIntegerValue<BigInteger> (const BigInteger& value,
+                                                       uint8_t valueLength,
+                                                       BERBuffer::SizeType bufferSize)
 {
    BigInteger tmpValue = value;
    for (BERBuffer::SizeType i = valueLength; i > 0; --i)

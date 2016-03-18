@@ -115,11 +115,6 @@ private:
    template <class NumberType>
    void _doWriteIntegerValue(const NumberType& value, uint8_t valueLength,
       BERBuffer::SizeType bufferSize);
-#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
-   template <>
-   void _doWriteIntegerValue(const BigInteger& value, uint8_t valueLength,
-      BERBuffer::SizeType bufferSize);
-#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Writes SEQUENCE/SET value end
    // Returns true if last nested SEQUENCE/SET value end was written, otherwise returns false
