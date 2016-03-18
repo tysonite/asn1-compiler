@@ -1,3 +1,5 @@
+sudo: required
+dist: trusty
 language: cpp
 env:
   - BIG_INT="-DVAR_INT_SUPPORT=0"
