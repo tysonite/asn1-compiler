@@ -1,7 +1,7 @@
 language: cpp
 env:
   - BIG_INT="-DVAR_INT_SUPPORT=0"
-  - BIT_INT="-DVAR_INT_SUPPORT=1"
+  - BIG_INT="-DVAR_INT_SUPPORT=1"
 compiler:
   - gcc
 before_install:
