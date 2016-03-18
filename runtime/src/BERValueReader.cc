@@ -140,19 +140,17 @@ void BERValueReader::readBitString(BitString& value, const BitStringType& type)
       BERBuffer::ValueType b = _buffer.get();
       _buffer.setEnd(_buffer.end() - 1);
 
-      // allocate space for value
-      value.reserve((static_cast<BitString::size_type>(length) - 1) * 8);
+      // resize value to fit all bits
+      value.resize((static_cast<BitString::size_type>(length - 2)) * 8
+         + (8 - static_cast<BitString::size_type>(b)));
 
+      int32_t k = 0;
       while (_buffer.current() < _buffer.end())
       {
          BERBuffer::ValueType m = _buffer.get();
-         for (int i = 0; i < 8; ++i)
-         {
-            if ((m & (0x80 >> i)) != 0)
-               value.push_back(true);
-            else
-               value.push_back(false);
-         }
+         for (int8_t i = 0; i < 8; ++i)
+            value[k * 8 + i] = ((m & (0x80 >> i)) != 0) ? true : false;
+         ++k;
       }
 
       // set end of the value
@@ -160,13 +158,8 @@ void BERValueReader::readBitString(BitString& value, const BitStringType& type)
 
       // read last byte
       BERBuffer::ValueType m = _buffer.get();
-      for (int i = 0; i < 8 - b; ++i)
-      {
-         if ((m & (0x80 >> i)) != 0)
-            value.push_back(true);
-         else
-            value.push_back(false);
-      }
+      for (int8_t i = 0; i < 8 - b; ++i)
+         value[k * 8 + i] = ((m & (0x80 >> i)) != 0) ? true : false;
 
       _buffer.clearEnd();
    }
