@@ -5,7 +5,7 @@ env:
 compiler:
   - gcc
 before_install:
-  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install libboost-dev libboost-test-dev lcov; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install libboost-all-dev libboost-test-dev lcov; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo pip install cpp-coveralls; fi
 script:
   - if [ $TRAVIS_OS_NAME == linux ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 . && make && ./tests/TestBER; fi
