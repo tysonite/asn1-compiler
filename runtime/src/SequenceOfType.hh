@@ -52,8 +52,9 @@ template <typename TypeItemType>
 void SequenceOfType<TypeItemType>::checkType(const ValueType& value) const
 {
    checkSize(value.size());
-   for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
-      _innerType->checkType(*p);
+   std::for_each(value.cbegin(), value.cend(), [this](const ValueType::value_type& v) {
+      _innerType->checkType(v);
+   });
 }
 
 template <typename TypeItemType>
@@ -64,9 +65,22 @@ void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& valu
    // clear previous values
    value.clear();
 
-   // allocate space for value depending on minimal size
-   if (hasMinSize())
-      value.reserve(static_cast<typename ValueType::size_type>(minSize()));
+   // allocate space for value
+   if (hasMinSize() && hasMaxSize())
+   {
+      value.reserve(static_cast<typename ValueType::size_type>(
+         minSize() + (maxSize() - minSize()) / 2));
+   }
+   else if (hasMinSize())
+   {
+      value.reserve(static_cast<typename ValueType::size_type>(
+         minSize()));
+   }
+   else if (hasMaxSize())
+   {
+      value.reserve(static_cast<typename ValueType::size_type>(
+         maxSize()));
+   }
 
    // perform read of components
    reader.readSequenceOfBegin(*this);
@@ -86,8 +100,9 @@ template <typename TypeItemType>
 void SequenceOfType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    writer.writeSequenceOfBegin(*this);
-   for (typename ValueType::const_iterator p = value.begin(); p != value.end(); ++p)
-      _innerType->write(writer, *p);
+   std::for_each(value.cbegin(), value.cend(), [this, &writer](const ValueType::value_type& v) {
+      _innerType->write(writer, v);
+   });
    writer.writeSequenceOfEnd(*this);
 }
 

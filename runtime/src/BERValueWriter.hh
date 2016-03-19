@@ -17,7 +17,7 @@ public:
    
    // Constructor
    explicit BERValueWriter(BERBuffer& buffer)
-      : _nestedWriter(NULL), _buffer(buffer), _compositionStart(0) {}
+      : _nestedWriter(nullptr), _buffer(buffer), _compositionStart(0) {}
 
    // Destructor
    ~BERValueWriter() { delete _nestedWriter; }

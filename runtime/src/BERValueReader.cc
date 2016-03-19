@@ -485,13 +485,13 @@ void BERValueReader::readSequenceBegin(const SequenceType& type)
 
       // create reader for nested operations
       _nestedReader = _prototype();
-      assert(_nestedReader != NULL);
+      assert(_nestedReader != nullptr);
    }
 }
 
 bool BERValueReader::isSequenceEnd(const SequenceType& type)
 {
-   if (_nestedReader && _nestedReader->_nestedReader != NULL)
+   if (_nestedReader && _nestedReader->_nestedReader != nullptr)
       return _nestedReader->isSequenceEnd(type);
    else
    {
@@ -509,14 +509,14 @@ bool BERValueReader::isSequenceEnd(const SequenceType& type)
 
 void BERValueReader::readSequenceEnd(const SequenceType& type)
 {
-   assert(_nestedReader != NULL);
- 
-   if (_nestedReader && _nestedReader->_nestedReader != NULL)
+   assert(_nestedReader != nullptr);
+
+   if (_nestedReader && _nestedReader->_nestedReader != nullptr)
       _nestedReader->readSequenceEnd(type);
    else
    {
       delete _nestedReader;
-      _nestedReader = NULL;
+      _nestedReader = nullptr;
 
       if (_eofc == true)
       {
@@ -573,13 +573,13 @@ void BERValueReader::readSetBegin(const SetType& type)
 
       // create reader for nested operations
       _nestedReader = _prototype();
-      assert(_nestedReader != NULL);
+      assert(_nestedReader != nullptr);
    }
 }
 
 bool BERValueReader::isSetEnd(const SetType& type)
 {
-   if (_nestedReader && _nestedReader->_nestedReader != NULL)
+   if (_nestedReader && _nestedReader->_nestedReader != nullptr)
       return _nestedReader->isSetEnd(type);
    else
       return (_buffer.current() < _compositionEnd) ? false : true;
@@ -587,14 +587,14 @@ bool BERValueReader::isSetEnd(const SetType& type)
 
 void BERValueReader::readSetEnd(const SetType& type)
 {
-   assert(_nestedReader != NULL && _compositionEnd > 0);
+   assert(_nestedReader != nullptr && _compositionEnd > 0);
 
-   if (_nestedReader && _nestedReader->_nestedReader != NULL)
+   if (_nestedReader && _nestedReader->_nestedReader != nullptr)
       _nestedReader->readSetEnd(type);
    else
    {
       delete _nestedReader;
-      _nestedReader = NULL;
+      _nestedReader = nullptr;
 
       if (_buffer.current() < _compositionEnd)
          throw BERBufferException("More BER " + type.toString() + " items are expected");
@@ -638,7 +638,7 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
       CLType cl;
       _buffer.lookupIdentifierOctets(tag, pc, cl);
 
-      *choosenType = NULL;
+      *choosenType = nullptr;
 
       const ChoiceType::ChoicesType& types = type.getChoices();
       for (ChoiceType::ChoicesType::const_iterator p = types.begin(); p != types.end(); ++p)
@@ -659,7 +659,7 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
                else
                {
                   readChoice(*(static_cast<const ChoiceType*>(_getDeepInnerType(t))), choosenType);
-                  if (*choosenType != NULL)
+                  if (*choosenType != nullptr)
                   {
                      *choosenType = const_cast<Type*>(t);
                      break;
@@ -669,7 +669,7 @@ void BERValueReader::readChoice(const ChoiceType& type, Type** choosenType)
             else
             {
                readChoice(*(static_cast<const ChoiceType*>(_getDeepInnerType(t))), choosenType);
-               if (*choosenType != NULL)
+               if (*choosenType != nullptr)
                {
                   *choosenType = const_cast<Type*>(t);
                   break;

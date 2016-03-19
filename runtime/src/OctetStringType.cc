@@ -11,7 +11,7 @@ namespace asn1
 void OctetStringType::checkType(const ValueType& value) const
 {
    std::for_each(_sizes.begin(), _sizes.end(),
-      [this, value](const SizesType::value_type& p)
+      [this, &value](const SizesType::value_type& p)
    {
       if (p.first == p.second && value.size() != p.first)
       {

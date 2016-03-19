@@ -17,7 +17,7 @@ public:
 
    // Constructor
    explicit BERValueReader(BERBuffer& buffer)
-      : _nestedReader(NULL), _buffer(buffer), _compositionEnd(0), _eofc(false) {}
+      : _nestedReader(nullptr), _buffer(buffer), _compositionEnd(0), _eofc(false) {}
 
    // Destructor
    ~BERValueReader() { delete _nestedReader; }

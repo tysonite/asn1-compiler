@@ -143,7 +143,7 @@ template <typename T>
 inline T ston(const std::string& s, unsigned char b = 10)
 {
    T no = 0;
-   const char* pos(NULL);
+   const char* pos = nullptr;
 
    b = (b > 1 && b <= 16) ? b : 10;
    for (std::size_t i = 0; i < s.length(); ++i)
@@ -169,7 +169,6 @@ inline void split(const std::string& str, std::vector<std::string>& tokens, cons
       pos = str.find_first_of(delimiters, lastPos);
    }
 }
-
 
 }
 
