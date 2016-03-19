@@ -10,32 +10,27 @@ namespace asn1
 // Checks type parameters for validness
 void OctetStringType::checkType(const ValueType& value) const
 {
-   const ValueType::size_type valuePartSize = 10;
-
-   for (SizesType::const_iterator p = _sizes.begin(); p != _sizes.end(); ++p)
+   std::for_each(_sizes.begin(), _sizes.end(),
+      [this, value](const SizesType::value_type& p)
    {
-      ValueType::size_type valueSize = value.size();
-      if (p->first == p->second && valueSize != p->first)
+      if (p.first == p.second && value.size() != p.first)
       {
-         throw ASN1Exception(toString() + " value '" + value.substr(0,
-            std::min(valuePartSize, valueSize)) + "' size is not equal to size '"
-            + utils::ntos(p->first) + "'");
+         throw ASN1Exception(toString() + " value size is not equal to size '"
+            + utils::ntos(p.first) + "'");
       }
 
-      if (p->first >= 0 && valueSize < p->first)
+      if (p.first >= 0 && value.size() < p.first)
       {
-         throw ASN1Exception(toString() + " value '" + value.substr(0,
-            std::min(valuePartSize, valueSize)) + "' size is less than minimum size '"
-            + utils::ntos(p->first) + "'");
+         throw ASN1Exception(toString() + " value size is less than minimum size '"
+            + utils::ntos(p.first) + "'");
       }
 
-      if (p->second >= 0 && valueSize > p->second)
+      if (p.second >= 0 && value.size() > p.second)
       {
-         throw ASN1Exception(toString() + " value '" + value.substr(0,
-            std::min(valuePartSize, valueSize)) + "' size is more than maximum size '"
-            + utils::ntos(p->second) + "'");
+         throw ASN1Exception(toString() + " value size is more than maximum size '"
+            + utils::ntos(p.second) + "'");
       }
-   }
+   });
 }
 
 }

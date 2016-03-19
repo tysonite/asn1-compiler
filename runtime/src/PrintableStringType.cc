@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "PrintableStringType.hh"
 #include "ASN1Exception.hh"
 
@@ -9,16 +11,15 @@ void PrintableStringType::checkType(const ValueType& value) const
 {
    OctetStringType::checkType(value);
 
-   for (OctetString::size_type i = 0; i < value.size(); ++i)
+   std::for_each(value.begin(), value.end(), [this, value](const ValueType::value_type& v)
    {
-      OctetString::value_type c = value[i];
-      if ((c < 'A' || c > 'Z') && ( c < 'a' || c > 'z') && ( c < '0' || c > '9') &&
-         c != ' ' && c != '\'' && c != '(' && c != ')' && c != '+' && c != ',' &&
-         c != '-' && c != '.' && c != '/' && c != ':' && c != '=' && c != '?')
+      if ((v < 'A' || v > 'Z') && (v < 'a' || v > 'z') && (v < '0' || v > '9') &&
+         v != ' ' && v != '\'' && v != '(' && v != ')' && v != '+' && v != ',' &&
+         v != '-' && v != '.' && v != '/' && v != ':' && v != '=' && v != '?')
       {
          throw ASN1Exception(toString() + " value '" + value + "' is not valid");
       }
-   }
+   });
 }
 
 }

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "NumericStringType.hh"
 #include "ASN1Exception.hh"
 
@@ -9,12 +11,12 @@ void NumericStringType::checkType(const ValueType& value) const
 {
    OctetStringType::checkType(value);
 
-   for (OctetString::size_type i = 0; i < value.size(); ++i)
+   std::for_each(value.begin(), value.end(),
+      [this, value](const ValueType::value_type& v)
    {
-      OctetString::value_type c = value[i];
-      if ((c < 0x30 || c > 0x39) && c != 0x20)
+      if ((v < 0x30 || v > 0x39) && v != 0x20)
          throw ASN1Exception(toString() + " value '" + value + "' is not valid");
-   }
+   });
 }
 
 }
