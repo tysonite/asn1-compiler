@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "ASN1Exception.hh"
 #include "Utils.hh"
 #include "OctetStringType.hh"

@@ -399,56 +399,40 @@ void TestBERIntegerConstraintsWithBadValue(const asn1::Integer& vToWrite)
 
 BOOST_AUTO_TEST_CASE(TestBERIntegerConstraints)
 {
-   ut::test_suite* test = BOOST_TEST_SUITE("Base BER INTEGER encoding/decoding constrained test suite");
-
    asn1::Integer test_data[] = { 0, 127, 255 };
-   test->add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithValue, (asn1::Integer*) test_data,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithValue, (asn1::Integer*) test_data,
       (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
 
    asn1::Integer test_data_bad[] = { std::numeric_limits<asn1::IntegerType::ValueType>::min(), -1, 256,
       std::numeric_limits<asn1::IntegerType::ValueType>::max() };
-   test->add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithBadValue, (asn1::Integer*) test_data_bad,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithBadValue, (asn1::Integer*) test_data_bad,
       (asn1::Integer*) test_data_bad + sizeof(test_data_bad)/sizeof(asn1::Integer)));
-
-   ut::framework::run(test);
-   const ut::test_results& tr = ut::results_collector.results(test->p_id);
-
-   BOOST_CHECK_EQUAL(tr.p_assertions_failed, (std::size_t) 0);
-   BOOST_CHECK(!tr.p_aborted);
 }
 
 BOOST_AUTO_TEST_CASE(TestBERInteger)
 {
-   ut::test_suite* test = BOOST_TEST_SUITE("Base BER INTEGER encoding/decoding test suite");
-
    asn1::Integer test_data[] = { std::numeric_limits<asn1::Integer>::min(), 0, std::numeric_limits<asn1::Integer>::max() };
 
-   test->add(BOOST_PARAM_TEST_CASE(&TestBEREmptyIntegerWithValue, (asn1::Integer*) test_data,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBEREmptyIntegerWithValue, (asn1::Integer*) test_data,
       (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
-   test->add(BOOST_PARAM_TEST_CASE(&TestBEREmptyIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBEREmptyIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
       (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
-   test->add(BOOST_PARAM_TEST_CASE(&TestBERImplicitIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERImplicitIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
       (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
-   test->add(BOOST_PARAM_TEST_CASE(&TestBERExplicitIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERExplicitIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
       (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
 
    asn1::TagType test_data_tag_number[] = { 0, 12345, std::numeric_limits<asn1::TagType>::max() };
 
-   test->add(BOOST_PARAM_TEST_CASE(&TestBERExplicitIntegerWithTagNumber, (asn1::TagType*) test_data_tag_number,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERExplicitIntegerWithTagNumber, (asn1::TagType*) test_data_tag_number,
       (asn1::TagType*) test_data_tag_number + sizeof(test_data_tag_number)/sizeof(asn1::TagType)));
-   test->add(BOOST_PARAM_TEST_CASE(&TestBERImplicitIntegerWithTagNumber, (asn1::TagType*) test_data_tag_number,
+   ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERImplicitIntegerWithTagNumber, (asn1::TagType*) test_data_tag_number,
       (asn1::TagType*) test_data_tag_number + sizeof(test_data_tag_number)/sizeof(asn1::TagType)));
 
-   test->add(BOOST_TEST_CASE(&TestBERExplicitIntegerWithDifferentTagNumbers));
-   test->add(BOOST_TEST_CASE(&TestBERImplicitIntegerWithDifferentTagNumbers));
-   test->add(BOOST_TEST_CASE(&TestBadBERImplicitExplicitIntegerEncodingDecoding));
-   test->add(BOOST_TEST_CASE(&TestBadBERExplicitImplicitIntegerEncodingDecoding));
-
-   ut::framework::run(test);
-   const ut::test_results& tr = ut::results_collector.results(test->p_id);
-
-   BOOST_CHECK_EQUAL(tr.p_assertions_failed, (std::size_t) 0);
-   BOOST_CHECK(!tr.p_aborted);
+   ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBERExplicitIntegerWithDifferentTagNumbers));
+   ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBERImplicitIntegerWithDifferentTagNumbers));
+   ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBadBERImplicitExplicitIntegerEncodingDecoding));
+   ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBadBERExplicitImplicitIntegerEncodingDecoding));
 }
 
 namespace sequenceoftype
