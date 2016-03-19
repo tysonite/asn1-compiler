@@ -52,7 +52,7 @@ template <typename TypeItemType>
 void SequenceOfType<TypeItemType>::checkType(const ValueType& value) const
 {
    checkSize(value.size());
-   std::for_each(value.cbegin(), value.cend(), [this](const ValueType::value_type& v) {
+   std::for_each(value.cbegin(), value.cend(), [this](const typename ValueType::value_type& v) {
       _innerType->checkType(v);
    });
 }
@@ -100,7 +100,7 @@ template <typename TypeItemType>
 void SequenceOfType<TypeItemType>::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    writer.writeSequenceOfBegin(*this);
-   std::for_each(value.cbegin(), value.cend(), [this, &writer](const ValueType::value_type& v) {
+   std::for_each(value.cbegin(), value.cend(), [this, &writer](const typename ValueType::value_type& v) {
       _innerType->write(writer, v);
    });
    writer.writeSequenceOfEnd(*this);
