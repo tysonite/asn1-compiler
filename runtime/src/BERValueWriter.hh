@@ -113,7 +113,7 @@ protected:
 private:
 
    template <class NumberType>
-   void _doWriteIntegerValue(const NumberType& value, uint8_t valueLength,
+   void _doWriteIntegerValue(const NumberType& value, std::size_t valueLength,
       BERBuffer::SizeType bufferSize);
 
    // Writes SEQUENCE/SET value end

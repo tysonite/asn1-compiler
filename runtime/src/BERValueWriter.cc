@@ -364,7 +364,7 @@ void BERValueWriter::_doWriteInteger(const NumberType& value)
 {
    NumberType tmpValue = (value >= 0 ? value : ~value);
    tmpValue >>= 7;
-   uint8_t valueLength = 1;
+   std::size_t valueLength = 1;
 
    // calculate INTEGER value length
    while (tmpValue != 0)
@@ -382,7 +382,7 @@ void BERValueWriter::_doWriteInteger(const NumberType& value)
 }
 
 template <class NumberType>
-void BERValueWriter::_doWriteIntegerValue(const NumberType& value, uint8_t valueLength,
+void BERValueWriter::_doWriteIntegerValue(const NumberType& value, std::size_t valueLength,
    BERBuffer::SizeType bufferSize)
 {
    NumberType tmpValue = value;
@@ -396,7 +396,7 @@ void BERValueWriter::_doWriteIntegerValue(const NumberType& value, uint8_t value
 #if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
 template <>
 void BERValueWriter::_doWriteIntegerValue<BigInteger>(const BigInteger& value,
-   uint8_t valueLength,
+   std::size_t valueLength,
    BERBuffer::SizeType bufferSize)
 {
    BigInteger tmpValue = value;

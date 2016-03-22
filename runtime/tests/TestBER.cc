@@ -29,6 +29,9 @@ namespace ut = boost::unit_test;
 #include "OctetStringType_tests.cc"
 #include "Utils_tests.cc"
 
+namespace integer_value
+{
+
 void TestBEREmptyIntegerWithValue(const asn1::Integer& vToWrite)
 {
    // ASN.1: i ::= INTEGER
@@ -39,7 +42,7 @@ void TestBEREmptyIntegerWithValue(const asn1::Integer& vToWrite)
    // encoding
    asn1::BERBuffer outbuffer;
    asn1::BERValueWriter writer(outbuffer);
-   
+
    asn1::IntegerType type(0, false);
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
@@ -58,7 +61,7 @@ void TestBEREmptyIntegerWithValue(const asn1::Integer& vToWrite)
 void TestBEREmptyIntegerWithTagNumberWithValue(const asn1::Integer& vToWrite)
 {
    // ASN.1: i ::= [0] INTEGER
-   
+
    BOOST_TEST_MESSAGE(boost::format("Value = %lld") % vToWrite);
    asn1::Integer vToRead = ~vToWrite;
 
@@ -100,7 +103,7 @@ void TestBERImplicitIntegerWithTagNumberWithValue(const asn1::Integer& vToWrite)
    type.setTagNumber(0);
    type.setTagging(asn1::Type::IMPLICIT_TAGGING);
    type.setTagClass(asn1::Type::CONTEXT_SPECIFIC);
-   
+
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
    BOOST_CHECK_EQUAL(outbuffer.data()[0], 0x80);
@@ -401,12 +404,12 @@ BOOST_AUTO_TEST_CASE(TestBERIntegerConstraints)
 {
    asn1::Integer test_data[] = { 0, 127, 255 };
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithValue, (asn1::Integer*) test_data,
-      (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
+      (asn1::Integer*) test_data + sizeof(test_data) / sizeof(asn1::Integer)));
 
    asn1::Integer test_data_bad[] = { std::numeric_limits<asn1::IntegerType::ValueType>::min(), -1, 256,
       std::numeric_limits<asn1::IntegerType::ValueType>::max() };
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERIntegerConstraintsWithBadValue, (asn1::Integer*) test_data_bad,
-      (asn1::Integer*) test_data_bad + sizeof(test_data_bad)/sizeof(asn1::Integer)));
+      (asn1::Integer*) test_data_bad + sizeof(test_data_bad) / sizeof(asn1::Integer)));
 }
 
 BOOST_AUTO_TEST_CASE(TestBERInteger)
@@ -414,25 +417,57 @@ BOOST_AUTO_TEST_CASE(TestBERInteger)
    asn1::Integer test_data[] = { std::numeric_limits<asn1::Integer>::min(), 0, std::numeric_limits<asn1::Integer>::max() };
 
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBEREmptyIntegerWithValue, (asn1::Integer*) test_data,
-      (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
+      (asn1::Integer*) test_data + sizeof(test_data) / sizeof(asn1::Integer)));
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBEREmptyIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
-      (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
+      (asn1::Integer*) test_data + sizeof(test_data) / sizeof(asn1::Integer)));
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERImplicitIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
-      (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
+      (asn1::Integer*) test_data + sizeof(test_data) / sizeof(asn1::Integer)));
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERExplicitIntegerWithTagNumberWithValue, (asn1::Integer*) test_data,
-      (asn1::Integer*) test_data + sizeof(test_data)/sizeof(asn1::Integer)));
+      (asn1::Integer*) test_data + sizeof(test_data) / sizeof(asn1::Integer)));
 
    asn1::TagType test_data_tag_number[] = { 0, 12345, std::numeric_limits<asn1::TagType>::max() };
 
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERExplicitIntegerWithTagNumber, (asn1::TagType*) test_data_tag_number,
-      (asn1::TagType*) test_data_tag_number + sizeof(test_data_tag_number)/sizeof(asn1::TagType)));
+      (asn1::TagType*) test_data_tag_number + sizeof(test_data_tag_number) / sizeof(asn1::TagType)));
    ut::framework::master_test_suite().add(BOOST_PARAM_TEST_CASE(&TestBERImplicitIntegerWithTagNumber, (asn1::TagType*) test_data_tag_number,
-      (asn1::TagType*) test_data_tag_number + sizeof(test_data_tag_number)/sizeof(asn1::TagType)));
+      (asn1::TagType*) test_data_tag_number + sizeof(test_data_tag_number) / sizeof(asn1::TagType)));
 
    ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBERExplicitIntegerWithDifferentTagNumbers));
    ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBERImplicitIntegerWithDifferentTagNumbers));
    ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBadBERImplicitExplicitIntegerEncodingDecoding));
    ut::framework::master_test_suite().add(BOOST_TEST_CASE(&TestBadBERExplicitImplicitIntegerEncodingDecoding));
+}
+
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+BOOST_AUTO_TEST_CASE(Test_BER_Variable_Integer_With_Value)
+{
+   // ASN.1: i ::= INTEGER
+
+   asn1::BigInteger vToWrite("9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
+
+   // encoding
+   asn1::BERBuffer outbuffer;
+   asn1::BERValueWriter writer(outbuffer);
+
+   asn1::BigIntegerType type(0, false);
+
+   BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
+   BOOST_CHECK_NO_THROW(type.write(writer, vToWrite));
+
+   // decoding
+   asn1::BERBuffer inbuffer(outbuffer.data(), outbuffer.size());
+   asn1::BERValueReader reader(inbuffer);
+
+   BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
+
+   asn1::BigInteger vToRead;
+   BOOST_CHECK_NO_THROW(type.read(reader, vToRead));
+
+   if (vToWrite != vToRead)
+      BOOST_FAIL("vToWrite != vToRead");
+}
+#endif
+
 }
 
 namespace sequenceoftype
@@ -451,7 +486,7 @@ public:
 BOOST_AUTO_TEST_CASE(Test_BER_SequenceOf_OctetString_Type1_Huge)
 {
    // prepare data
-   Type1::ValueType vToWrite(24, Type1::InnerType::ValueType(1024*1024, 'a')), vToRead;
+   Type1::ValueType vToWrite(24, Type1::InnerType::ValueType(1024 * 1024, 'a')), vToRead;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -510,7 +545,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfSequenceOfInteger)
 
    BOOST_TEST_MESSAGE(boost::format("Testing BER SEQUENCE OF SEQUENCE OF INTEGER"));
    std::vector<std::vector<asn1::Integer> > outValues;
-   
+
    std::vector<asn1::Integer> outElement;
    outElement.push_back(-1);
    outElement.push_back(0);
@@ -1260,7 +1295,7 @@ BOOST_AUTO_TEST_CASE(TestBerIntegerType6)
 
 BOOST_AUTO_TEST_CASE(TestBerIntegerType7)
 {
-   Type7::ValueType vToWrite = 1, vToRead =  ~vToWrite;
+   Type7::ValueType vToWrite = 1, vToRead = ~vToWrite;
 
    // encoding
    asn1::BERBuffer outbuffer;
@@ -1903,7 +1938,7 @@ public:
    Type9()
       : asn1::TaggingType<
       asn1::SequenceOfType<asn1::IntegerType>
-      > (new asn1::SequenceOfType<asn1::IntegerType>(new asn1::IntegerType))
+      >(new asn1::SequenceOfType<asn1::IntegerType>(new asn1::IntegerType))
    {
       setTagNumber(5);
       setTagClass(asn1::Type::CONTEXT_SPECIFIC);
@@ -1941,7 +1976,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType1)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0x30, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -1973,7 +2008,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType2)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0x63, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2005,7 +2040,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType3)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x0B, 0x63, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2037,7 +2072,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType4)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0x67, 0x0B, 0x63, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2069,7 +2104,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType5)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA2, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2101,7 +2136,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType6)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA3, 0x0D, 0xA2, 0x0B, 0x63, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2133,7 +2168,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType7)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA4, 0x0D, 0xA2, 0x0B, 0x63, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2165,7 +2200,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType8)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x0B, 0x30, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2197,7 +2232,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType9)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA5, 0x09, 0x02, 0x01, 0xFF, 0x02, 0x01, 0x00, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -2217,10 +2252,10 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType9)
 BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType10)
 {
    std::vector<std::vector<asn1::Integer> > outValues;
-   
+
    std::vector<asn1::Integer> outValue1;
    outValue1.push_back(-1);
-   
+
    std::vector<asn1::Integer> outValue2;
    outValue2.push_back(0);
 
@@ -2239,7 +2274,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceOfTypeIntegerType10)
 
    BOOST_TEST_MESSAGE(boost::format("Encode %s") % type.toString());
    BOOST_CHECK_NO_THROW(type.write(writer, outValues));
-   
+
    asn1::BERBuffer::ValueType dataToTest[] = { 0xA8, 0x1D, 0x30, 0x1B, 0xA4, 0x07, 0xA2, 0x05, 0x63, 0x03, 0x02, 0x01, 0xFF, 0xA4, 0x07, 0xA2, 0x05, 0x63, 0x03, 0x02, 0x01, 0x00, 0xA4, 0x07, 0xA2, 0x05, 0x63, 0x03, 0x02, 0x01, 0x01 };
    BOOST_CHECK_EQUAL_COLLECTIONS(outbuffer.data(), outbuffer.data() + outbuffer.size(), dataToTest,
       dataToTest + arraysize(dataToTest));
@@ -3570,7 +3605,7 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
 
    Type10::ValueType outValues;
    outValues.push_back(vToWrite);
-   
+
    BOOST_CHECK_EQUAL(vToWrite.get_i(), -1);
    BOOST_CHECK_EQUAL(vToWrite.get_b(), false);
 
@@ -3599,11 +3634,11 @@ BOOST_AUTO_TEST_CASE(TestBerSequenceType10)
    asn1::BERValueReader reader(inbuffer);
 
    BOOST_TEST_MESSAGE(boost::format("Decode %s") % type.toString());
-   
+
    Type10::ValueType inValues;
    BOOST_CHECK_NO_THROW(type.read(reader, inValues));
    BOOST_CHECK_EQUAL(inbuffer.current(), inbuffer.size());
-   
+
    BOOST_REQUIRE_EQUAL(outValues.size(), inValues.size());
 
    Type10::InnerType::ValueType vToRead = inValues[0];
@@ -3656,7 +3691,7 @@ public:
    }
 
    void read(asn1::ASN1ValueReader& reader, ValueType& value) const
-   { 
+   {
       asn1::EnumeratedType::ValueType v;
       asn1::EnumeratedType::read(reader, v);
       value = static_cast<ValueType>(v);
@@ -4433,7 +4468,7 @@ BOOST_FIXTURE_TEST_CASE(TestBERSetOfSetOfInteger, SetOfSetOfFixture<asn1::SetOfT
 /*ut::test_suite* init_unit_test_suite(int argc, char* argv[])
 {
    ut::test_suite* test = BOOST_TEST_SUITE("BER encoding/decoding test suite");
-   
+
    test->add(BOOST_TEST_CASE(&TestBERInteger));
    test->add(BOOST_TEST_CASE(&TestBERIntegerConstraints));
 
