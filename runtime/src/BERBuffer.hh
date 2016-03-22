@@ -131,7 +131,7 @@ public:
 
    // Extends space of the buffer on the specified position
    // delta > 0 - add space to buffer, delta < 0 - remove space from buffer
-   void extend(SizeType pos, int32_t delta)
+   void extend(SizeType pos, std::ptrdiff_t delta)
    {
       assert(!_data.empty()); // not allowed to extend empty buffer, use resize() instead
 
@@ -233,10 +233,10 @@ public:
 
       // Resize buffer to store tag bytes
       SizeType bufferSize = size();
-      resize(size() + (len - 1));
+      resize(size() + static_cast<SizeType>(len - 1));
 
       for (tmpNumber = number >> 7; len > 1; tmpNumber >>= 7)
-         put(bufferSize + (--len) - 1, (tmpNumber & 0x7f) | 0x80);
+         put(bufferSize + static_cast<SizeType>(--len) - 1, (tmpNumber & 0x7f) | 0x80);
       put(number & 0x7f);
    }
 

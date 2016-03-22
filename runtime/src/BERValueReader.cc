@@ -159,7 +159,7 @@ void BERValueReader::readBitString(BitString& value, const BitStringType& type)
       value.resize((static_cast<BitString::size_type>(length - 2)) * 8
          + (8 - static_cast<BitString::size_type>(b)));
 
-      int32_t k = 0;
+      std::size_t k = 0;
       while (_buffer.current() < _buffer.end())
       {
          BERBuffer::ValueType m = _buffer.get();
@@ -376,7 +376,7 @@ void BERValueReader::readAny(OctetString& value, const AnyType& type)
       // '(endIdentifierPos - startAnyTypePos) > 0' check is needed, because
       // ANY type value must include a correctly encoded BER data, the minimal
       // encoding size is equal to 2 bytes (i.e. NullType value BER encoding)
-      if (rawValue.size() > 0 || (endIdentifierPos - startAnyTypePos) > 0)
+      if (rawValue.size() > 0 || (endIdentifierPos - startAnyTypePos) >= 1)
       {
          // end position of ANY type
          BERBuffer::SizeType endAnyTypePos = _buffer.current();
