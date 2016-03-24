@@ -37,7 +37,8 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
          VisitorUtils.visitNodeAndAccept(builder, node,
                  new SetOfOrSequenceOfConstructorDefinition(context));
          VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent(),
-                 new IntegerConstructorDefinition(), new OctetStringConstructorDefinition(context));
+                 new IntegerConstructorDefinition(context),
+                 new OctetStringConstructorDefinition(context));
          return data;
       }
    }
@@ -83,7 +84,8 @@ public class TaggedTypeConstructorDefinition extends DoNothingASTVisitor impleme
          builder.append(2, "setTagClass(Type::CONTEXT_SPECIFIC);").newLine();
       }
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeConstructorDefinition(1));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new DefinedTypeConstructorDefinition(context, 1));
 
       return data;
    }

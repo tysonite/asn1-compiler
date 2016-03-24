@@ -11,7 +11,7 @@ import org.tysonite.asn1.parser.ASTTaggedType;
 public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvider,
         ConstantsForGeneration {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
    public TaggedTypeName(final GeneratorContext context) {
@@ -27,7 +27,7 @@ public class TaggedTypeName extends DoNothingASTVisitor implements ContentProvid
    public Object visit(ASTTaggedType node, Object data) {
       builder.append(asn1NameSpace).append("TaggingType<");
 
-      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
               new SetOfOrSequenceOfTypeName(context), new DefinedCPPTypeName())) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
       } else {

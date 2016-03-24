@@ -2,6 +2,7 @@ package org.tysonite.asn1.gen.visitor;
 
 import org.tysonite.asn1.gen.ContentProvider;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
+import org.tysonite.asn1.gen.GeneratorContext;
 import org.tysonite.asn1.gen.GeneratorException;
 import org.tysonite.asn1.gen.utils.CodeBuilder;
 import org.tysonite.asn1.gen.utils.VisitorUtils;
@@ -13,15 +14,19 @@ import org.tysonite.asn1.parser.ASTtypereference;
 public class DefinedTypeConstructorDefinition extends DoNothingASTVisitor
         implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private boolean isReference = false;
    private String referencedType = null;
    private int innerLevelInc = 0;
+   private final GeneratorContext context;
 
-   public DefinedTypeConstructorDefinition() {
+   public DefinedTypeConstructorDefinition(final GeneratorContext context) {
+      this.context = context;
    }
 
-   public DefinedTypeConstructorDefinition(int innerLevelIncrement) {
+   public DefinedTypeConstructorDefinition(final GeneratorContext context,
+           int innerLevelIncrement) {
+      this(context);
       this.innerLevelInc = innerLevelIncrement;
    }
 
@@ -51,13 +56,13 @@ public class DefinedTypeConstructorDefinition extends DoNothingASTVisitor
          throw new GeneratorException("Unable to resolve node " + referencedType);
       } else if (VisitorUtils.visitChildsAndAccept(builder, refAssignment, new IsIntegerType())) {
          VisitorUtils.visitChildsAndAccept(builder, node,
-                 new IntegerConstructorDefinition(true, innerLevelInc));
+                 new IntegerConstructorDefinition(context, true, innerLevelInc));
       } else if (VisitorUtils.visitChildsAndAccept(builder, refAssignment,
               new IsTaggedType(new IsIntegerType()))) {
          final GetTaggedTypeInnerLevel innerLevel = new GetTaggedTypeInnerLevel();
          if (VisitorUtils.visitChildsAndAccept(builder, refAssignment, innerLevel)) {
             VisitorUtils.visitChildsAndAccept(builder, node,
-                    new IntegerConstructorDefinition(true,
+                    new IntegerConstructorDefinition(context, true,
                             innerLevel.getInnerLevel() + innerLevelInc));
          }
       }

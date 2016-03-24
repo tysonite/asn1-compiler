@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.tysonite.asn1.gen.ContentProvider;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
+import org.tysonite.asn1.gen.GeneratorContext;
 import org.tysonite.asn1.gen.GeneratorException;
 import org.tysonite.asn1.gen.utils.CodeBuilder;
 import org.tysonite.asn1.gen.utils.GenerationUtils;
@@ -26,27 +27,32 @@ import org.tysonite.asn1.parser.SimpleNode;
 public class IntegerConstructorDefinition extends DoNothingASTVisitor
         implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private boolean isMinSize = true;
    private int innerLevel = 0;
    private boolean isInteger = false;
    private String typeName = null;
-   private List<String> namedIdentifiers = new ArrayList<String>();
+   private final List<String> namedIdentifiers = new ArrayList<String>();
    private String minMaxValueSuffix = "LL";
+   private final GeneratorContext context;
 
-   public IntegerConstructorDefinition() {
+   public IntegerConstructorDefinition(final GeneratorContext context) {
+      this.context = context;
    }
 
-   public IntegerConstructorDefinition(boolean overrideInteger) {
+   public IntegerConstructorDefinition(final GeneratorContext context, boolean overrideInteger) {
+      this(context);
       this.isInteger = overrideInteger;
    }
 
-   public IntegerConstructorDefinition(boolean overrideInteger, int innerLevel) {
-      this(overrideInteger);
+   public IntegerConstructorDefinition(final GeneratorContext context, boolean overrideInteger,
+           int innerLevel) {
+      this(context, overrideInteger);
       this.innerLevel = innerLevel;
    }
 
-   public IntegerConstructorDefinition(String typeName) {
+   public IntegerConstructorDefinition(final GeneratorContext context, String typeName) {
+      this(context);
       this.typeName = typeName;
    }
 
@@ -116,7 +122,7 @@ public class IntegerConstructorDefinition extends DoNothingASTVisitor
          CodeBuilder integerTypeName = new CodeBuilder();
          if (VisitorUtils.visitChildsAndAccept(integerTypeName,
                  (SimpleNode) node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent(),
-                 new SimpleTypeName())) {
+                 new SimpleTypeName(context))) {
             appendMaxValue("std::numeric_limits<" + integerTypeName.toString()
                     + "::ValueType>::max()", false);
          } else {

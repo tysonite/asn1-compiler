@@ -19,6 +19,8 @@ public final class Main {
            "ASN.1 compiler command line options");
    public static final Option noCppCode = new Option("ncpp", "no-cpp", false,
            "Do not generate C++ code, only parser ASN.1");
+   public static final Option bigInteger = new Option("bi", "big-int", false,
+           "Generate code with variable length integers");
 
    private void printHelp() {
       final HelpFormatter h = new HelpFormatter();
@@ -35,6 +37,7 @@ public final class Main {
       options.addOption(inputFile);
       options.addOption(methodDER);
       options.addOption(noCppCode);
+      options.addOption(bigInteger);
       options.addOption(help);
    }
 

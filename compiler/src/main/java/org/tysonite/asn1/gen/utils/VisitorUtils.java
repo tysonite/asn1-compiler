@@ -155,7 +155,7 @@ public final class VisitorUtils {
     */
    public static String queueGeneratedCode(final SimpleNode node, final GeneratorContext context) {
       final CodeBuilder uniqueName = new CodeBuilder();
-      VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+      VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer(context));
 
       if (!context.hasExternalized(uniqueName.toString())) {
          /* indicate that generator know this type */
@@ -175,7 +175,7 @@ public final class VisitorUtils {
    public static String queueGeneratedCodeForTypes(final ASTElementType node,
            final GeneratorContext context) {
       final CodeBuilder uniqueName = new CodeBuilder();
-      VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+      VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer(context));
 
       if (!context.hasExternalized(uniqueName.toString())) {
          return queueGeneratedCode(node, context);

@@ -29,7 +29,7 @@ import org.tysonite.asn1.parser.ASTTaggedType;
 
 public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
    public SetOrSequenceReadWriteDefinition(final GeneratorContext context) {
@@ -38,7 +38,12 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
    protected static class ReadDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
+      private final GeneratorContext context;
+
+      public ReadDefinition(final GeneratorContext context) {
+         this.context = context;
+      }
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -48,10 +53,10 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
          // write value type of the type
          builder.append(2, "");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())) {
             final CodeBuilder uniqueName = new CodeBuilder();
-            VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+            VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer(context));
 
             builder.append(uniqueName.toString());
          }
@@ -81,7 +86,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
    protected class WriteDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -114,7 +119,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
     */
    protected class ReadDefinitionForDER extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
       private SortedMap<Integer, ASTElementType> universal = new TreeMap<Integer, ASTElementType>();
       private SortedMap<Integer, ASTElementType> application = new TreeMap<Integer, ASTElementType>();
       private SortedMap<Integer, ASTElementType> context = new TreeMap<Integer, ASTElementType>();
@@ -162,7 +167,8 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       }
 
       private void writeComponent(ASTElementType node) {
-         VisitorUtils.visitNodeAndAccept(builder, node, new ReadDefinition());
+         VisitorUtils.visitNodeAndAccept(builder, node,
+                 new ReadDefinition(SetOrSequenceReadWriteDefinition.this.context));
       }
 
       public boolean hasValuableContent() {
@@ -172,7 +178,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
    protected class WriteDefinitionForDER extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
       private SortedMap<Integer, ASTElementType> universal = new TreeMap<Integer, ASTElementType>();
       private SortedMap<Integer, ASTElementType> application = new TreeMap<Integer, ASTElementType>();
       private SortedMap<Integer, ASTElementType> context = new TreeMap<Integer, ASTElementType>();
@@ -389,7 +395,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
       @Override
       public Object visit(ASTBuiltinType node, Object data) {
-         if (VisitorUtils.visitNodeAndAccept(builder, node, new IsSimpleType())) {
+         if (VisitorUtils.visitNodeAndAccept(builder, node, new IsSimpleType(context))) {
             this.tagClass = ASTTaggedType.UNIVERSAL;
             TagNumberRecognizer recognizer = new TagNumberRecognizer();
             VisitorUtils.visitNodeAndAccept(null, node, recognizer);
@@ -421,7 +427,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
    protected static class ReadOptionalDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -449,7 +455,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
    protected static class WriteOptionalDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -481,10 +487,10 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      if (!VisitorUtils.visitChildsAndAccept(null, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(null, node, new SimpleTypeName(context),
               new DefinedCPPTypeName())) {
          final CodeBuilder uniqueName = new CodeBuilder();
-         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer(context));
 
          context.setTypeName(uniqueName.toString());
       }
@@ -509,7 +515,8 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       if (node.isSet() && context.getCommandLine().hasOption(Main.methodDER.getOpt())) {
          VisitorUtils.visitChildsAndAccept(builder, node, new ReadDefinitionForDER());
       } else {
-         VisitorUtils.visitChildsAndAccept(builder, node, new ReadDefinition());
+         VisitorUtils.visitChildsAndAccept(builder, node,
+                 new ReadDefinition(SetOrSequenceReadWriteDefinition.this.context));
       }
 
       builder.newLine();

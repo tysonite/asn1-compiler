@@ -28,7 +28,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          builder.append(2, "void set_").
                  append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
                  append("(const ");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
@@ -43,7 +43,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
          // getter (const)
          builder.append(2, "const ");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
@@ -57,7 +57,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
          // getter (non-const)
          builder.append(2, "");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
@@ -229,7 +229,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
       public Object visit(ASTElementType node, Object data) {
          // member
          builder.append(2, "");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
@@ -337,7 +337,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
       @Override
       public Object visit(ASTElementType node, Object data) {
-         if (!VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType(),
+         if (!VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType(context),
                  new IsDefinedType())
                  || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
 
@@ -440,7 +440,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
    public Object visit(ASTElementType node, Object data) {
       builder.append(1, "");
 
-      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
               new DefinedCPPTypeName())
               || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
          builder.append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).

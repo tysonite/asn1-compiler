@@ -12,7 +12,7 @@ import org.tysonite.asn1.parser.ASTSetOrSequenceType;
 
 public class SequenceConstructorDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
    public SequenceConstructorDefinition(final GeneratorContext context) {
@@ -36,10 +36,10 @@ public class SequenceConstructorDefinition extends DoNothingASTVisitor implement
 
       // internal types
       VisitorUtils.visitChildsAndAccept(builder, node,
-              new IntegerConstructorDefinition(elementTypeName),
+              new IntegerConstructorDefinition(context, elementTypeName),
               new OctetStringConstructorDefinition(context, elementTypeName));
 
-      if (VisitorUtils.visitChildsAndAccept(builder, node, new IsSimpleType())) {
+      if (VisitorUtils.visitChildsAndAccept(builder, node, new IsSimpleType(context))) {
          VisitorUtils.visitChildsAndAccept(builder, node,
                  new SimpleTypeConstructorDefinition(context, elementTypeName));
       }

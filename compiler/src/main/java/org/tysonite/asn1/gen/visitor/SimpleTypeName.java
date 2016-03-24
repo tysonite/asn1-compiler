@@ -2,7 +2,9 @@ package org.tysonite.asn1.gen.visitor;
 
 import org.tysonite.asn1.gen.ContentProvider;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
+import org.tysonite.asn1.gen.GeneratorContext;
 import org.tysonite.asn1.gen.GeneratorException;
+import org.tysonite.asn1.gen.Main;
 import org.tysonite.asn1.gen.utils.CodeBuilder;
 import org.tysonite.asn1.gen.utils.VisitorUtils;
 import org.tysonite.asn1.parser.ASTAnyType;
@@ -18,7 +20,12 @@ import org.tysonite.asn1.parser.SimpleNode;
 public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvider,
         ConstantsForGeneration {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
+
+   public SimpleTypeName(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
@@ -29,7 +36,9 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
    @Override
    public Object visit(ASTIntegerType node, Object data) {
       if (!VisitorUtils.visitNodeAndAccept(builder, node, new IsNamedIntegerType())) {
-         if (!VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent().
+         if (context.getCommandLine().hasOption(Main.bigInteger.getOpt())) {
+            builder.append(asn1NameSpace).append("BigIntegerType");
+         } else if (!VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent().
                  jjtGetParent(), new IsUnsignedIntegerType())) {
             builder.append(asn1NameSpace).append("IntegerType");
          } else {

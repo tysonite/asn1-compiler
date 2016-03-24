@@ -22,15 +22,20 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       builder.newLine();
       builder.append(1, "{").newLine();
 
-      VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new TaggedTypeConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new SetOfOrSequenceOfConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new SimpleTypeConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new TaggedTypeConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new SetOfOrSequenceOfConstructorDefinition(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new SequenceConstructorDefinition(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new ChoiceConstructorDefinition(context));
       VisitorUtils.visitChildsAndAccept(builder, node, new EnumeratedConstructorDefinition());
-      VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition());
-      VisitorUtils.visitChildsAndAccept(builder, node, new OctetStringConstructorDefinition(context));
-      VisitorUtils.visitChildsAndAccept(builder, node, new DefinedTypeConstructorDefinition());
+      VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new OctetStringConstructorDefinition(context));
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new DefinedTypeConstructorDefinition(context));
 
       builder.append(1, "}").newLine();
    }
@@ -61,7 +66,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
       // base type of the class
       final CodeBuilder baseTypeName = new CodeBuilder();
-      if (VisitorUtils.visitChildsAndAccept(baseTypeName, node, new SimpleTypeName(),
+      if (VisitorUtils.visitChildsAndAccept(baseTypeName, node, new SimpleTypeName(context),
               new SetOfOrSequenceOfTypeName(context), new TaggedTypeName(context),
               new DefinedCPPTypeName(), new SetOrSequenceTypeName(), new ChoiceTypeName(),
               new EnumeratedTypeName(), new NamedIntegerType())) {
@@ -83,7 +88,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
       generateConstructorBody(context);
 
       // constructor with default values for simple types
-      if ((VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType())
+      if ((VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType(context))
               || VisitorUtils.visitChildsAndAccept(null, node, new IsNamedIntegerType())
               || VisitorUtils.visitChildsAndAccept(null, node, new IsEnumeratedType()))
               && !VisitorUtils.visitChildsAndAccept(null, node, new IsNullType())

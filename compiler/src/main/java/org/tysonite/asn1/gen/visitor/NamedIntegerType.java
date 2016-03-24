@@ -10,7 +10,7 @@ import org.tysonite.asn1.parser.ASTIntegerType;
 public class NamedIntegerType extends DoNothingASTVisitor implements ContentProvider,
         ConstantsForGeneration {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {

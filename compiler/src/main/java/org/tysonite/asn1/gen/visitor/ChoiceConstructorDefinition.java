@@ -12,7 +12,7 @@ import org.tysonite.asn1.parser.ASTElementType;
 
 public class ChoiceConstructorDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
    public ChoiceConstructorDefinition(final GeneratorContext context) {
@@ -39,7 +39,7 @@ public class ChoiceConstructorDefinition extends DoNothingASTVisitor implements 
 
       // internal types
       final CodeBuilder fieldType = new CodeBuilder();
-      if (!VisitorUtils.visitChildsAndAccept(fieldType, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(fieldType, node, new SimpleTypeName(context),
               new DefinedCPPTypeName())) {
          fieldType.append(GenerationUtils.asCPPToken(
                  VisitorUtils.queueGeneratedCode(node, context)));
@@ -49,10 +49,10 @@ public class ChoiceConstructorDefinition extends DoNothingASTVisitor implements 
 
       context.setTypeName(fieldType.toString());
       VisitorUtils.visitChildsAndAccept(builder, node,
-              new IntegerConstructorDefinition(elementTypeName),
+              new IntegerConstructorDefinition(context, elementTypeName),
               new OctetStringConstructorDefinition(context, elementTypeName));
 
-      if (VisitorUtils.visitChildsAndAccept(builder, node, new IsSimpleType())) {
+      if (VisitorUtils.visitChildsAndAccept(builder, node, new IsSimpleType(context))) {
          VisitorUtils.visitChildsAndAccept(builder, node,
                  new SimpleTypeConstructorDefinition(context, elementTypeName));
       }

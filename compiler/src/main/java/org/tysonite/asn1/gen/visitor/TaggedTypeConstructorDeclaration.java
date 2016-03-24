@@ -29,7 +29,7 @@ public class TaggedTypeConstructorDeclaration extends DoNothingASTVisitor implem
 
       builder.append("(new ");
 
-      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
               new SetOfOrSequenceOfConstructorDeclaration(context), new DefinedCPPTypeName())) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
       }

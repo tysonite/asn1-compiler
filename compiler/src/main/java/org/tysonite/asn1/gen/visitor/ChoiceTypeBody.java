@@ -12,14 +12,14 @@ import org.tysonite.asn1.parser.ASTElementType;
 
 public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
    private int nextId = 0;
 
    protected class SetGetHasChooseDeclaration extends DoNothingASTVisitor
            implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -29,7 +29,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
          builder.append(2, "void set_").
                  append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
                  append("(const ");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
@@ -44,7 +44,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
          // getter (const)
          builder.append(2, "const ");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
@@ -60,7 +60,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
          // getter (non-const)
          builder.append(2, "");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
@@ -107,13 +107,13 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
    protected class ValueDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
          // member
          builder.append(2, "");
-         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
                  new DefinedCPPTypeName())) {
             builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
@@ -136,7 +136,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
 
    protected class IdentifierValueDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -161,12 +161,12 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
    protected class EqualityOperatorDeclaration extends DoNothingASTVisitor
            implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       protected class CompareComponentDeclaration extends DoNothingASTVisitor
               implements ContentProvider {
 
-         private CodeBuilder builder = new CodeBuilder();
+         private final CodeBuilder builder = new CodeBuilder();
 
          @Override
          public Object visit(ASTElementType node, Object data) {
@@ -306,7 +306,7 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
    public Object visit(ASTElementType node, Object data) {
       builder.append(1, "");
 
-      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
               new DefinedCPPTypeName())) {
          builder.append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
                  append("_Type");

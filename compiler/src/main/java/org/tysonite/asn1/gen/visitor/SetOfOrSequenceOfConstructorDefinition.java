@@ -22,7 +22,7 @@ import org.tysonite.asn1.parser.ASTValueRange;
 public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
         implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
    private boolean isMinSize = true;
    private int innerLevel = 0;
@@ -48,7 +48,8 @@ public class SetOfOrSequenceOfConstructorDefinition extends DoNothingASTVisitor
    @Override
    public Object visit(ASTSetOrSequenceOfType node, Object data) {
       isSequenceOf = true;
-      VisitorUtils.visitChildsAndAccept(builder, node, new IntegerConstructorDefinition(false, 1),
+      VisitorUtils.visitChildsAndAccept(builder, node,
+              new IntegerConstructorDefinition(context, false, 1),
               new OctetStringConstructorDefinition(context, false, 1));
       return node.childrenAccept(this, data);
    }

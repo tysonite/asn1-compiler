@@ -2,6 +2,7 @@ package org.tysonite.asn1.gen.utils;
 
 import org.tysonite.asn1.gen.ContentProvider;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
+import org.tysonite.asn1.gen.GeneratorContext;
 import org.tysonite.asn1.gen.visitor.DefinedCPPTypeName;
 import org.tysonite.asn1.gen.visitor.SimpleTypeName;
 import org.tysonite.asn1.parser.ASTBuiltinType;
@@ -22,12 +23,17 @@ import org.tysonite.asn1.parser.ASTidentifier;
 
 public class UniqueNameProducer extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
+   private final GeneratorContext context;
+
+   public UniqueNameProducer(final GeneratorContext context) {
+      this.context = context;
+   }
 
    @Override
    public Object visit(ASTBuiltinType node, Object data) {
       builder.append("_INTERNAL_");
-      VisitorUtils.visitNodeAndAccept(builder, node, new SimpleTypeName());
+      VisitorUtils.visitNodeAndAccept(builder, node, new SimpleTypeName(context));
       return node.childrenAccept(this, data);
    }
 

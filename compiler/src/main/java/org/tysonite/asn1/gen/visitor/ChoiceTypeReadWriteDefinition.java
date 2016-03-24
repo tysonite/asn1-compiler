@@ -15,7 +15,7 @@ import org.tysonite.asn1.parser.ASTTaggedType;
 public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implements ContentProvider,
         ConstantsForGeneration {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
    private boolean isFirstWriteIf = true;
    private boolean isFirstAssertOr = true;
@@ -28,7 +28,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
 
    protected class TypeList extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -56,7 +56,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
 
    protected class ReadDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -72,7 +72,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
                  append("_Type)").newLine();
 
          VisitorUtils.visitNodeAndAccept(builder, node,
-                 new SetOrSequenceReadWriteDefinition.ReadDefinition());
+                 new SetOrSequenceReadWriteDefinition.ReadDefinition(context));
          return data;
       }
 
@@ -88,7 +88,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
    protected class AssertsForWriteDefinition extends DoNothingASTVisitor
            implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       public AssertsForWriteDefinition() {
          builder.append(1, "assert(");
@@ -121,7 +121,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
 
    protected class WriteDefinition extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -161,10 +161,10 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
 
    @Override
    public Object visit(ASTTaggedType node, Object data) {
-      if (!VisitorUtils.visitChildsAndAccept(null, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(null, node, new SimpleTypeName(context),
               new DefinedCPPTypeName())) {
          final CodeBuilder uniqueName = new CodeBuilder();
-         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer());
+         VisitorUtils.visitChildsAndAccept(uniqueName, node, new UniqueNameProducer(context));
          if (context.hasExternalized(uniqueName.toString())) {
             // TODO: hack, need to understand (I don't remember) why declaration generator generates
             // also methods definitions. See queueGeneratedCode method.

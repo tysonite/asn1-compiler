@@ -32,7 +32,7 @@ public class SetOfOrSequenceOfTypeName extends DoNothingASTVisitor implements Co
          builder.append(asn1NameSpace).append("SetOfType<");
       }
 
-      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(),
+      if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
               new DefinedCPPTypeName(),
               new SetOfOrSequenceOfTypeName(context))) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));

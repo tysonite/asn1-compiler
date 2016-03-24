@@ -28,6 +28,7 @@ public final class CPPCodeGenerator {
     * Constructs CPP code generator
     *
     * @param node root ASN.1 node
+    * @param line command line options
     */
    public CPPCodeGenerator(SimpleNode node, CommandLine line) {
       this.node = node;
@@ -134,8 +135,10 @@ public final class CPPCodeGenerator {
          System.err.println("Error : " + e);
       } finally {
          try {
-            writer.close();
-            writer = null;
+            if (null != writer) {
+               writer.close();
+               writer = null;
+            }
          } catch (IOException e) {
          }
       }

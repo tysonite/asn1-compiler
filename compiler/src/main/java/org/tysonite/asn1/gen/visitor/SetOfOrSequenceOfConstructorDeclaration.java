@@ -31,7 +31,7 @@ public class SetOfOrSequenceOfConstructorDeclaration extends DoNothingASTVisitor
       builder.append("(new ");
 
       if (!VisitorUtils.visitChildsAndAccept(builder, node,
-              new SetOfOrSequenceOfConstructorDeclaration(context), new SimpleTypeName(),
+              new SetOfOrSequenceOfConstructorDeclaration(context), new SimpleTypeName(context),
               new DefinedCPPTypeName())) {
          builder.append(VisitorUtils.queueGeneratedCode(node, context));
       }
