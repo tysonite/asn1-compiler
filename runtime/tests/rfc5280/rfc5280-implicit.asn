@@ -1,4 +1,7 @@
-RFC5280 DEFINITIONS IMPLICIT TAGS ::=
+PKIX1Implicit88 { iso(1) identified-organization(3) dod(6) internet(1)
+  security(5) mechanisms(5) pkix(7) id-mod(0) id-pkix1-implicit(19) }
+
+DEFINITIONS IMPLICIT TAGS ::=
 
 BEGIN
 
