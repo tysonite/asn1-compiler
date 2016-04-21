@@ -16,5 +16,5 @@ if (CMAKE_COMPILER_IS_GNUCC)
 endif ()
 
 add_executable (TestBER ${SOURCES})
-target_link_libraries (TestBER ${ASN1_RUNTIME_LINK_LIBRARIES})
-add_dependencies (TestBER ${ASN1_RUNTIME_LINK_LIBRARIES})
+target_link_libraries (TestBER ${ASN1_RUNTIME_LIBRARY_STATIC})
+add_dependencies (TestBER ${ASN1_RUNTIME_LIBRARY_STATIC})
