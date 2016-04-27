@@ -19,12 +19,16 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 
 if (DO_COVERAGE)
+   if (NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+      message (FATAL_ERROR "Code coverage is possible only in Debug mode")
+   endif ()
+
    if (NOT (CMAKE_COMPILER_IS_GNUCXX))
       message (FATAL_ERROR "GNU GCC is required for code coverage statistic")
-   endif()
+   endif ()
 
    include (CodeCoverage)
-   set (CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
    setup_target_for_coverage (coverage ./tests/TestBER coverage)
 
    set (BUILD_UNIT_TESTS ON)
