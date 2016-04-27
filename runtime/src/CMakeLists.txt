@@ -81,10 +81,6 @@ if (VAR_INT_SUPPORT)
       BigIntegerType.hh)
 endif ()
 
-if (CMAKE_COMPILER_IS_GNUCC)
-   set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS "-std=c++0x -Wall")
-endif ()
-
 set (ASN1_RUNTIME_LIBRARY_STATIC
    asn1_runtime_static
    CACHE INTERNAL "")
