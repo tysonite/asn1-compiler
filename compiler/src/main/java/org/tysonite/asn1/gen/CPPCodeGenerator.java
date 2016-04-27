@@ -39,7 +39,7 @@ public final class CPPCodeGenerator {
       }
 
       this.context.setAssignmentList(GenerationUtils.findAssignmentList(node));
-      this.outputDirectory = line.getOptionValue(Main.outputDirectory.getOpt());
+      this.outputDirectory = line.getOptionValue(Main.OUTPUT_DIRECTORY.getOpt());
       if (!(new File(this.outputDirectory).exists())) {
          if (!(new File(this.outputDirectory)).mkdirs()) {
             throw new GeneratorException("Cannot create output directory \""

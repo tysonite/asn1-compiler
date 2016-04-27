@@ -3,6 +3,7 @@ package org.tysonite.asn1.gen.visitor;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
 import org.tysonite.asn1.gen.Generator;
 import org.tysonite.asn1.gen.GeneratorContext;
+import org.tysonite.asn1.gen.Main;
 import org.tysonite.asn1.gen.utils.CodeBuilder;
 import org.tysonite.asn1.gen.utils.GenerationUtils;
 import org.tysonite.asn1.gen.utils.VisitorUtils;
@@ -109,7 +110,7 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
 
       // protected methods
       // (only for XER)
-      if (false) {
+      if (context.getCommandLine().hasOption(Main.METHOD_XER.getOpt())) {
          builder.newLine();
          builder.append("#if defined(ASN1_ENABLE_XER)").newLine();
          builder.append("protected:").newLine();

@@ -1,25 +1,32 @@
 package org.tysonite.asn1.gen;
 
-import java.io.*;
-
-import org.apache.commons.cli.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.tysonite.asn1.parser.AsnParser;
 import org.tysonite.asn1.parser.SimpleNode;
 
 public final class Main {
 
    private final Options options = new Options();
-   public static final Option outputDirectory = new Option("o", "output-directory", true,
+   public static final Option OUTPUT_DIRECTORY = new Option("o", "output-directory", true,
            "Output directory for generated C++ code");
-   public static final Option inputFile = new Option("i", "input-asn1-file", true,
+   public static final Option INPUT_FILE = new Option("i", "input-asn1-file", true,
            "ASN.1 grammar to process");
-   public static final Option methodDER = new Option("der", "der-method", false,
+   public static final Option METHOD_DER = new Option("der", "der-method", false,
            "Generate code for DER encoding/decoding");
-   public static final Option help = new Option("h", "help", false,
+   public static final Option METHOD_XER = new Option("xer", "xer-method", false,
+           "Generate code for XER encoding/decoding");
+   public static final Option HELP = new Option("h", "help", false,
            "ASN.1 compiler command line options");
-   public static final Option noCppCode = new Option("ncpp", "no-cpp", false,
+   public static final Option NO_CPP_CODE = new Option("ncpp", "no-cpp", false,
            "Do not generate C++ code, only parser ASN.1");
-   public static final Option bigInteger = new Option("bi", "big-int", false,
+   public static final Option BIG_INTEGER = new Option("bi", "big-int", false,
            "Generate code with variable length integers");
 
    private void printHelp() {
@@ -28,17 +35,18 @@ public final class Main {
    }
 
    private boolean mandatoryOptionsPresent(CommandLine line) {
-      return line.hasOption(inputFile.getOpt()) && line.hasOption(outputDirectory.getOpt())
-              || (line.hasOption(inputFile.getOpt()) && line.hasOption(noCppCode.getOpt()));
+      return line.hasOption(INPUT_FILE.getOpt()) && line.hasOption(OUTPUT_DIRECTORY.getOpt())
+              || (line.hasOption(INPUT_FILE.getOpt()) && line.hasOption(NO_CPP_CODE.getOpt()));
    }
 
    private void initOptions() {
-      options.addOption(outputDirectory);
-      options.addOption(inputFile);
-      options.addOption(methodDER);
-      options.addOption(noCppCode);
-      options.addOption(bigInteger);
-      options.addOption(help);
+      options.addOption(OUTPUT_DIRECTORY);
+      options.addOption(INPUT_FILE);
+      options.addOption(METHOD_DER);
+      options.addOption(METHOD_XER);
+      options.addOption(NO_CPP_CODE);
+      options.addOption(BIG_INTEGER);
+      options.addOption(HELP);
    }
 
    private void run(String args[]) {
@@ -48,20 +56,20 @@ public final class Main {
          final CommandLineParser argsParser = new DefaultParser();
          final CommandLine line = argsParser.parse(options, args);
 
-         if (line.hasOption(help.getOpt()) || !mandatoryOptionsPresent(line)) {
+         if (line.hasOption(HELP.getOpt()) || !mandatoryOptionsPresent(line)) {
             printHelp();
             return;
          }
 
          AsnParser parser = new AsnParser(new FileInputStream(
-                 line.getOptionValue(inputFile.getOpt())));
+                 line.getOptionValue(INPUT_FILE.getOpt())));
          parser.Input();
          System.out.println("ASN.1 file parsed successfully.");
 
          SimpleNode root = parser.getTreeRootNode();
          root.dump("\t");
 
-         if (!line.hasOption(noCppCode.getOpt())) {
+         if (!line.hasOption(NO_CPP_CODE.getOpt())) {
             CPPCodeGenerator generator = new CPPCodeGenerator(root, line);
             generator.generate();
          }

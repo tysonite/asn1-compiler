@@ -36,7 +36,7 @@ public class SimpleTypeName extends DoNothingASTVisitor implements ContentProvid
    @Override
    public Object visit(ASTIntegerType node, Object data) {
       if (!VisitorUtils.visitNodeAndAccept(builder, node, new IsNamedIntegerType())) {
-         if (context.getCommandLine().hasOption(Main.bigInteger.getOpt())) {
+         if (context.getCommandLine().hasOption(Main.BIG_INTEGER.getOpt())) {
             builder.append(asn1NameSpace).append("BigIntegerType");
          } else if (!VisitorUtils.visitChildsAndAccept(builder, (SimpleNode) node.jjtGetParent().
                  jjtGetParent(), new IsUnsignedIntegerType())) {

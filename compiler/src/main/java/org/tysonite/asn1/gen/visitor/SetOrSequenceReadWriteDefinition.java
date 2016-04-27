@@ -512,7 +512,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       }
       builder.newLine();
 
-      if (node.isSet() && context.getCommandLine().hasOption(Main.methodDER.getOpt())) {
+      if (node.isSet() && context.getCommandLine().hasOption(Main.METHOD_DER.getOpt())) {
          VisitorUtils.visitChildsAndAccept(builder, node, new ReadDefinitionForDER());
       } else {
          VisitorUtils.visitChildsAndAccept(builder, node,
@@ -539,7 +539,7 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
       }
       builder.newLine();
 
-      if (node.isSet() && context.getCommandLine().hasOption(Main.methodDER.getOpt())) {
+      if (node.isSet() && context.getCommandLine().hasOption(Main.METHOD_DER.getOpt())) {
          VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinitionForDER());
       } else {
          VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinition());
