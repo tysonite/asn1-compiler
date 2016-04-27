@@ -14,3 +14,5 @@ include_directories (${ASN1_RUNTIME_INCLUDE_DIRS})
 add_executable (TestBER ${SOURCES})
 target_link_libraries (TestBER ${ASN1_RUNTIME_LIBRARY_STATIC})
 add_dependencies (TestBER ${ASN1_RUNTIME_LIBRARY_STATIC})
+
+add_subdirectory (snmpv3-example)

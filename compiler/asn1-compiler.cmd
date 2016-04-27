@@ -11,4 +11,4 @@ goto args
 :done
 
 rem Execute asn1-compiler
-java -cp "lib\commons-cli-1.2.jar;asn1-compiler.jar" gen.Main %CMD_LINE_ARGS%
+java -cp target/asn1-compiler-0.1-SNAPSHOT.jar org.tysonite.asn1.gen.Main %CMD_LINE_ARGS%

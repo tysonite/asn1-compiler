@@ -66,12 +66,7 @@ void SequenceOfType<TypeItemType>::read(ASN1ValueReader& reader, ValueType& valu
    value.clear();
 
    // allocate space for value
-   if (hasMinSize() && hasMaxSize())
-   {
-      value.reserve(static_cast<typename ValueType::size_type>(
-         minSize() + (maxSize() - minSize()) / 2));
-   }
-   else if (hasMinSize())
+   if (hasMinSize())
    {
       value.reserve(static_cast<typename ValueType::size_type>(
          minSize()));
