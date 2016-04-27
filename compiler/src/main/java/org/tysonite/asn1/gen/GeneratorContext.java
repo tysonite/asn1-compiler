@@ -21,6 +21,8 @@ public class GeneratorContext {
    private String typeName;
    /* base type name */
    private String baseTypeName;
+   /* variable name */
+   private String varName;
    /* command line options */
    private CommandLine line;
    /* AssigmentList node */
@@ -58,6 +60,14 @@ public class GeneratorContext {
 
    public String getBaseTypeName() {
       return this.baseTypeName;
+   }
+
+   public void setVarName(final String varName) {
+      this.varName = varName;
+   }
+
+   public String getVarName() {
+      return this.varName;
    }
 
    public void setModuleTag(int tag) {

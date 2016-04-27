@@ -94,8 +94,11 @@ public final class VisitorUtils {
    public static CodeBuilder generateCodeAsForTypeAssignment(final SimpleNode node,
            final String typeName, final GeneratorContext context) {
       final CodeBuilder builder = new CodeBuilder();
-      final ASTTypeAssignment newType = new ASTTypeAssignment(0);
+
+      final ASTTypeAssignment newType = new ASTTypeAssignment(node.getId());
       newType.jjtSetFirstToken(new Token(0, typeName));
+
+      context.setVarName(node.jjtGetFirstToken().toString());
 
       if (node instanceof ASTTaggedType || node instanceof ASTSetOrSequenceOfType
               || node instanceof ASTElementType) {

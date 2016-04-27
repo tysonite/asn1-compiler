@@ -117,7 +117,11 @@ public class TypeDeclarationGenerator extends DoNothingASTVisitor implements Gen
          builder.newLine();
 
          builder.append(1, "const char* _doTypeName() const { return \"");
-         builder.append(typeName);
+         if (node.isBuiltIn() || node.isDefined()) {
+            builder.append(typeName);
+         } else {
+            builder.append(context.getVarName());
+         }
          builder.append("\"; }").newLine();
          builder.append("#endif // ASN1_ENABLE_XER").newLine();
       }
