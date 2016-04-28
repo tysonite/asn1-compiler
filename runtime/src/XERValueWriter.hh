@@ -39,7 +39,7 @@ public:
    void writeBitString(const BitString& value, const BitStringType& type) {}
 
    // Writes NULL value
-   void writeNull(const NullType& type) {}
+   void writeNull(const NullType& type);
 
    // Writes OCTET STRING value
    void writeOctetString(const OctetString& value, const OctetStringType& type);
@@ -94,6 +94,7 @@ public:
 
 private:
 
+   void _writeTag(const Type& type);
    void _writeTagBegin(const Type& type);
    void _writeTagEnd(const Type& type);
 

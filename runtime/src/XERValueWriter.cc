@@ -49,6 +49,15 @@ void XERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
       _buffer.append(newLine());
 }
 
+// Writes NULL value
+void XERValueWriter::writeNull(const NullType& type)
+{
+   _writeTag(type);
+
+   if (!_isCanonical)
+      _buffer.append(newLine());
+}
+
 // Writes OCTET STRING value
 void XERValueWriter::writeOctetString(const OctetString& value, const OctetStringType& type)
 {
@@ -119,6 +128,14 @@ void XERValueWriter::writeChoiceEnd(const ChoiceType& type)
       _writeTagEnd(type);
       _buffer.append(newLine());
    }
+}
+
+void XERValueWriter::_writeTag(const Type& type)
+{
+   if (!_isCanonical)
+      _buffer.append(whiteSpaces(_indent));
+
+   _buffer.append("<").append(type.typeName()).append("/>");
 }
 
 void XERValueWriter::_writeTagBegin(const Type& type)
