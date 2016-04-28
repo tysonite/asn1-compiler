@@ -3,7 +3,6 @@ package org.tysonite.asn1.gen.visitor;
 import org.tysonite.asn1.gen.ContentProvider;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
 import org.tysonite.asn1.gen.GeneratorContext;
-import org.tysonite.asn1.gen.Main;
 import org.tysonite.asn1.gen.utils.CodeBuilder;
 import org.tysonite.asn1.gen.utils.GenerationUtils;
 import org.tysonite.asn1.gen.utils.VisitorUtils;
@@ -14,12 +13,12 @@ import org.tysonite.asn1.parser.Node;
 
 public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements ContentProvider {
 
-   private CodeBuilder builder = new CodeBuilder();
+   private final CodeBuilder builder = new CodeBuilder();
    private final GeneratorContext context;
 
    protected class SetGetDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -43,23 +42,21 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
          builder.newLine();
 
          // setter (move semantics)
-         if (context.getCommandLine().hasOption(Main.CPP11_CODE.getOpt())) {
-            builder.append(2, "void set_").
-                    append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
-                    append("(");
-            if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
-                    new DefinedCPPTypeName())
-                    || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
-               builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
-            }
-
-            builder.append("::ValueType&& v) { _").
-                    append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
-                    append(" = std::move(v); ");
-            VisitorUtils.visitNodeAndAccept(builder, node, new SetAsPresent());
-            builder.append(" }");
-            builder.newLine();
+         builder.append(2, "void set_").
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
+                 append("(");
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
+                 new DefinedCPPTypeName())
+                 || VisitorUtils.visitChildsAndAccept(builder, node, new IsNamedIntegerType())) {
+            builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
+
+         builder.append("::ValueType&& v) { _").
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
+                 append(" = std::move(v); ");
+         VisitorUtils.visitNodeAndAccept(builder, node, new SetAsPresent());
+         builder.append(" }");
+         builder.newLine();
 
          // getter (const)
          builder.append(2, "const ");
@@ -107,7 +104,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
    protected class SetAsPresent extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -133,7 +130,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
    protected class SetIsPresentDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -168,7 +165,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
    protected class SetupInitialPresence extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -194,7 +191,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
    protected class ValuePresenceDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -243,7 +240,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
 
    protected class ValueDeclaration extends DoNothingASTVisitor implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       @Override
       public Object visit(ASTElementType node, Object data) {
@@ -277,12 +274,12 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
    protected class EqualityOperatorDeclaration extends DoNothingASTVisitor
            implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
 
       protected class CompareComponentDeclaration extends DoNothingASTVisitor
               implements ContentProvider {
 
-         private CodeBuilder builder = new CodeBuilder();
+         private final CodeBuilder builder = new CodeBuilder();
 
          @Override
          public Object visit(ASTElementType node, Object data) {
@@ -345,7 +342,7 @@ public class SetOrSequenceTypeBody extends DoNothingASTVisitor implements Conten
    protected static class ComplexTypeDefsDeclaration extends DoNothingASTVisitor
            implements ContentProvider {
 
-      private CodeBuilder builder = new CodeBuilder();
+      private final CodeBuilder builder = new CodeBuilder();
       private final GeneratorContext context;
       private boolean atLeastOneTypeDef = false;
 

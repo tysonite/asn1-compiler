@@ -65,6 +65,7 @@ public:
 
       // Alternative: integer-value
       void set_integer_value(const asn1::IntegerType::ValueType& v) { _integer_value = v; _id = integer_value_ID; }
+      void set_integer_value(asn1::IntegerType::ValueType&& v) { _integer_value = std::move(v); _id = integer_value_ID; }
       const asn1::IntegerType::ValueType& get_integer_value() const { assert(_id == integer_value_ID); return _integer_value; }
       asn1::IntegerType::ValueType& get_integer_value() { assert(_id == integer_value_ID); return _integer_value; }
       bool has_integer_value_Choosen() const { return _id == integer_value_ID; }
@@ -72,6 +73,7 @@ public:
 
       // Alternative: string-value
       void set_string_value(const asn1::OctetStringType::ValueType& v) { _string_value = v; _id = string_value_ID; }
+      void set_string_value(asn1::OctetStringType::ValueType&& v) { _string_value = std::move(v); _id = string_value_ID; }
       const asn1::OctetStringType::ValueType& get_string_value() const { assert(_id == string_value_ID); return _string_value; }
       asn1::OctetStringType::ValueType& get_string_value() { assert(_id == string_value_ID); return _string_value; }
       bool has_string_value_Choosen() const { return _id == string_value_ID; }
@@ -79,6 +81,7 @@ public:
 
       // Alternative: objectID-value
       void set_objectID_value(const asn1::ObjectIdentifierType::ValueType& v) { _objectID_value = v; _id = objectID_value_ID; }
+      void set_objectID_value(asn1::ObjectIdentifierType::ValueType&& v) { _objectID_value = std::move(v); _id = objectID_value_ID; }
       const asn1::ObjectIdentifierType::ValueType& get_objectID_value() const { assert(_id == objectID_value_ID); return _objectID_value; }
       asn1::ObjectIdentifierType::ValueType& get_objectID_value() { assert(_id == objectID_value_ID); return _objectID_value; }
       bool has_objectID_value_Choosen() const { return _id == objectID_value_ID; }
@@ -321,6 +324,7 @@ public:
 
       // Alternative: ipAddress-value
       void set_ipAddress_value(const asn1::generated::IpAddress::ValueType& v) { _ipAddress_value = v; _id = ipAddress_value_ID; }
+      void set_ipAddress_value(asn1::generated::IpAddress::ValueType&& v) { _ipAddress_value = std::move(v); _id = ipAddress_value_ID; }
       const asn1::generated::IpAddress::ValueType& get_ipAddress_value() const { assert(_id == ipAddress_value_ID); return _ipAddress_value; }
       asn1::generated::IpAddress::ValueType& get_ipAddress_value() { assert(_id == ipAddress_value_ID); return _ipAddress_value; }
       bool has_ipAddress_value_Choosen() const { return _id == ipAddress_value_ID; }
@@ -328,6 +332,7 @@ public:
 
       // Alternative: counter-value
       void set_counter_value(const asn1::generated::Counter32::ValueType& v) { _counter_value = v; _id = counter_value_ID; }
+      void set_counter_value(asn1::generated::Counter32::ValueType&& v) { _counter_value = std::move(v); _id = counter_value_ID; }
       const asn1::generated::Counter32::ValueType& get_counter_value() const { assert(_id == counter_value_ID); return _counter_value; }
       asn1::generated::Counter32::ValueType& get_counter_value() { assert(_id == counter_value_ID); return _counter_value; }
       bool has_counter_value_Choosen() const { return _id == counter_value_ID; }
@@ -335,6 +340,7 @@ public:
 
       // Alternative: timeticks-value
       void set_timeticks_value(const asn1::generated::TimeTicks::ValueType& v) { _timeticks_value = v; _id = timeticks_value_ID; }
+      void set_timeticks_value(asn1::generated::TimeTicks::ValueType&& v) { _timeticks_value = std::move(v); _id = timeticks_value_ID; }
       const asn1::generated::TimeTicks::ValueType& get_timeticks_value() const { assert(_id == timeticks_value_ID); return _timeticks_value; }
       asn1::generated::TimeTicks::ValueType& get_timeticks_value() { assert(_id == timeticks_value_ID); return _timeticks_value; }
       bool has_timeticks_value_Choosen() const { return _id == timeticks_value_ID; }
@@ -342,6 +348,7 @@ public:
 
       // Alternative: arbitrary-value
       void set_arbitrary_value(const asn1::generated::Opaque::ValueType& v) { _arbitrary_value = v; _id = arbitrary_value_ID; }
+      void set_arbitrary_value(asn1::generated::Opaque::ValueType&& v) { _arbitrary_value = std::move(v); _id = arbitrary_value_ID; }
       const asn1::generated::Opaque::ValueType& get_arbitrary_value() const { assert(_id == arbitrary_value_ID); return _arbitrary_value; }
       asn1::generated::Opaque::ValueType& get_arbitrary_value() { assert(_id == arbitrary_value_ID); return _arbitrary_value; }
       bool has_arbitrary_value_Choosen() const { return _id == arbitrary_value_ID; }
@@ -349,6 +356,7 @@ public:
 
       // Alternative: big-counter-value
       void set_big_counter_value(const asn1::generated::Counter64::ValueType& v) { _big_counter_value = v; _id = big_counter_value_ID; }
+      void set_big_counter_value(asn1::generated::Counter64::ValueType&& v) { _big_counter_value = std::move(v); _id = big_counter_value_ID; }
       const asn1::generated::Counter64::ValueType& get_big_counter_value() const { assert(_id == big_counter_value_ID); return _big_counter_value; }
       asn1::generated::Counter64::ValueType& get_big_counter_value() { assert(_id == big_counter_value_ID); return _big_counter_value; }
       bool has_big_counter_value_Choosen() const { return _id == big_counter_value_ID; }
@@ -356,6 +364,7 @@ public:
 
       // Alternative: unsigned-integer-value
       void set_unsigned_integer_value(const asn1::generated::Unsigned32::ValueType& v) { _unsigned_integer_value = v; _id = unsigned_integer_value_ID; }
+      void set_unsigned_integer_value(asn1::generated::Unsigned32::ValueType&& v) { _unsigned_integer_value = std::move(v); _id = unsigned_integer_value_ID; }
       const asn1::generated::Unsigned32::ValueType& get_unsigned_integer_value() const { assert(_id == unsigned_integer_value_ID); return _unsigned_integer_value; }
       asn1::generated::Unsigned32::ValueType& get_unsigned_integer_value() { assert(_id == unsigned_integer_value_ID); return _unsigned_integer_value; }
       bool has_unsigned_integer_value_Choosen() const { return _id == unsigned_integer_value_ID; }
@@ -474,6 +483,7 @@ public:
 
       // Alternative: simple
       void set_simple(const asn1::generated::SimpleSyntax::ValueType& v) { _simple = v; _id = simple_ID; }
+      void set_simple(asn1::generated::SimpleSyntax::ValueType&& v) { _simple = std::move(v); _id = simple_ID; }
       const asn1::generated::SimpleSyntax::ValueType& get_simple() const { assert(_id == simple_ID); return _simple; }
       asn1::generated::SimpleSyntax::ValueType& get_simple() { assert(_id == simple_ID); return _simple; }
       bool has_simple_Choosen() const { return _id == simple_ID; }
@@ -481,6 +491,7 @@ public:
 
       // Alternative: application-wide
       void set_application_wide(const asn1::generated::ApplicationSyntax::ValueType& v) { _application_wide = v; _id = application_wide_ID; }
+      void set_application_wide(asn1::generated::ApplicationSyntax::ValueType&& v) { _application_wide = std::move(v); _id = application_wide_ID; }
       const asn1::generated::ApplicationSyntax::ValueType& get_application_wide() const { assert(_id == application_wide_ID); return _application_wide; }
       asn1::generated::ApplicationSyntax::ValueType& get_application_wide() { assert(_id == application_wide_ID); return _application_wide; }
       bool has_application_wide_Choosen() const { return _id == application_wide_ID; }
@@ -710,6 +721,7 @@ public:
 
       // Alternative: value
       void set_value(const asn1::generated::ObjectSyntax::ValueType& v) { _value = v; _id = value_ID; }
+      void set_value(asn1::generated::ObjectSyntax::ValueType&& v) { _value = std::move(v); _id = value_ID; }
       const asn1::generated::ObjectSyntax::ValueType& get_value() const { assert(_id == value_ID); return _value; }
       asn1::generated::ObjectSyntax::ValueType& get_value() { assert(_id == value_ID); return _value; }
       bool has_value_Choosen() const { return _id == value_ID; }
@@ -717,6 +729,7 @@ public:
 
       // Alternative: unSpecified
       void set_unSpecified(const asn1::NullType::ValueType& v) { _unSpecified = v; _id = unSpecified_ID; }
+      void set_unSpecified(asn1::NullType::ValueType&& v) { _unSpecified = std::move(v); _id = unSpecified_ID; }
       const asn1::NullType::ValueType& get_unSpecified() const { assert(_id == unSpecified_ID); return _unSpecified; }
       asn1::NullType::ValueType& get_unSpecified() { assert(_id == unSpecified_ID); return _unSpecified; }
       bool has_unSpecified_Choosen() const { return _id == unSpecified_ID; }
@@ -724,6 +737,7 @@ public:
 
       // Alternative: noSuchObject
       void set_noSuchObject(const noSuchObject_Type::ValueType& v) { _noSuchObject = v; _id = noSuchObject_ID; }
+      void set_noSuchObject(noSuchObject_Type::ValueType&& v) { _noSuchObject = std::move(v); _id = noSuchObject_ID; }
       const noSuchObject_Type::ValueType& get_noSuchObject() const { assert(_id == noSuchObject_ID); return _noSuchObject; }
       noSuchObject_Type::ValueType& get_noSuchObject() { assert(_id == noSuchObject_ID); return _noSuchObject; }
       bool has_noSuchObject_Choosen() const { return _id == noSuchObject_ID; }
@@ -731,6 +745,7 @@ public:
 
       // Alternative: noSuchInstance
       void set_noSuchInstance(const noSuchInstance_Type::ValueType& v) { _noSuchInstance = v; _id = noSuchInstance_ID; }
+      void set_noSuchInstance(noSuchInstance_Type::ValueType&& v) { _noSuchInstance = std::move(v); _id = noSuchInstance_ID; }
       const noSuchInstance_Type::ValueType& get_noSuchInstance() const { assert(_id == noSuchInstance_ID); return _noSuchInstance; }
       noSuchInstance_Type::ValueType& get_noSuchInstance() { assert(_id == noSuchInstance_ID); return _noSuchInstance; }
       bool has_noSuchInstance_Choosen() const { return _id == noSuchInstance_ID; }
@@ -738,6 +753,7 @@ public:
 
       // Alternative: endOfMibView
       void set_endOfMibView(const endOfMibView_Type::ValueType& v) { _endOfMibView = v; _id = endOfMibView_ID; }
+      void set_endOfMibView(endOfMibView_Type::ValueType&& v) { _endOfMibView = std::move(v); _id = endOfMibView_ID; }
       const endOfMibView_Type::ValueType& get_endOfMibView() const { assert(_id == endOfMibView_ID); return _endOfMibView; }
       endOfMibView_Type::ValueType& get_endOfMibView() { assert(_id == endOfMibView_ID); return _endOfMibView; }
       bool has_endOfMibView_Choosen() const { return _id == endOfMibView_ID; }
@@ -848,11 +864,13 @@ public:
 
       // Component: name
       void set_name(const asn1::generated::ObjectName::ValueType& v) { _name = v;  }
+      void set_name(asn1::generated::ObjectName::ValueType&& v) { _name = std::move(v);  }
       const asn1::generated::ObjectName::ValueType& get_name() const { return _name; }
       asn1::generated::ObjectName::ValueType& get_name() { return _name; }
 
       // Component: data
       void set_data(const data_Type::ValueType& v) { _data = v;  }
+      void set_data(data_Type::ValueType&& v) { _data = std::move(v);  }
       const data_Type::ValueType& get_data() const { return _data; }
       data_Type::ValueType& get_data() { return _data; }
 
@@ -951,21 +969,25 @@ public:
 
       // Component: request-id
       void set_request_id(const asn1::IntegerType::ValueType& v) { _request_id = v;  }
+      void set_request_id(asn1::IntegerType::ValueType&& v) { _request_id = std::move(v);  }
       const asn1::IntegerType::ValueType& get_request_id() const { return _request_id; }
       asn1::IntegerType::ValueType& get_request_id() { return _request_id; }
 
       // Component: error-status
       void set_error_status(const error_status_Type::ValueType& v) { _error_status = v;  }
+      void set_error_status(error_status_Type::ValueType&& v) { _error_status = std::move(v);  }
       const error_status_Type::ValueType& get_error_status() const { return _error_status; }
       error_status_Type::ValueType& get_error_status() { return _error_status; }
 
       // Component: error-index
       void set_error_index(const asn1::UnsignedIntegerType::ValueType& v) { _error_index = v;  }
+      void set_error_index(asn1::UnsignedIntegerType::ValueType&& v) { _error_index = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_error_index() const { return _error_index; }
       asn1::UnsignedIntegerType::ValueType& get_error_index() { return _error_index; }
 
       // Component: variable-bindings
       void set_variable_bindings(const asn1::generated::VarBindList::ValueType& v) { _variable_bindings = v;  }
+      void set_variable_bindings(asn1::generated::VarBindList::ValueType&& v) { _variable_bindings = std::move(v);  }
       const asn1::generated::VarBindList::ValueType& get_variable_bindings() const { return _variable_bindings; }
       asn1::generated::VarBindList::ValueType& get_variable_bindings() { return _variable_bindings; }
 
@@ -1092,21 +1114,25 @@ public:
 
       // Component: request-id
       void set_request_id(const asn1::IntegerType::ValueType& v) { _request_id = v;  }
+      void set_request_id(asn1::IntegerType::ValueType&& v) { _request_id = std::move(v);  }
       const asn1::IntegerType::ValueType& get_request_id() const { return _request_id; }
       asn1::IntegerType::ValueType& get_request_id() { return _request_id; }
 
       // Component: non-repeaters
       void set_non_repeaters(const asn1::UnsignedIntegerType::ValueType& v) { _non_repeaters = v;  }
+      void set_non_repeaters(asn1::UnsignedIntegerType::ValueType&& v) { _non_repeaters = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_non_repeaters() const { return _non_repeaters; }
       asn1::UnsignedIntegerType::ValueType& get_non_repeaters() { return _non_repeaters; }
 
       // Component: max-repetitions
       void set_max_repetitions(const asn1::UnsignedIntegerType::ValueType& v) { _max_repetitions = v;  }
+      void set_max_repetitions(asn1::UnsignedIntegerType::ValueType&& v) { _max_repetitions = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_max_repetitions() const { return _max_repetitions; }
       asn1::UnsignedIntegerType::ValueType& get_max_repetitions() { return _max_repetitions; }
 
       // Component: variable-bindings
       void set_variable_bindings(const asn1::generated::VarBindList::ValueType& v) { _variable_bindings = v;  }
+      void set_variable_bindings(asn1::generated::VarBindList::ValueType&& v) { _variable_bindings = std::move(v);  }
       const asn1::generated::VarBindList::ValueType& get_variable_bindings() const { return _variable_bindings; }
       asn1::generated::VarBindList::ValueType& get_variable_bindings() { return _variable_bindings; }
 
@@ -1329,6 +1355,7 @@ public:
 
       // Alternative: get-request
       void set_get_request(const asn1::generated::GetRequest_PDU::ValueType& v) { _get_request = v; _id = get_request_ID; }
+      void set_get_request(asn1::generated::GetRequest_PDU::ValueType&& v) { _get_request = std::move(v); _id = get_request_ID; }
       const asn1::generated::GetRequest_PDU::ValueType& get_get_request() const { assert(_id == get_request_ID); return _get_request; }
       asn1::generated::GetRequest_PDU::ValueType& get_get_request() { assert(_id == get_request_ID); return _get_request; }
       bool has_get_request_Choosen() const { return _id == get_request_ID; }
@@ -1336,6 +1363,7 @@ public:
 
       // Alternative: get-next-request
       void set_get_next_request(const asn1::generated::GetNextRequest_PDU::ValueType& v) { _get_next_request = v; _id = get_next_request_ID; }
+      void set_get_next_request(asn1::generated::GetNextRequest_PDU::ValueType&& v) { _get_next_request = std::move(v); _id = get_next_request_ID; }
       const asn1::generated::GetNextRequest_PDU::ValueType& get_get_next_request() const { assert(_id == get_next_request_ID); return _get_next_request; }
       asn1::generated::GetNextRequest_PDU::ValueType& get_get_next_request() { assert(_id == get_next_request_ID); return _get_next_request; }
       bool has_get_next_request_Choosen() const { return _id == get_next_request_ID; }
@@ -1343,6 +1371,7 @@ public:
 
       // Alternative: get-bulk-request
       void set_get_bulk_request(const asn1::generated::GetBulkRequest_PDU::ValueType& v) { _get_bulk_request = v; _id = get_bulk_request_ID; }
+      void set_get_bulk_request(asn1::generated::GetBulkRequest_PDU::ValueType&& v) { _get_bulk_request = std::move(v); _id = get_bulk_request_ID; }
       const asn1::generated::GetBulkRequest_PDU::ValueType& get_get_bulk_request() const { assert(_id == get_bulk_request_ID); return _get_bulk_request; }
       asn1::generated::GetBulkRequest_PDU::ValueType& get_get_bulk_request() { assert(_id == get_bulk_request_ID); return _get_bulk_request; }
       bool has_get_bulk_request_Choosen() const { return _id == get_bulk_request_ID; }
@@ -1350,6 +1379,7 @@ public:
 
       // Alternative: response
       void set_response(const asn1::generated::Response_PDU::ValueType& v) { _response = v; _id = response_ID; }
+      void set_response(asn1::generated::Response_PDU::ValueType&& v) { _response = std::move(v); _id = response_ID; }
       const asn1::generated::Response_PDU::ValueType& get_response() const { assert(_id == response_ID); return _response; }
       asn1::generated::Response_PDU::ValueType& get_response() { assert(_id == response_ID); return _response; }
       bool has_response_Choosen() const { return _id == response_ID; }
@@ -1357,6 +1387,7 @@ public:
 
       // Alternative: set-request
       void set_set_request(const asn1::generated::SetRequest_PDU::ValueType& v) { _set_request = v; _id = set_request_ID; }
+      void set_set_request(asn1::generated::SetRequest_PDU::ValueType&& v) { _set_request = std::move(v); _id = set_request_ID; }
       const asn1::generated::SetRequest_PDU::ValueType& get_set_request() const { assert(_id == set_request_ID); return _set_request; }
       asn1::generated::SetRequest_PDU::ValueType& get_set_request() { assert(_id == set_request_ID); return _set_request; }
       bool has_set_request_Choosen() const { return _id == set_request_ID; }
@@ -1364,6 +1395,7 @@ public:
 
       // Alternative: inform-request
       void set_inform_request(const asn1::generated::InformRequest_PDU::ValueType& v) { _inform_request = v; _id = inform_request_ID; }
+      void set_inform_request(asn1::generated::InformRequest_PDU::ValueType&& v) { _inform_request = std::move(v); _id = inform_request_ID; }
       const asn1::generated::InformRequest_PDU::ValueType& get_inform_request() const { assert(_id == inform_request_ID); return _inform_request; }
       asn1::generated::InformRequest_PDU::ValueType& get_inform_request() { assert(_id == inform_request_ID); return _inform_request; }
       bool has_inform_request_Choosen() const { return _id == inform_request_ID; }
@@ -1371,6 +1403,7 @@ public:
 
       // Alternative: snmpV2-trap
       void set_snmpV2_trap(const asn1::generated::SNMPv2_Trap_PDU::ValueType& v) { _snmpV2_trap = v; _id = snmpV2_trap_ID; }
+      void set_snmpV2_trap(asn1::generated::SNMPv2_Trap_PDU::ValueType&& v) { _snmpV2_trap = std::move(v); _id = snmpV2_trap_ID; }
       const asn1::generated::SNMPv2_Trap_PDU::ValueType& get_snmpV2_trap() const { assert(_id == snmpV2_trap_ID); return _snmpV2_trap; }
       asn1::generated::SNMPv2_Trap_PDU::ValueType& get_snmpV2_trap() { assert(_id == snmpV2_trap_ID); return _snmpV2_trap; }
       bool has_snmpV2_trap_Choosen() const { return _id == snmpV2_trap_ID; }
@@ -1378,6 +1411,7 @@ public:
 
       // Alternative: report
       void set_report(const asn1::generated::Report_PDU::ValueType& v) { _report = v; _id = report_ID; }
+      void set_report(asn1::generated::Report_PDU::ValueType&& v) { _report = std::move(v); _id = report_ID; }
       const asn1::generated::Report_PDU::ValueType& get_report() const { assert(_id == report_ID); return _report; }
       asn1::generated::Report_PDU::ValueType& get_report() { assert(_id == report_ID); return _report; }
       bool has_report_Choosen() const { return _id == report_ID; }
@@ -1524,21 +1558,25 @@ public:
 
       // Component: msgID
       void set_msgID(const asn1::UnsignedIntegerType::ValueType& v) { _msgID = v;  }
+      void set_msgID(asn1::UnsignedIntegerType::ValueType&& v) { _msgID = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_msgID() const { return _msgID; }
       asn1::UnsignedIntegerType::ValueType& get_msgID() { return _msgID; }
 
       // Component: msgMaxSize
       void set_msgMaxSize(const asn1::UnsignedIntegerType::ValueType& v) { _msgMaxSize = v;  }
+      void set_msgMaxSize(asn1::UnsignedIntegerType::ValueType&& v) { _msgMaxSize = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_msgMaxSize() const { return _msgMaxSize; }
       asn1::UnsignedIntegerType::ValueType& get_msgMaxSize() { return _msgMaxSize; }
 
       // Component: msgFlags
       void set_msgFlags(const asn1::OctetStringType::ValueType& v) { _msgFlags = v;  }
+      void set_msgFlags(asn1::OctetStringType::ValueType&& v) { _msgFlags = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_msgFlags() const { return _msgFlags; }
       asn1::OctetStringType::ValueType& get_msgFlags() { return _msgFlags; }
 
       // Component: msgSecurityModel
       void set_msgSecurityModel(const asn1::UnsignedIntegerType::ValueType& v) { _msgSecurityModel = v;  }
+      void set_msgSecurityModel(asn1::UnsignedIntegerType::ValueType&& v) { _msgSecurityModel = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_msgSecurityModel() const { return _msgSecurityModel; }
       asn1::UnsignedIntegerType::ValueType& get_msgSecurityModel() { return _msgSecurityModel; }
 
@@ -1619,16 +1657,19 @@ public:
 
       // Component: contextEngineID
       void set_contextEngineID(const asn1::OctetStringType::ValueType& v) { _contextEngineID = v;  }
+      void set_contextEngineID(asn1::OctetStringType::ValueType&& v) { _contextEngineID = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_contextEngineID() const { return _contextEngineID; }
       asn1::OctetStringType::ValueType& get_contextEngineID() { return _contextEngineID; }
 
       // Component: contextName
       void set_contextName(const asn1::OctetStringType::ValueType& v) { _contextName = v;  }
+      void set_contextName(asn1::OctetStringType::ValueType&& v) { _contextName = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_contextName() const { return _contextName; }
       asn1::OctetStringType::ValueType& get_contextName() { return _contextName; }
 
       // Component: data
       void set_data(const asn1::generated::PDUs::ValueType& v) { _data = v;  }
+      void set_data(asn1::generated::PDUs::ValueType&& v) { _data = std::move(v);  }
       const asn1::generated::PDUs::ValueType& get_data() const { return _data; }
       asn1::generated::PDUs::ValueType& get_data() { return _data; }
 
@@ -1704,6 +1745,7 @@ public:
 
       // Alternative: plaintext
       void set_plaintext(const asn1::generated::ScopedPDU::ValueType& v) { _plaintext = v; _id = plaintext_ID; }
+      void set_plaintext(asn1::generated::ScopedPDU::ValueType&& v) { _plaintext = std::move(v); _id = plaintext_ID; }
       const asn1::generated::ScopedPDU::ValueType& get_plaintext() const { assert(_id == plaintext_ID); return _plaintext; }
       asn1::generated::ScopedPDU::ValueType& get_plaintext() { assert(_id == plaintext_ID); return _plaintext; }
       bool has_plaintext_Choosen() const { return _id == plaintext_ID; }
@@ -1711,6 +1753,7 @@ public:
 
       // Alternative: encryptedPDU
       void set_encryptedPDU(const asn1::OctetStringType::ValueType& v) { _encryptedPDU = v; _id = encryptedPDU_ID; }
+      void set_encryptedPDU(asn1::OctetStringType::ValueType&& v) { _encryptedPDU = std::move(v); _id = encryptedPDU_ID; }
       const asn1::OctetStringType::ValueType& get_encryptedPDU() const { assert(_id == encryptedPDU_ID); return _encryptedPDU; }
       asn1::OctetStringType::ValueType& get_encryptedPDU() { assert(_id == encryptedPDU_ID); return _encryptedPDU; }
       bool has_encryptedPDU_Choosen() const { return _id == encryptedPDU_ID; }
@@ -1808,21 +1851,25 @@ public:
 
       // Component: msgVersion
       void set_msgVersion(const asn1::UnsignedIntegerType::ValueType& v) { _msgVersion = v;  }
+      void set_msgVersion(asn1::UnsignedIntegerType::ValueType&& v) { _msgVersion = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_msgVersion() const { return _msgVersion; }
       asn1::UnsignedIntegerType::ValueType& get_msgVersion() { return _msgVersion; }
 
       // Component: msgGlobalData
       void set_msgGlobalData(const asn1::generated::HeaderData::ValueType& v) { _msgGlobalData = v;  }
+      void set_msgGlobalData(asn1::generated::HeaderData::ValueType&& v) { _msgGlobalData = std::move(v);  }
       const asn1::generated::HeaderData::ValueType& get_msgGlobalData() const { return _msgGlobalData; }
       asn1::generated::HeaderData::ValueType& get_msgGlobalData() { return _msgGlobalData; }
 
       // Component: msgSecurityParameters
       void set_msgSecurityParameters(const asn1::OctetStringType::ValueType& v) { _msgSecurityParameters = v;  }
+      void set_msgSecurityParameters(asn1::OctetStringType::ValueType&& v) { _msgSecurityParameters = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_msgSecurityParameters() const { return _msgSecurityParameters; }
       asn1::OctetStringType::ValueType& get_msgSecurityParameters() { return _msgSecurityParameters; }
 
       // Component: msgData
       void set_msgData(const asn1::generated::ScopedPduData::ValueType& v) { _msgData = v;  }
+      void set_msgData(asn1::generated::ScopedPduData::ValueType&& v) { _msgData = std::move(v);  }
       const asn1::generated::ScopedPduData::ValueType& get_msgData() const { return _msgData; }
       asn1::generated::ScopedPduData::ValueType& get_msgData() { return _msgData; }
 
@@ -1921,31 +1968,37 @@ public:
 
       // Component: msgAuthoritativeEngineID
       void set_msgAuthoritativeEngineID(const asn1::OctetStringType::ValueType& v) { _msgAuthoritativeEngineID = v;  }
+      void set_msgAuthoritativeEngineID(asn1::OctetStringType::ValueType&& v) { _msgAuthoritativeEngineID = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_msgAuthoritativeEngineID() const { return _msgAuthoritativeEngineID; }
       asn1::OctetStringType::ValueType& get_msgAuthoritativeEngineID() { return _msgAuthoritativeEngineID; }
 
       // Component: msgAuthoritativeEngineBoots
       void set_msgAuthoritativeEngineBoots(const asn1::UnsignedIntegerType::ValueType& v) { _msgAuthoritativeEngineBoots = v;  }
+      void set_msgAuthoritativeEngineBoots(asn1::UnsignedIntegerType::ValueType&& v) { _msgAuthoritativeEngineBoots = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_msgAuthoritativeEngineBoots() const { return _msgAuthoritativeEngineBoots; }
       asn1::UnsignedIntegerType::ValueType& get_msgAuthoritativeEngineBoots() { return _msgAuthoritativeEngineBoots; }
 
       // Component: msgAuthoritativeEngineTime
       void set_msgAuthoritativeEngineTime(const asn1::UnsignedIntegerType::ValueType& v) { _msgAuthoritativeEngineTime = v;  }
+      void set_msgAuthoritativeEngineTime(asn1::UnsignedIntegerType::ValueType&& v) { _msgAuthoritativeEngineTime = std::move(v);  }
       const asn1::UnsignedIntegerType::ValueType& get_msgAuthoritativeEngineTime() const { return _msgAuthoritativeEngineTime; }
       asn1::UnsignedIntegerType::ValueType& get_msgAuthoritativeEngineTime() { return _msgAuthoritativeEngineTime; }
 
       // Component: msgUserName
       void set_msgUserName(const asn1::OctetStringType::ValueType& v) { _msgUserName = v;  }
+      void set_msgUserName(asn1::OctetStringType::ValueType&& v) { _msgUserName = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_msgUserName() const { return _msgUserName; }
       asn1::OctetStringType::ValueType& get_msgUserName() { return _msgUserName; }
 
       // Component: msgAuthenticationParameters
       void set_msgAuthenticationParameters(const asn1::OctetStringType::ValueType& v) { _msgAuthenticationParameters = v;  }
+      void set_msgAuthenticationParameters(asn1::OctetStringType::ValueType&& v) { _msgAuthenticationParameters = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_msgAuthenticationParameters() const { return _msgAuthenticationParameters; }
       asn1::OctetStringType::ValueType& get_msgAuthenticationParameters() { return _msgAuthenticationParameters; }
 
       // Component: msgPrivacyParameters
       void set_msgPrivacyParameters(const asn1::OctetStringType::ValueType& v) { _msgPrivacyParameters = v;  }
+      void set_msgPrivacyParameters(asn1::OctetStringType::ValueType&& v) { _msgPrivacyParameters = std::move(v);  }
       const asn1::OctetStringType::ValueType& get_msgPrivacyParameters() const { return _msgPrivacyParameters; }
       asn1::OctetStringType::ValueType& get_msgPrivacyParameters() { return _msgPrivacyParameters; }
 

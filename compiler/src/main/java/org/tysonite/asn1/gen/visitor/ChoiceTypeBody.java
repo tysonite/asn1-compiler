@@ -3,7 +3,6 @@ package org.tysonite.asn1.gen.visitor;
 import org.tysonite.asn1.gen.ContentProvider;
 import org.tysonite.asn1.gen.DoNothingASTVisitor;
 import org.tysonite.asn1.gen.GeneratorContext;
-import org.tysonite.asn1.gen.Main;
 import org.tysonite.asn1.gen.utils.CodeBuilder;
 import org.tysonite.asn1.gen.utils.GenerationUtils;
 import org.tysonite.asn1.gen.utils.VisitorUtils;
@@ -39,28 +38,26 @@ public class ChoiceTypeBody extends DoNothingASTVisitor implements ContentProvid
                  append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
                  append(" = v;");
          builder.append(" _id = ").
-                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).append("_ID;").
-                 append(" }");
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
+                 append("_ID;").append(" }");
          builder.newLine();
 
          // setter (move semantics)
-         if (context.getCommandLine().hasOption(Main.CPP11_CODE.getOpt())) {
-            builder.append(2, "void set_").
-                    append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
-                    append("(");
-            if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
-                    new DefinedCPPTypeName())) {
-               builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
-            }
-
-            builder.append("::ValueType&& v) { _").
-                    append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
-                    append(" = std::move(v);");
-            builder.append(" _id = ").
-                    append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).append("_ID;").
-                    append(" }");
-            builder.newLine();
+         builder.append(2, "void set_").
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
+                 append("(");
+         if (!VisitorUtils.visitChildsAndAccept(builder, node, new SimpleTypeName(context),
+                 new DefinedCPPTypeName())) {
+            builder.append(VisitorUtils.queueGeneratedCodeForTypes(node, context));
          }
+
+         builder.append("::ValueType&& v) { _").
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
+                 append(" = std::move(v);");
+         builder.append(" _id = ").
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).
+                 append("_ID;").append(" }");
+         builder.newLine();
 
          // getter (const)
          builder.append(2, "const ");

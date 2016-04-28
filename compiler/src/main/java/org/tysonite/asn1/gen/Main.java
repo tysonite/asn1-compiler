@@ -26,8 +26,6 @@ public final class Main {
            "ASN.1 compiler command line options");
    public static final Option NO_CPP_CODE = new Option("ncpp", "no-cpp", false,
            "Do not generate C++ code, only parser ASN.1");
-   public static final Option CPP11_CODE = new Option("cpp11", "cpp11", false,
-           "Generate C++ code with C++11 features");
    public static final Option BIG_INTEGER = new Option("bi", "big-int", false,
            "Generate code with variable length integers");
 
@@ -47,7 +45,6 @@ public final class Main {
       options.addOption(METHOD_DER);
       options.addOption(METHOD_XER);
       options.addOption(NO_CPP_CODE);
-      options.addOption(CPP11_CODE);
       options.addOption(BIG_INTEGER);
       options.addOption(HELP);
    }

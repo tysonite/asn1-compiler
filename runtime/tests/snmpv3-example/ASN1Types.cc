@@ -15,31 +15,31 @@ void data_INTERNAL__ChoiceType_valuevalue_INTERNAL_asn1__generated__ObjectSyntax
    {
       asn1::generated::ObjectSyntax::ValueType v;
       _value_Type.read(reader, v);
-      value.set_value(v);
+      value.set_value(std::move(v));
    }
    else if (choosenType == &_unSpecified_Type)
    {
       asn1::NullType::ValueType v;
       _unSpecified_Type.read(reader, v);
-      value.set_unSpecified(v);
+      value.set_unSpecified(std::move(v));
    }
    else if (choosenType == &_noSuchObject_Type)
    {
       noSuchObject_INTERNAL__IMPLICIT_0_INTERNAL_asn1__NullType::ValueType v;
       _noSuchObject_Type.read(reader, v);
-      value.set_noSuchObject(v);
+      value.set_noSuchObject(std::move(v));
    }
    else if (choosenType == &_noSuchInstance_Type)
    {
       noSuchInstance_INTERNAL__IMPLICIT_1_INTERNAL_asn1__NullType::ValueType v;
       _noSuchInstance_Type.read(reader, v);
-      value.set_noSuchInstance(v);
+      value.set_noSuchInstance(std::move(v));
    }
    else if (choosenType == &_endOfMibView_Type)
    {
       endOfMibView_INTERNAL__IMPLICIT_2_INTERNAL_asn1__NullType::ValueType v;
       _endOfMibView_Type.read(reader, v);
-      value.set_endOfMibView(v);
+      value.set_endOfMibView(std::move(v));
    }
    else
    {
@@ -78,13 +78,13 @@ void ObjectSyntax::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::generated::SimpleSyntax::ValueType v;
       _simple_Type.read(reader, v);
-      value.set_simple(v);
+      value.set_simple(std::move(v));
    }
    else if (choosenType == &_application_wide_Type)
    {
       asn1::generated::ApplicationSyntax::ValueType v;
       _application_wide_Type.read(reader, v);
-      value.set_application_wide(v);
+      value.set_application_wide(std::move(v));
    }
    else
    {
@@ -117,19 +117,19 @@ void SimpleSyntax::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::IntegerType::ValueType v;
       _integer_value_Type.read(reader, v);
-      value.set_integer_value(v);
+      value.set_integer_value(std::move(v));
    }
    else if (choosenType == &_string_value_Type)
    {
       asn1::OctetStringType::ValueType v;
       _string_value_Type.read(reader, v);
-      value.set_string_value(v);
+      value.set_string_value(std::move(v));
    }
    else if (choosenType == &_objectID_value_Type)
    {
       asn1::ObjectIdentifierType::ValueType v;
       _objectID_value_Type.read(reader, v);
-      value.set_objectID_value(v);
+      value.set_objectID_value(std::move(v));
    }
    else
    {
@@ -164,37 +164,37 @@ void ApplicationSyntax::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::generated::IpAddress::ValueType v;
       _ipAddress_value_Type.read(reader, v);
-      value.set_ipAddress_value(v);
+      value.set_ipAddress_value(std::move(v));
    }
    else if (choosenType == &_counter_value_Type)
    {
       asn1::generated::Counter32::ValueType v;
       _counter_value_Type.read(reader, v);
-      value.set_counter_value(v);
+      value.set_counter_value(std::move(v));
    }
    else if (choosenType == &_timeticks_value_Type)
    {
       asn1::generated::TimeTicks::ValueType v;
       _timeticks_value_Type.read(reader, v);
-      value.set_timeticks_value(v);
+      value.set_timeticks_value(std::move(v));
    }
    else if (choosenType == &_arbitrary_value_Type)
    {
       asn1::generated::Opaque::ValueType v;
       _arbitrary_value_Type.read(reader, v);
-      value.set_arbitrary_value(v);
+      value.set_arbitrary_value(std::move(v));
    }
    else if (choosenType == &_big_counter_value_Type)
    {
       asn1::generated::Counter64::ValueType v;
       _big_counter_value_Type.read(reader, v);
-      value.set_big_counter_value(v);
+      value.set_big_counter_value(std::move(v));
    }
    else if (choosenType == &_unsigned_integer_value_Type)
    {
       asn1::generated::Unsigned32::ValueType v;
       _unsigned_integer_value_Type.read(reader, v);
-      value.set_unsigned_integer_value(v);
+      value.set_unsigned_integer_value(std::move(v));
    }
    else
    {
@@ -235,49 +235,49 @@ void PDUs::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::generated::GetRequest_PDU::ValueType v;
       _get_request_Type.read(reader, v);
-      value.set_get_request(v);
+      value.set_get_request(std::move(v));
    }
    else if (choosenType == &_get_next_request_Type)
    {
       asn1::generated::GetNextRequest_PDU::ValueType v;
       _get_next_request_Type.read(reader, v);
-      value.set_get_next_request(v);
+      value.set_get_next_request(std::move(v));
    }
    else if (choosenType == &_get_bulk_request_Type)
    {
       asn1::generated::GetBulkRequest_PDU::ValueType v;
       _get_bulk_request_Type.read(reader, v);
-      value.set_get_bulk_request(v);
+      value.set_get_bulk_request(std::move(v));
    }
    else if (choosenType == &_response_Type)
    {
       asn1::generated::Response_PDU::ValueType v;
       _response_Type.read(reader, v);
-      value.set_response(v);
+      value.set_response(std::move(v));
    }
    else if (choosenType == &_set_request_Type)
    {
       asn1::generated::SetRequest_PDU::ValueType v;
       _set_request_Type.read(reader, v);
-      value.set_set_request(v);
+      value.set_set_request(std::move(v));
    }
    else if (choosenType == &_inform_request_Type)
    {
       asn1::generated::InformRequest_PDU::ValueType v;
       _inform_request_Type.read(reader, v);
-      value.set_inform_request(v);
+      value.set_inform_request(std::move(v));
    }
    else if (choosenType == &_snmpV2_trap_Type)
    {
       asn1::generated::SNMPv2_Trap_PDU::ValueType v;
       _snmpV2_trap_Type.read(reader, v);
-      value.set_snmpV2_trap(v);
+      value.set_snmpV2_trap(std::move(v));
    }
    else if (choosenType == &_report_Type)
    {
       asn1::generated::Report_PDU::ValueType v;
       _report_Type.read(reader, v);
-      value.set_report(v);
+      value.set_report(std::move(v));
    }
    else
    {
@@ -320,22 +320,22 @@ void PDU::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::IntegerType::ValueType v;
       _request_id_Type.read(reader, v);
-      value.set_request_id(v);
+      value.set_request_id(std::move(v));
    }
    {
       error_status_INTERNAL_::ValueType v;
       _error_status_Type.read(reader, v);
-      value.set_error_status(v);
+      value.set_error_status(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _error_index_Type.read(reader, v);
-      value.set_error_index(v);
+      value.set_error_index(std::move(v));
    }
    {
       asn1::generated::VarBindList::ValueType v;
       _variable_bindings_Type.read(reader, v);
-      value.set_variable_bindings(v);
+      value.set_variable_bindings(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
@@ -361,22 +361,22 @@ void BulkPDU::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::IntegerType::ValueType v;
       _request_id_Type.read(reader, v);
-      value.set_request_id(v);
+      value.set_request_id(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _non_repeaters_Type.read(reader, v);
-      value.set_non_repeaters(v);
+      value.set_non_repeaters(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _max_repetitions_Type.read(reader, v);
-      value.set_max_repetitions(v);
+      value.set_max_repetitions(std::move(v));
    }
    {
       asn1::generated::VarBindList::ValueType v;
       _variable_bindings_Type.read(reader, v);
-      value.set_variable_bindings(v);
+      value.set_variable_bindings(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
@@ -402,12 +402,12 @@ void VarBind::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::generated::ObjectName::ValueType v;
       _name_Type.read(reader, v);
-      value.set_name(v);
+      value.set_name(std::move(v));
    }
    {
       data_INTERNAL__ChoiceType_valuevalue_INTERNAL_asn1__generated__ObjectSyntax_unSpecifiedunSpecified_INTERNAL_asn1__NullType_noSuchObjectnoSuchObject_INTERNAL__IMPLICIT_0_INTERNAL_asn1__NullType_noSuchInstancenoSuchInstance_INTERNAL__IMPLICIT_1_INTERNAL_asn1__NullType_endOfMibViewendOfMibView_INTERNAL__IMPLICIT_2_INTERNAL_asn1__NullType::ValueType v;
       _data_Type.read(reader, v);
-      value.set_data(v);
+      value.set_data(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
@@ -431,22 +431,22 @@ void SNMPv3Message::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::UnsignedIntegerType::ValueType v;
       _msgVersion_Type.read(reader, v);
-      value.set_msgVersion(v);
+      value.set_msgVersion(std::move(v));
    }
    {
       asn1::generated::HeaderData::ValueType v;
       _msgGlobalData_Type.read(reader, v);
-      value.set_msgGlobalData(v);
+      value.set_msgGlobalData(std::move(v));
    }
    {
       asn1::OctetStringType::ValueType v;
       _msgSecurityParameters_Type.read(reader, v);
-      value.set_msgSecurityParameters(v);
+      value.set_msgSecurityParameters(std::move(v));
    }
    {
       asn1::generated::ScopedPduData::ValueType v;
       _msgData_Type.read(reader, v);
-      value.set_msgData(v);
+      value.set_msgData(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
@@ -472,22 +472,22 @@ void HeaderData::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::UnsignedIntegerType::ValueType v;
       _msgID_Type.read(reader, v);
-      value.set_msgID(v);
+      value.set_msgID(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _msgMaxSize_Type.read(reader, v);
-      value.set_msgMaxSize(v);
+      value.set_msgMaxSize(std::move(v));
    }
    {
       asn1::OctetStringType::ValueType v;
       _msgFlags_Type.read(reader, v);
-      value.set_msgFlags(v);
+      value.set_msgFlags(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _msgSecurityModel_Type.read(reader, v);
-      value.set_msgSecurityModel(v);
+      value.set_msgSecurityModel(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
@@ -515,13 +515,13 @@ void ScopedPduData::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::generated::ScopedPDU::ValueType v;
       _plaintext_Type.read(reader, v);
-      value.set_plaintext(v);
+      value.set_plaintext(std::move(v));
    }
    else if (choosenType == &_encryptedPDU_Type)
    {
       asn1::OctetStringType::ValueType v;
       _encryptedPDU_Type.read(reader, v);
-      value.set_encryptedPDU(v);
+      value.set_encryptedPDU(std::move(v));
    }
    else
    {
@@ -552,17 +552,17 @@ void ScopedPDU::read(ASN1ValueReader& reader, ValueType& value) const
    {
       asn1::OctetStringType::ValueType v;
       _contextEngineID_Type.read(reader, v);
-      value.set_contextEngineID(v);
+      value.set_contextEngineID(std::move(v));
    }
    {
       asn1::OctetStringType::ValueType v;
       _contextName_Type.read(reader, v);
-      value.set_contextName(v);
+      value.set_contextName(std::move(v));
    }
    {
       asn1::generated::PDUs::ValueType v;
       _data_Type.read(reader, v);
-      value.set_data(v);
+      value.set_data(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
@@ -587,32 +587,32 @@ void UsmSecurityParameters::read(ASN1ValueReader& reader, ValueType& value) cons
    {
       asn1::OctetStringType::ValueType v;
       _msgAuthoritativeEngineID_Type.read(reader, v);
-      value.set_msgAuthoritativeEngineID(v);
+      value.set_msgAuthoritativeEngineID(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _msgAuthoritativeEngineBoots_Type.read(reader, v);
-      value.set_msgAuthoritativeEngineBoots(v);
+      value.set_msgAuthoritativeEngineBoots(std::move(v));
    }
    {
       asn1::UnsignedIntegerType::ValueType v;
       _msgAuthoritativeEngineTime_Type.read(reader, v);
-      value.set_msgAuthoritativeEngineTime(v);
+      value.set_msgAuthoritativeEngineTime(std::move(v));
    }
    {
       asn1::OctetStringType::ValueType v;
       _msgUserName_Type.read(reader, v);
-      value.set_msgUserName(v);
+      value.set_msgUserName(std::move(v));
    }
    {
       asn1::OctetStringType::ValueType v;
       _msgAuthenticationParameters_Type.read(reader, v);
-      value.set_msgAuthenticationParameters(v);
+      value.set_msgAuthenticationParameters(std::move(v));
    }
    {
       asn1::OctetStringType::ValueType v;
       _msgPrivacyParameters_Type.read(reader, v);
-      value.set_msgPrivacyParameters(v);
+      value.set_msgPrivacyParameters(std::move(v));
    }
 
    reader.readSequenceEnd(*this);
