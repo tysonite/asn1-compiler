@@ -28,6 +28,27 @@ void XERValueWriter::writeInteger(const Integer& value, const IntegerType& type)
       _buffer.append(newLine());
 }
 
+void XERValueWriter::writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type)
+{
+   _writeTagBegin(type);
+   _buffer.append(utils::ntos(value));
+   _writeTagEnd(type);
+
+   if (!_isCanonical)
+      _buffer.append(newLine());
+}
+
+// Writes OBJECT IDENTIFIER value
+void XERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type)
+{
+   _writeTagBegin(type);
+   _buffer.append(value.getValueAsString());
+   _writeTagEnd(type);
+
+   if (!_isCanonical)
+      _buffer.append(newLine());
+}
+
 // Writes OCTET STRING value
 void XERValueWriter::writeOctetString(const OctetString& value, const OctetStringType& type)
 {

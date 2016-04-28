@@ -25,6 +25,12 @@ public:
    {
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "ObjectName"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: SimpleSyntax
@@ -128,6 +134,12 @@ private:
    asn1::OctetStringType _string_value_Type;
    asn1::ObjectIdentifierType _objectID_value_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "SimpleSyntax"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: IpAddress
@@ -142,6 +154,12 @@ public:
       setTagNumber(0);
       innerType().addSize(4LL, 4LL);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "IpAddress"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -159,6 +177,12 @@ public:
       innerType().setMaxValue(4294967295ULL);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Counter32"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: TimeTicks
@@ -175,6 +199,12 @@ public:
       innerType().setMaxValue(4294967295ULL);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "TimeTicks"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: Opaque
@@ -188,6 +218,12 @@ public:
       setTagClass(Type::APPLICATION);
       setTagNumber(4);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Opaque"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -205,6 +241,12 @@ public:
       innerType().setMaxValue(18446744073709551615ULL);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Counter64"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: Unsigned32
@@ -220,6 +262,12 @@ public:
       innerType().setMinValue(0ULL);
       innerType().setMaxValue(4294967295ULL);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Unsigned32"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -366,6 +414,12 @@ private:
    asn1::generated::Counter64 _big_counter_value_Type;
    asn1::generated::Unsigned32 _unsigned_integer_value_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "ApplicationSyntax"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: ObjectSyntax
@@ -451,6 +505,12 @@ private:
    asn1::generated::SimpleSyntax _simple_Type;
    asn1::generated::ApplicationSyntax _application_wide_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "ObjectSyntax"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: Gauge32
@@ -461,6 +521,12 @@ public:
    explicit Gauge32()
    {
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Gauge32"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -501,6 +567,12 @@ public:
    };
 
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "error-status"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: noSuchObject_INTERNAL__IMPLICIT_0_INTERNAL_asn1__NullType
@@ -514,6 +586,12 @@ public:
       setTagNumber(0);
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "noSuchObject"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -529,6 +607,12 @@ public:
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "noSuchInstance"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: endOfMibView_INTERNAL__IMPLICIT_2_INTERNAL_asn1__NullType
@@ -542,6 +626,12 @@ public:
       setTagNumber(2);
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "endOfMibView"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -678,6 +768,12 @@ private:
    noSuchInstance_Type _noSuchInstance_Type;
    endOfMibView_Type _endOfMibView_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "endOfMibView"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: VarBind
@@ -740,6 +836,12 @@ private:
    asn1::generated::ObjectName _name_Type;
    data_Type _data_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "VarBind"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: VarBindList
@@ -753,6 +855,12 @@ public:
       setMaxSize(k_max_bindings);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "VarBindList"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: PDU
@@ -764,8 +872,14 @@ public:
    {
       _request_id_Type.setMinValue(-2147483648LL);
       _request_id_Type.setMaxValue(2147483647LL);
+#if defined(ASN1_ENABLE_XER)
+      _request_id_Type.setTypeName("request-id");
+#endif // ASN1_ENABLE_XER
       _error_index_Type.setMinValue(0ULL);
       _error_index_Type.setMaxValue(k_max_bindings);
+#if defined(ASN1_ENABLE_XER)
+      _error_index_Type.setTypeName("error-index");
+#endif // ASN1_ENABLE_XER
    }
 
    // Complex types
@@ -837,6 +951,12 @@ private:
    asn1::UnsignedIntegerType _error_index_Type;
    asn1::generated::VarBindList _variable_bindings_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "PDU"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: GetRequest-PDU
@@ -850,6 +970,12 @@ public:
       setTagNumber(0);
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "GetRequest-PDU"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -865,6 +991,12 @@ public:
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "GetNextRequest-PDU"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: BulkPDU
@@ -876,10 +1008,19 @@ public:
    {
       _request_id_Type.setMinValue(-2147483648LL);
       _request_id_Type.setMaxValue(2147483647LL);
+#if defined(ASN1_ENABLE_XER)
+      _request_id_Type.setTypeName("request-id");
+#endif // ASN1_ENABLE_XER
       _non_repeaters_Type.setMinValue(0ULL);
       _non_repeaters_Type.setMaxValue(k_max_bindings);
+#if defined(ASN1_ENABLE_XER)
+      _non_repeaters_Type.setTypeName("non-repeaters");
+#endif // ASN1_ENABLE_XER
       _max_repetitions_Type.setMinValue(0ULL);
       _max_repetitions_Type.setMaxValue(k_max_bindings);
+#if defined(ASN1_ENABLE_XER)
+      _max_repetitions_Type.setTypeName("max-repetitions");
+#endif // ASN1_ENABLE_XER
    }
 
    class SequenceValue_Type
@@ -948,6 +1089,12 @@ private:
    asn1::UnsignedIntegerType _max_repetitions_Type;
    asn1::generated::VarBindList _variable_bindings_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "BulkPDU"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: GetBulkRequest-PDU
@@ -961,6 +1108,12 @@ public:
       setTagNumber(5);
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "GetBulkRequest-PDU"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -976,6 +1129,12 @@ public:
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Response-PDU"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: SetRequest-PDU
@@ -989,6 +1148,12 @@ public:
       setTagNumber(3);
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "SetRequest-PDU"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -1004,6 +1169,12 @@ public:
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "InformRequest-PDU"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: SNMPv2-Trap-PDU
@@ -1018,6 +1189,12 @@ public:
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "SNMPv2-Trap-PDU"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: Report-PDU
@@ -1031,6 +1208,12 @@ public:
       setTagNumber(8);
       setTagClass(Type::CONTEXT_SPECIFIC);
    }
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "Report-PDU"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -1207,6 +1390,12 @@ private:
    asn1::generated::SNMPv2_Trap_PDU _snmpV2_trap_Type;
    asn1::generated::Report_PDU _report_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "PDUs"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: HeaderData
@@ -1220,14 +1409,26 @@ public:
       _msgID_Type.setMinValue(0ULL);
       _msgID_Type.setMaxValue(2147483647ULL);
       _msgID_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgID_Type.setTypeName("msgID");
+#endif // ASN1_ENABLE_XER
       _msgMaxSize_Type.setMinValue(484ULL);
       _msgMaxSize_Type.setMaxValue(2147483647ULL);
       _msgMaxSize_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgMaxSize_Type.setTypeName("msgMaxSize");
+#endif // ASN1_ENABLE_XER
       _msgFlags_Type.addSize(1LL, 1LL);
       _msgFlags_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgFlags_Type.setTypeName("msgFlags");
+#endif // ASN1_ENABLE_XER
       _msgSecurityModel_Type.setMinValue(1ULL);
       _msgSecurityModel_Type.setMaxValue(2147483647ULL);
       _msgSecurityModel_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgSecurityModel_Type.setTypeName("msgSecurityModel");
+#endif // ASN1_ENABLE_XER
    }
 
    class SequenceValue_Type
@@ -1296,6 +1497,12 @@ private:
    asn1::OctetStringType _msgFlags_Type;
    asn1::UnsignedIntegerType _msgSecurityModel_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "HeaderData"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: ScopedPDU
@@ -1307,7 +1514,13 @@ public:
    {
       setTagging(Type::IMPLICIT_TAGGING);
       _contextEngineID_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _contextEngineID_Type.setTypeName("contextEngineID");
+#endif // ASN1_ENABLE_XER
       _contextName_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _contextName_Type.setTypeName("contextName");
+#endif // ASN1_ENABLE_XER
    }
 
    class SequenceValue_Type
@@ -1366,6 +1579,12 @@ private:
    asn1::OctetStringType _contextEngineID_Type;
    asn1::OctetStringType _contextName_Type;
    asn1::generated::PDUs _data_Type;
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "ScopedPDU"; }
+#endif // ASN1_ENABLE_XER
 
 };
 
@@ -1453,6 +1672,12 @@ private:
    asn1::generated::ScopedPDU _plaintext_Type;
    asn1::OctetStringType _encryptedPDU_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "ScopedPduData"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: SNMPv3Message
@@ -1466,7 +1691,13 @@ public:
       _msgVersion_Type.setMinValue(0ULL);
       _msgVersion_Type.setMaxValue(2147483647ULL);
       _msgVersion_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgVersion_Type.setTypeName("msgVersion");
+#endif // ASN1_ENABLE_XER
       _msgSecurityParameters_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgSecurityParameters_Type.setTypeName("msgSecurityParameters");
+#endif // ASN1_ENABLE_XER
    }
 
    class SequenceValue_Type
@@ -1535,6 +1766,12 @@ private:
    asn1::OctetStringType _msgSecurityParameters_Type;
    asn1::generated::ScopedPduData _msgData_Type;
 
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "SNMPv3Message"; }
+#endif // ASN1_ENABLE_XER
+
 };
 
 // TypeAssignment for ASN.1 type: UsmSecurityParameters
@@ -1546,16 +1783,34 @@ public:
    {
       setTagging(Type::IMPLICIT_TAGGING);
       _msgAuthoritativeEngineID_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgAuthoritativeEngineID_Type.setTypeName("msgAuthoritativeEngineID");
+#endif // ASN1_ENABLE_XER
       _msgAuthoritativeEngineBoots_Type.setMinValue(0ULL);
       _msgAuthoritativeEngineBoots_Type.setMaxValue(2147483647ULL);
       _msgAuthoritativeEngineBoots_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgAuthoritativeEngineBoots_Type.setTypeName("msgAuthoritativeEngineBoots");
+#endif // ASN1_ENABLE_XER
       _msgAuthoritativeEngineTime_Type.setMinValue(0ULL);
       _msgAuthoritativeEngineTime_Type.setMaxValue(2147483647ULL);
       _msgAuthoritativeEngineTime_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgAuthoritativeEngineTime_Type.setTypeName("msgAuthoritativeEngineTime");
+#endif // ASN1_ENABLE_XER
       _msgUserName_Type.addSize(0LL, 32LL);
       _msgUserName_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgUserName_Type.setTypeName("msgUserName");
+#endif // ASN1_ENABLE_XER
       _msgAuthenticationParameters_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgAuthenticationParameters_Type.setTypeName("msgAuthenticationParameters");
+#endif // ASN1_ENABLE_XER
       _msgPrivacyParameters_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _msgPrivacyParameters_Type.setTypeName("msgPrivacyParameters");
+#endif // ASN1_ENABLE_XER
    }
 
    class SequenceValue_Type
@@ -1641,6 +1896,12 @@ private:
    asn1::OctetStringType _msgUserName_Type;
    asn1::OctetStringType _msgAuthenticationParameters_Type;
    asn1::OctetStringType _msgPrivacyParameters_Type;
+
+#if defined(ASN1_ENABLE_XER)
+protected:
+
+   const char* _doTypeName() const { return "UsmSecurityParameters"; }
+#endif // ASN1_ENABLE_XER
 
 };
 

@@ -7,7 +7,14 @@ namespace asn1
 Type::~Type()
 {
 }
-   
+
+#if defined(ASN1_ENABLE_XER)
+void Type::setTypeName(const std::string& tn)
+{
+   _typeName = tn;
+}
+#endif // ASN1_ENABLE_XER
+
 // Returns string representation of type identifier
 std::string Type::typeName() const
 {
@@ -60,8 +67,8 @@ std::string Type::typeName() const
       return "Unknown Type";
    }
 #else
-   return _doTypeName();
-#endif
+   return _typeName.empty() ? _doTypeName() : _typeName;
+#endif // ASN1_ENABLE_XER
 }
 
 // Returns string representation of tagging type

@@ -36,7 +36,7 @@ enum TypeID
    BITSTRING_TYPE = BERBuffer::BITSTRING_BERTYPE,
    // placeholders; TODO: think about how to re-factor this
    CHOICE_TYPE = 50000,
-   SEQUENCE_OF_TYPE =  50001,
+   SEQUENCE_OF_TYPE = 50001,
    SET_OF_TYPE = 50002,
    ANY_TYPE = 50003,
 };
@@ -44,16 +44,20 @@ enum TypeID
 class Type
 {
 public:
-   
+
    // Constructor
    explicit Type()
       : _taggingType(EMPTY_TAGGING), _tagClass(UNIVERSAL), _tagNumber(-1LL) {}
-   
+
    // Destructor (do not allow instantiation)
    virtual ~Type() = 0;
 
    // Returns type identifier
    virtual TypeID typeID() const = 0;
+
+#if defined(ASN1_ENABLE_XER)
+   void setTypeName(const std::string& tn);
+#endif // ASN1_ENABLE_XER
 
    // Returns string representation of type identifier
    std::string typeName() const;
@@ -109,6 +113,10 @@ private:
    TagClass    _tagClass;
    TagType     _tagNumber;
 
+#if defined(ASN1_ENABLE_XER)
+   std::string _typeName;
+#endif // ASN1_ENABLE_XER
+
    DISALLOW_COPY_AND_ASSIGN(Type);
 };
 
@@ -121,7 +129,7 @@ public:
       : _value(value), _oldValue(value), _needRestore(true) {}
 
    ~ValueRestorer()
-   { 
+   {
       if (_needRestore)
          _value = _oldValue;
    }

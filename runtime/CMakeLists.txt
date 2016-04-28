@@ -10,12 +10,17 @@ set (ASN1_RUNTIME_LIBRARY_VERSION
 
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+option (ENABLE_XER "Use extensions for XER" OFF)
 option (VAR_INT_SUPPORT "Use integers with variable length" OFF)
 option (BUILD_UNIT_TESTS "Build unit tests" OFF)
 option (DO_COVERAGE "Build unit tests" OFF)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
+endif ()
+
+if (ENABLE_XER)
+   add_definitions (-DASN1_ENABLE_XER)
 endif ()
 
 if (DO_COVERAGE)

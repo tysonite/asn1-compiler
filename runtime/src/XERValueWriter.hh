@@ -24,12 +24,19 @@ public:
 
    // Writes INTEGER value
    void writeInteger(const Integer& value, const IntegerType& type);
+   void writeUnsignedInteger(const UnsignedInteger& value, const UnsignedIntegerType& type);
+#if defined(VARIABLE_LENGTH_INTEGER_SUPPORT)
+   void writeBigInteger(const BigInteger& value, const BigIntegerType& type) {}
+#endif // VARIABLE_LENGTH_INTEGER_SUPPORT
 
    // Writes ENUMERATED value
    void writeEnumerated(const Integer& value, const EnumeratedType& type) {}
 
    // Writes OBJECT IDENTIFIER value
-   void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type) {}
+   void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type);
+
+   // Writes BIT STRING value
+   void writeBitString(const BitString& value, const BitStringType& type) {}
 
    // Writes NULL value
    void writeNull(const NullType& type) {}
@@ -46,21 +53,36 @@ public:
    // Writes PRINTABLE STRING value
    void writePrintableString(const OctetString& value, const PrintableStringType& type) {}
 
+   // Writes TELETEX STRING value
+   void writeTeletexString(const OctetString& value, const TeletexStringType& type) {}
+
+   // Writes NUMERIC STRING value
+   void writeNumericString(const OctetString& value, const NumericStringType& type) {}
+
+   // Writes IA5 STRING value
+   void writeIA5String(const OctetString& value, const IA5StringType& type) {}
+
+   // Writes UTC TIME value
+   void writeUtcTime(const OctetString& value, const UTCTimeType& type) {}
+
+   // Writes ANY value
+   void writeAny(const OctetString& value, const AnyType& type) {}
+
    // Writes SEQUENCE value
    void writeSequenceBegin(const SequenceType& type);
    void writeSequenceEnd(const SequenceType& type);
    
    // Writes SEQUENCE OF value (the same as SET)
-   void writeSequenceOfBegin(const SequenceType& type) {}
-   void writeSequenceOfEnd(const SequenceType& type) {}
+   void writeSequenceOfBegin(const BaseSequenceOfType& type) {}
+   void writeSequenceOfEnd(const BaseSequenceOfType& type) {}
 
    // Writes SET value
-   void writeSetBegin() {}
-   void writeSetEnd() {}
+   void writeSetBegin(const SetType& type) {}
+   void writeSetEnd(const SetType& type) {}
 
    // Writes SET OF value (the same as SET)
-   void writeSetOfBegin() {}
-   void writeSetOfEnd() {}
+   void writeSetOfBegin(const BaseSetOfType& type) {}
+   void writeSetOfEnd(const BaseSetOfType& type) {}
 
    // Writes EXPLICIT tag
    void writeExplicitBegin(const Type& type) {}

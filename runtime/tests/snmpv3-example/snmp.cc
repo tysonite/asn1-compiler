@@ -5,6 +5,7 @@
 
 #include <BERValueWriter.hh>
 #include <BERValueReader.hh>
+#include <XERValueWriter.hh>
 
 int main()
 {
@@ -24,6 +25,7 @@ int main()
       value.get_msgData().choose_plaintext();
       value.get_msgData().get_plaintext().get_data().choose_snmpV2_trap();
       value.get_msgData().get_plaintext().get_data().get_snmpV2_trap().set_request_id(1);
+      value.get_msgData().get_plaintext().get_data().get_snmpV2_trap().set_error_status(65);
       value.get_msgData().get_plaintext().get_data().get_snmpV2_trap().set_error_index(0);
 
       asn1::generated::VarBind::ValueType vb2;
@@ -40,7 +42,7 @@ int main()
    }
    catch (asn1::ASN1Exception& e)
    {
-      std::cerr << "write error: " << e.what() << std::endl;
+      std::cerr << "asn1::ASN1Exception : " << e.what() << std::endl;
       return 1;
    }
 
@@ -51,15 +53,24 @@ int main()
 
       asn1::BERValueReader reader(buf);
       type.read(reader, value);
+
+#if defined(ASN1_ENABLE_XER)
+      asn1::XERBuffer xbuf;
+      asn1::XERValueWriter xwriter(xbuf, false);
+
+      type.write(xwriter, value);
+
+      std::cout << "XER : " << std::endl << xbuf << std::endl;
+#endif // ASN1_ENABLE_XER
    }
    catch (asn1::ASN1Exception& e)
    {
-      std::cerr << "read error: " << e.what() << std::endl;
+      std::cerr << "asn1::ASN1Exception : " << e.what() << std::endl;
       return 1;
    }
    catch (std::exception& e)
    {
-      std::cerr << "std::exception: " << e.what() << std::endl;
+      std::cerr << "std::exception : " << e.what() << std::endl;
       return 1;
    }
 
