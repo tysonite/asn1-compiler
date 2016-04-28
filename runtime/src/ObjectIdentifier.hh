@@ -19,7 +19,8 @@ public:
    ObjectIdentifier() {}
 
    // Constructor
-   ObjectIdentifier(const std::vector<SubOID>& value) { assign(value.begin(), value.end()); }
+   ObjectIdentifier(const ObjectIdentifier& value) : std::vector<SubOID>(value) { }
+   ObjectIdentifier(ObjectIdentifier&& value) : std::vector<SubOID>(std::move(value)) { }
 
    // Constructor: value is a string representation of the object identifier.
    // i.e.: value = "1.2.3.4.5"
@@ -30,6 +31,10 @@ public:
 
    // Returns object identifier represented as string (i.e. "1.2.3")
    std::string getValueAsString() const;
+
+   // operator=
+   ObjectIdentifier& operator=(const ObjectIdentifier& value) { std::vector<SubOID>::operator=(value); return *this; }
+   ObjectIdentifier& operator=(ObjectIdentifier&& value) { std::vector<SubOID>::operator=(std::move(value)); return *this; }
 
 private:
 

@@ -27,10 +27,10 @@ public:
 
    // Reads the value
    void read(ASN1ValueReader& reader, ValueType& value) const
-   { 
-      ValueRestorer<ObjectIdentifier> restorer(value);
-      
-      reader.readObjectIdentifier(value, *this); 
+   {
+      ValueRestorer<ValueType> restorer(value);
+
+      reader.readObjectIdentifier(value, *this);
 
       restorer.restoreNotNeeded();
    }
@@ -47,7 +47,7 @@ private:
    bool      _hasDefault;
 
 private:
-    
+
    DISALLOW_COPY_AND_ASSIGN(ObjectIdentifierType);
 };
 
