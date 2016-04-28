@@ -209,8 +209,14 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
 
       VisitorUtils.visitChildsAndAccept(builder, node, new AssertsForWriteDefinition());
       builder.newLine();
-      VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinition());
 
+      builder.append(1, "writer.writeChoiceBegin(*this);").newLine();
+
+      builder.newLine();
+      VisitorUtils.visitChildsAndAccept(builder, node, new WriteDefinition());
+      builder.newLine();
+
+      builder.append(1, "writer.writeChoiceEnd(*this);").newLine();
       builder.append("}").newLine();
 
       builder.newLine();

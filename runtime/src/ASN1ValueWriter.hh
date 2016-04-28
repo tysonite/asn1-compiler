@@ -79,6 +79,10 @@ public:
    virtual void writeSetOfBegin(const BaseSetOfType& type) = 0;
    virtual void writeSetOfEnd(const BaseSetOfType& type) = 0;
 
+   // Writes CHOICE value
+   virtual void writeChoiceBegin(const ChoiceType& type) = 0;
+   virtual void writeChoiceEnd(const ChoiceType& type) = 0;
+
    // Writes EXPLICIT tag
    virtual void writeExplicitBegin(const Type& type) = 0;
    virtual void writeExplicitEnd() = 0;

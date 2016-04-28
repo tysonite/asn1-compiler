@@ -14,7 +14,7 @@ namespace asn1
 class BERValueWriter : public ASN1ValueWriter
 {
 public:
-   
+
    // Constructor
    explicit BERValueWriter(BERBuffer& buffer)
       : _nestedWriter(nullptr), _buffer(buffer), _compositionStart(0) {}
@@ -74,7 +74,7 @@ public:
    // Writes SEQUENCE value
    void writeSequenceBegin(const SequenceType& type);
    void writeSequenceEnd(const SequenceType& type);
-   
+
    // Writes SEQUENCE OF value (the same as SET)
    void writeSequenceOfBegin(const BaseSequenceOfType& type);
    void writeSequenceOfEnd(const BaseSequenceOfType& type);
@@ -87,12 +87,16 @@ public:
    void writeSetOfBegin(const BaseSetOfType& type);
    void writeSetOfEnd(const BaseSetOfType& type);
 
+   // Writes CHOICE value
+   void writeChoiceBegin(const ChoiceType& type) {}
+   void writeChoiceEnd(const ChoiceType& type) {}
+
    // Writes EXPLICIT tag
    void writeExplicitBegin(const Type& type);
    void writeExplicitEnd();
 
 protected:
-   
+
    // Returns prototype (new instance) of the writer
    virtual BERValueWriter* _prototype() const;
 
@@ -126,7 +130,7 @@ protected:
    BERBuffer&          _buffer;        // reference to BER buffer
 
 private:
-   
+
    BERBuffer::SizeType _compositionStart; // position in the buffer where length octets of the SEQUENCE/SET value were encoded
 
    DISALLOW_COPY_AND_ASSIGN(BERValueWriter);

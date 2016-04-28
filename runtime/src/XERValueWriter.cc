@@ -5,7 +5,7 @@
 namespace asn1
 {
 
-enum { NUMBER_OF_WS = 6 };
+enum { NUMBER_OF_WS = 3 };
 
 std::string whiteSpaces(int number)
 {
@@ -64,7 +64,7 @@ void XERValueWriter::writeOctetString(const OctetString& value, const OctetStrin
 void XERValueWriter::writeSequenceBegin(const SequenceType& type)
 {
    _writeTagBegin(type);
-   
+
    if (!_isCanonical)
    {
       _buffer.append(newLine());
@@ -73,6 +73,42 @@ void XERValueWriter::writeSequenceBegin(const SequenceType& type)
 }
 
 void XERValueWriter::writeSequenceEnd(const SequenceType& type)
+{
+   if (_isCanonical)
+      _writeTagEnd(type);
+   else
+   {
+      _indent -= NUMBER_OF_WS;
+      _buffer.append(whiteSpaces(_indent));
+      _writeTagEnd(type);
+      _buffer.append(newLine());
+   }
+}
+
+// Writes SEQUENCE OF value (the same as SET)
+void XERValueWriter::writeSequenceOfBegin(const BaseSequenceOfType& type)
+{
+   writeSequenceBegin(type);
+}
+
+void XERValueWriter::writeSequenceOfEnd(const BaseSequenceOfType& type)
+{
+   writeSequenceEnd(type);
+}
+
+// Writes CHOICE value
+void XERValueWriter::writeChoiceBegin(const ChoiceType& type)
+{
+   _writeTagBegin(type);
+
+   if (!_isCanonical)
+   {
+      _buffer.append(newLine());
+      _indent += NUMBER_OF_WS;
+   }
+}
+
+void XERValueWriter::writeChoiceEnd(const ChoiceType& type)
 {
    if (_isCanonical)
       _writeTagEnd(type);

@@ -52,6 +52,8 @@ void data_INTERNAL__ChoiceType_valuevalue_INTERNAL_asn1__generated__ObjectSyntax
 {
    assert(value.has_value_Choosen() || value.has_unSpecified_Choosen() || value.has_noSuchObject_Choosen() || value.has_noSuchInstance_Choosen() || value.has_endOfMibView_Choosen());
 
+   writer.writeChoiceBegin(*this);
+
    if (value.has_value_Choosen())
       _value_Type.write(writer, value.get_value());
    else if (value.has_unSpecified_Choosen())
@@ -62,6 +64,8 @@ void data_INTERNAL__ChoiceType_valuevalue_INTERNAL_asn1__generated__ObjectSyntax
       _noSuchInstance_Type.write(writer, value.get_noSuchInstance());
    else if (value.has_endOfMibView_Choosen())
       _endOfMibView_Type.write(writer, value.get_endOfMibView());
+
+   writer.writeChoiceEnd(*this);
 }
 
 
@@ -93,10 +97,14 @@ void ObjectSyntax::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    assert(value.has_simple_Choosen() || value.has_application_wide_Choosen());
 
+   writer.writeChoiceBegin(*this);
+
    if (value.has_simple_Choosen())
       _simple_Type.write(writer, value.get_simple());
    else if (value.has_application_wide_Choosen())
       _application_wide_Type.write(writer, value.get_application_wide());
+
+   writer.writeChoiceEnd(*this);
 }
 
 
@@ -134,12 +142,16 @@ void SimpleSyntax::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    assert(value.has_integer_value_Choosen() || value.has_string_value_Choosen() || value.has_objectID_value_Choosen());
 
+   writer.writeChoiceBegin(*this);
+
    if (value.has_integer_value_Choosen())
       _integer_value_Type.write(writer, value.get_integer_value());
    else if (value.has_string_value_Choosen())
       _string_value_Type.write(writer, value.get_string_value());
    else if (value.has_objectID_value_Choosen())
       _objectID_value_Type.write(writer, value.get_objectID_value());
+
+   writer.writeChoiceEnd(*this);
 }
 
 
@@ -195,6 +207,8 @@ void ApplicationSyntax::write(ASN1ValueWriter& writer, const ValueType& value) c
 {
    assert(value.has_ipAddress_value_Choosen() || value.has_counter_value_Choosen() || value.has_timeticks_value_Choosen() || value.has_arbitrary_value_Choosen() || value.has_big_counter_value_Choosen() || value.has_unsigned_integer_value_Choosen());
 
+   writer.writeChoiceBegin(*this);
+
    if (value.has_ipAddress_value_Choosen())
       _ipAddress_value_Type.write(writer, value.get_ipAddress_value());
    else if (value.has_counter_value_Choosen())
@@ -207,6 +221,8 @@ void ApplicationSyntax::write(ASN1ValueWriter& writer, const ValueType& value) c
       _big_counter_value_Type.write(writer, value.get_big_counter_value());
    else if (value.has_unsigned_integer_value_Choosen())
       _unsigned_integer_value_Type.write(writer, value.get_unsigned_integer_value());
+
+   writer.writeChoiceEnd(*this);
 }
 
 
@@ -274,6 +290,8 @@ void PDUs::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    assert(value.has_get_request_Choosen() || value.has_get_next_request_Choosen() || value.has_get_bulk_request_Choosen() || value.has_response_Choosen() || value.has_set_request_Choosen() || value.has_inform_request_Choosen() || value.has_snmpV2_trap_Choosen() || value.has_report_Choosen());
 
+   writer.writeChoiceBegin(*this);
+
    if (value.has_get_request_Choosen())
       _get_request_Type.write(writer, value.get_get_request());
    else if (value.has_get_next_request_Choosen())
@@ -290,6 +308,8 @@ void PDUs::write(ASN1ValueWriter& writer, const ValueType& value) const
       _snmpV2_trap_Type.write(writer, value.get_snmpV2_trap());
    else if (value.has_report_Choosen())
       _report_Type.write(writer, value.get_report());
+
+   writer.writeChoiceEnd(*this);
 }
 
 
@@ -514,10 +534,14 @@ void ScopedPduData::write(ASN1ValueWriter& writer, const ValueType& value) const
 {
    assert(value.has_plaintext_Choosen() || value.has_encryptedPDU_Choosen());
 
+   writer.writeChoiceBegin(*this);
+
    if (value.has_plaintext_Choosen())
       _plaintext_Type.write(writer, value.get_plaintext());
    else if (value.has_encryptedPDU_Choosen())
       _encryptedPDU_Type.write(writer, value.get_encryptedPDU());
+
+   writer.writeChoiceEnd(*this);
 }
 
 

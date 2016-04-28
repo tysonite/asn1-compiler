@@ -43,9 +43,18 @@ public:
       _addChoice(&_integer_value_Type);
       _integer_value_Type.setMinValue(-2147483648LL);
       _integer_value_Type.setMaxValue(2147483647LL);
+#if defined(ASN1_ENABLE_XER)
+      _integer_value_Type.setTypeName("integer-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_string_value_Type);
       _string_value_Type.addSize(0LL, 65535LL);
+#if defined(ASN1_ENABLE_XER)
+      _string_value_Type.setTypeName("string-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_objectID_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _objectID_value_Type.setTypeName("objectID-value");
+#endif // ASN1_ENABLE_XER
    }
 
    class ChoiceValue_Type
@@ -279,11 +288,29 @@ public:
    explicit ApplicationSyntax()
    {
       _addChoice(&_ipAddress_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _ipAddress_value_Type.setTypeName("ipAddress-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_counter_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _counter_value_Type.setTypeName("counter-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_timeticks_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _timeticks_value_Type.setTypeName("timeticks-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_arbitrary_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _arbitrary_value_Type.setTypeName("arbitrary-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_big_counter_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _big_counter_value_Type.setTypeName("big-counter-value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_unsigned_integer_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _unsigned_integer_value_Type.setTypeName("unsigned-integer-value");
+#endif // ASN1_ENABLE_XER
    }
 
    class ChoiceValue_Type
@@ -430,7 +457,13 @@ public:
    explicit ObjectSyntax()
    {
       _addChoice(&_simple_Type);
+#if defined(ASN1_ENABLE_XER)
+      _simple_Type.setTypeName("simple");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_application_wide_Type);
+#if defined(ASN1_ENABLE_XER)
+      _application_wide_Type.setTypeName("application-wide");
+#endif // ASN1_ENABLE_XER
    }
 
    class ChoiceValue_Type
@@ -643,10 +676,25 @@ public:
    explicit data_INTERNAL__ChoiceType_valuevalue_INTERNAL_asn1__generated__ObjectSyntax_unSpecifiedunSpecified_INTERNAL_asn1__NullType_noSuchObjectnoSuchObject_INTERNAL__IMPLICIT_0_INTERNAL_asn1__NullType_noSuchInstancenoSuchInstance_INTERNAL__IMPLICIT_1_INTERNAL_asn1__NullType_endOfMibViewendOfMibView_INTERNAL__IMPLICIT_2_INTERNAL_asn1__NullType()
    {
       _addChoice(&_value_Type);
+#if defined(ASN1_ENABLE_XER)
+      _value_Type.setTypeName("value");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_unSpecified_Type);
+#if defined(ASN1_ENABLE_XER)
+      _unSpecified_Type.setTypeName("unSpecified");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_noSuchObject_Type);
+#if defined(ASN1_ENABLE_XER)
+      _noSuchObject_Type.setTypeName("noSuchObject");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_noSuchInstance_Type);
+#if defined(ASN1_ENABLE_XER)
+      _noSuchInstance_Type.setTypeName("noSuchInstance");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_endOfMibView_Type);
+#if defined(ASN1_ENABLE_XER)
+      _endOfMibView_Type.setTypeName("endOfMibView");
+#endif // ASN1_ENABLE_XER
    }
 
    // Complex types
@@ -783,6 +831,12 @@ public:
 
    explicit VarBind()
    {
+#if defined(ASN1_ENABLE_XER)
+      _name_Type.setTypeName("name");
+#endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _data_Type.setTypeName("data");
+#endif // ASN1_ENABLE_XER
    }
 
    // Complex types
@@ -875,10 +929,16 @@ public:
 #if defined(ASN1_ENABLE_XER)
       _request_id_Type.setTypeName("request-id");
 #endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _error_status_Type.setTypeName("error-status");
+#endif // ASN1_ENABLE_XER
       _error_index_Type.setMinValue(0ULL);
       _error_index_Type.setMaxValue(k_max_bindings);
 #if defined(ASN1_ENABLE_XER)
       _error_index_Type.setTypeName("error-index");
+#endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _variable_bindings_Type.setTypeName("variable-bindings");
 #endif // ASN1_ENABLE_XER
    }
 
@@ -1020,6 +1080,9 @@ public:
       _max_repetitions_Type.setMaxValue(k_max_bindings);
 #if defined(ASN1_ENABLE_XER)
       _max_repetitions_Type.setTypeName("max-repetitions");
+#endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _variable_bindings_Type.setTypeName("variable-bindings");
 #endif // ASN1_ENABLE_XER
    }
 
@@ -1225,13 +1288,37 @@ public:
    explicit PDUs()
    {
       _addChoice(&_get_request_Type);
+#if defined(ASN1_ENABLE_XER)
+      _get_request_Type.setTypeName("get-request");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_get_next_request_Type);
+#if defined(ASN1_ENABLE_XER)
+      _get_next_request_Type.setTypeName("get-next-request");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_get_bulk_request_Type);
+#if defined(ASN1_ENABLE_XER)
+      _get_bulk_request_Type.setTypeName("get-bulk-request");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_response_Type);
+#if defined(ASN1_ENABLE_XER)
+      _response_Type.setTypeName("response");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_set_request_Type);
+#if defined(ASN1_ENABLE_XER)
+      _set_request_Type.setTypeName("set-request");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_inform_request_Type);
+#if defined(ASN1_ENABLE_XER)
+      _inform_request_Type.setTypeName("inform-request");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_snmpV2_trap_Type);
+#if defined(ASN1_ENABLE_XER)
+      _snmpV2_trap_Type.setTypeName("snmpV2-trap");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_report_Type);
+#if defined(ASN1_ENABLE_XER)
+      _report_Type.setTypeName("report");
+#endif // ASN1_ENABLE_XER
    }
 
    class ChoiceValue_Type
@@ -1521,6 +1608,9 @@ public:
 #if defined(ASN1_ENABLE_XER)
       _contextName_Type.setTypeName("contextName");
 #endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _data_Type.setTypeName("data");
+#endif // ASN1_ENABLE_XER
    }
 
    class SequenceValue_Type
@@ -1596,8 +1686,14 @@ public:
    explicit ScopedPduData()
    {
       _addChoice(&_plaintext_Type);
+#if defined(ASN1_ENABLE_XER)
+      _plaintext_Type.setTypeName("plaintext");
+#endif // ASN1_ENABLE_XER
       _addChoice(&_encryptedPDU_Type);
       _encryptedPDU_Type.setTagging(Type::IMPLICIT_TAGGING);
+#if defined(ASN1_ENABLE_XER)
+      _encryptedPDU_Type.setTypeName("encryptedPDU");
+#endif // ASN1_ENABLE_XER
    }
 
    class ChoiceValue_Type
@@ -1694,9 +1790,15 @@ public:
 #if defined(ASN1_ENABLE_XER)
       _msgVersion_Type.setTypeName("msgVersion");
 #endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _msgGlobalData_Type.setTypeName("msgGlobalData");
+#endif // ASN1_ENABLE_XER
       _msgSecurityParameters_Type.setTagging(Type::IMPLICIT_TAGGING);
 #if defined(ASN1_ENABLE_XER)
       _msgSecurityParameters_Type.setTypeName("msgSecurityParameters");
+#endif // ASN1_ENABLE_XER
+#if defined(ASN1_ENABLE_XER)
+      _msgData_Type.setTypeName("msgData");
 #endif // ASN1_ENABLE_XER
    }
 

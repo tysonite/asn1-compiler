@@ -14,7 +14,7 @@ namespace asn1
 class XERValueWriter : public ASN1ValueWriter
 {
 public:
-   
+
    // Constructor
    explicit XERValueWriter(XERBuffer& buffer, bool isCanonical = true)
       : _buffer(buffer), _isCanonical(isCanonical), _indent(0) {}
@@ -71,10 +71,10 @@ public:
    // Writes SEQUENCE value
    void writeSequenceBegin(const SequenceType& type);
    void writeSequenceEnd(const SequenceType& type);
-   
+
    // Writes SEQUENCE OF value (the same as SET)
-   void writeSequenceOfBegin(const BaseSequenceOfType& type) {}
-   void writeSequenceOfEnd(const BaseSequenceOfType& type) {}
+   void writeSequenceOfBegin(const BaseSequenceOfType& type);
+   void writeSequenceOfEnd(const BaseSequenceOfType& type);
 
    // Writes SET value
    void writeSetBegin(const SetType& type) {}
@@ -83,6 +83,10 @@ public:
    // Writes SET OF value (the same as SET)
    void writeSetOfBegin(const BaseSetOfType& type) {}
    void writeSetOfEnd(const BaseSetOfType& type) {}
+
+   // Writes CHOICE value
+   virtual void writeChoiceBegin(const ChoiceType& type);
+   virtual void writeChoiceEnd(const ChoiceType& type);
 
    // Writes EXPLICIT tag
    void writeExplicitBegin(const Type& type) {}

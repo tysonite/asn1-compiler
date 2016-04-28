@@ -43,16 +43,16 @@ public class SequenceConstructorDefinition extends DoNothingASTVisitor implement
       if (VisitorUtils.visitChildsAndAccept(null, node, new IsSimpleType(context))) {
          VisitorUtils.visitChildsAndAccept(builder, node,
                  new SimpleTypeConstructorDefinition(context, elementTypeName));
+      }
 
-         // only for XER
-         if (context.getCommandLine().hasOption(Main.METHOD_XER.getOpt())) {
-            builder.append("#if defined(ASN1_ENABLE_XER)").newLine();
-            builder.append(2, elementTypeName).append(".").append("setTypeName(\"")
-                    .append(node.jjtGetFirstToken().toString()).append("\");");
-            builder.newLine();
-            builder.append("#endif // ASN1_ENABLE_XER");
-            builder.newLine();
-         }
+      // only for XER
+      if (context.getCommandLine().hasOption(Main.METHOD_XER.getOpt())) {
+         builder.append("#if defined(ASN1_ENABLE_XER)").newLine();
+         builder.append(2, elementTypeName).append(".").append("setTypeName(\"")
+                 .append(node.jjtGetFirstToken().toString()).append("\");");
+         builder.newLine();
+         builder.append("#endif // ASN1_ENABLE_XER");
+         builder.newLine();
       }
 
       return data;
@@ -63,6 +63,6 @@ public class SequenceConstructorDefinition extends DoNothingASTVisitor implement
    }
 
    public boolean hasValuableContent() {
-      return true;
+      return !builder.toString().isEmpty();
    }
 }
