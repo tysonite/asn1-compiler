@@ -16,8 +16,12 @@ class XERValueWriter : public ASN1ValueWriter
 public:
 
    // Constructor
-   explicit XERValueWriter(XERBuffer& buffer, bool isCanonical = true)
-      : _buffer(buffer), _isCanonical(isCanonical), _indent(0) {}
+   explicit XERValueWriter(XERBuffer& buffer, bool isCanonical = true, bool isProlog = false)
+      : _buffer(buffer), _isCanonical(isCanonical), _indent(0)
+   {
+      if (isProlog)
+         _buffer.append("<?xml version = \"1.0\" encoding = \"UTF-8\"?>\n");
+   }
 
    // Writes BOOLEAN value
    void writeBoolean(const Boolean& value, const BooleanType& type) {}
@@ -100,6 +104,7 @@ private:
 
    XERBuffer& _buffer; // reference to XER buffer
    bool _isCanonical;  // canonical XML representation
+   bool _isProlog;     // include XML prolog
    int _indent;        // number of white-spaces before tag (applicable only for non-canonical representation)
 
 private:
