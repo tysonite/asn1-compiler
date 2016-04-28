@@ -68,8 +68,13 @@ public class SetOrSequenceReadWriteDefinition extends DoNothingASTVisitor implem
 
          // write code for setting value
          builder.append(2, "value.set_").
-                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString())).append("(v);").
-                 newLine();
+                 append(GenerationUtils.asCPPToken(node.jjtGetFirstToken().toString()));
+         if (context.getCommandLine().hasOption(Main.CPP11_CODE.getOpt())) {
+            builder.append("(std::move(v));");
+         } else {
+            builder.append("(v);");
+         }
+         builder.newLine();
 
          builder.append(1, "}").newLine();
          return data;
