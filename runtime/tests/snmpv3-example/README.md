@@ -1,2 +1,2 @@
 To generate C++ code execute:
-* <compiler_dir>\asn1-compiler.cmd -xer -i snmpv3.asn -o .
+* &lt;compiler_dir>\asn1-compiler.cmd -xer -i snmpv3.asn -o .
