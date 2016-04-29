@@ -12,6 +12,12 @@ The top directory consists of these sub-directories:
 * compiler -- A Java ASN.1 to C++ compiler
 * runtime  -- C++ runtime library for encoding/decoding of the data
 
+# Examples
+
+Several ASN.1 files and generated C++ code is available for protocols:
+* SNMPv3 -- https://github.com/tysonite/asn1-compiler/tree/master/runtime/tests/snmpv3-example
+* CMPv2 (RFC 4210 / 4211) -- https://github.com/tysonite/asn1-compiler/tree/master/runtime/tests/rfc4210
+
 # Compile & Test runtime library
 The runtime library uses [CMake](http://www.cmake.org/) to build itself. As a result of compilation static and shared libraries will be produced.
 
