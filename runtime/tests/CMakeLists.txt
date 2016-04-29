@@ -16,3 +16,4 @@ target_link_libraries (TestBER ${ASN1_RUNTIME_LIBRARY_STATIC})
 add_dependencies (TestBER ${ASN1_RUNTIME_LIBRARY_STATIC})
 
 add_subdirectory (snmpv3-example)
+add_subdirectory (rfc4210)

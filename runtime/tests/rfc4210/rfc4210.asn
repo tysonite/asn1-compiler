@@ -1,55 +1,461 @@
-     RFC4210 DEFINITIONS EXPLICIT TAGS ::=
+PKIX1Explicit88 { iso(1) identified-organization(3) dod(6) internet(1)
+  security(5) mechanisms(5) pkix(7) id-mod(0) id-pkix1-explicit(18) }
 
-     BEGIN
+DEFINITIONS EXPLICIT TAGS ::=
 
-     -- EXPORTS ALL --
+BEGIN
 
---     IMPORTS
+-- EXPORTS ALL --
 
---         Certificate, CertificateList, Extensions, AlgorithmIdentifier,
---         UTF8String 
---                FROM PKIX1Explicit88 {iso(1) identified-organization(3)
---                dod(6) internet(1) security(5) mechanisms(5) pkix(7)
---                id-mod(0) id-pkix1-explicit-88(1)}
+-- IMPORTS NONE --
 
---         GeneralName, KeyIdentifier
---                FROM PKIX1Implicit88 {iso(1) identified-organization(3)
---                dod(6) internet(1) security(5) mechanisms(5) pkix(7)
---                id-mod(0) id-pkix1-implicit-88(2)}
+-- UNIVERSAL Types defined in 1993 and 1998 ASN.1
+-- and required by this specification
 
---         CertTemplate, PKIPublicationInfo, EncryptedValue, CertId,
---         CertReqMessages
---                FROM PKIXCRMF-2005 {iso(1) identified-organization(3)
---                dod(6) internet(1) security(5) mechanisms(5) pkix(7)
---                id-mod(0) id-mod-crmf2005(36)}
 
-         -- see also the behavioral clarifications to CRMF codified in
-         -- Appendix C of this specification
+UniversalString ::= [UNIVERSAL 28] IMPLICIT OCTET STRING -- 
 
---         CertificationRequest
---                FROM PKCS-10 {iso(1) member-body(2)
---                              us(840) rsadsi(113549)
---                              pkcs(1) pkcs-10(10) modules(1) pkcs-10(1)}
 
-         -- (specified in RFC 2986 with 1993 ASN.1 syntax and IMPLICIT
-         -- tags).  Alternatively, implementers may directly include
-         -- the [PKCS10] syntax in this module
+BMPString ::= [UNIVERSAL 30] IMPLICIT OCTET STRING -- 
+
+VisibleString ::= [UNIVERSAL 26] IMPLICIT OCTET STRING
+
+UTF8String ::= [UNIVERSAL 12] IMPLICIT OCTET STRING -- 
+
+-- PKIX specific OIDs
+
+id-pkix  OBJECT IDENTIFIER  ::=
+         { iso(1) identified-organization(3) dod(6) internet(1)
+                    security(5) mechanisms(5) pkix(7) }
 
 
 
 
 
---         ;
+
+-- PKIX arcs
+
+id-pe OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 1 }
+        -- arc for private certificate extensions
+id-qt OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 2 }
+        -- arc for policy qualifier types
+id-kp OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 3 }
+        -- arc for extended key purpose OIDS
+id-ad OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 48 }
+        -- arc for access descriptors
+
+-- policyQualifierIds for Internet policy qualifiers
+
+id-qt-cps      OBJECT IDENTIFIER ::=  { 1 3 6 1 5 5 7 2 1 }
+      -- OID for CPS qualifier
+id-qt-unotice  OBJECT IDENTIFIER ::=  { 1 3 6 1 5 5 7 2 2 }
+      -- OID for user notice qualifier
+
+-- access descriptor definitions
+
+id-ad-ocsp         OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 48 1 }
+id-ad-caIssuers    OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 48 2 }
+id-ad-timeStamping OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 48 3 }
+id-ad-caRepository OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 48 5 }
+
+-- attribute data types
+
+Attribute               ::= SEQUENCE {
+      type             AttributeType,
+      values    SET OF AttributeValue }
+            -- at least one value is required
+
+AttributeType           ::= OBJECT IDENTIFIER
+
+AttributeValue          ::= ANY -- DEFINED BY AttributeType
+
+AttributeTypeAndValue   ::= SEQUENCE {
+        type    AttributeType,
+        value   AttributeValue }
+
+-- suggested naming attributes: Definition of the following
+--   information object set may be augmented to meet local
+--   requirements.  Note that deleting members of the set may
+--   prevent interoperability with conforming implementations.
+-- presented in pairs: the AttributeType followed by the
+--   type definition for the corresponding AttributeValue
 
 
-   -- X.400 address syntax starts here
 
-     ORAddress ::= SEQUENCE {
-        built-in-standard-attributes BuiltInStandardAttributes,
-        built-in-domain-defined-attributes
+
+
+
+
+-- Arc for standard naming attributes
+
+id-at OBJECT IDENTIFIER ::= { joint-iso-ccitt(2) ds(5) 4 }
+
+-- Naming attributes of type X520name
+
+id-at-name                AttributeType ::= { 2 5 4 41 }
+id-at-surname             AttributeType ::= { 2 5 4  4 }
+id-at-givenName           AttributeType ::= { 2 5 4 42 }
+id-at-initials            AttributeType ::= { 2 5 4 43 }
+id-at-generationQualifier AttributeType ::= { 2 5 4 44 }
+
+-- Naming attributes of type X520Name:
+--   X520name ::= DirectoryString (SIZE (1..ub-name))
+--
+-- Expanded to avoid parameterized type:
+X520name ::= CHOICE {
+      teletexString     TeletexString   (SIZE (1..ub-name)),
+      printableString   PrintableString (SIZE (1..ub-name)),
+      universalString   UniversalString (SIZE (1..ub-name)),
+      utf8String        UTF8String      (SIZE (1..ub-name)),
+      bmpString         BMPString       (SIZE (1..ub-name)) }
+
+-- Naming attributes of type X520CommonName
+
+id-at-commonName        AttributeType ::= { 2 5 4 3 }
+
+-- Naming attributes of type X520CommonName:
+--   X520CommonName ::= DirectoryName (SIZE (1..ub-common-name))
+--
+-- Expanded to avoid parameterized type:
+X520CommonName ::= CHOICE {
+      teletexString     TeletexString   (SIZE (1..ub-common-name)),
+      printableString   PrintableString (SIZE (1..ub-common-name)),
+      universalString   UniversalString (SIZE (1..ub-common-name)),
+      utf8String        UTF8String      (SIZE (1..ub-common-name)),
+      bmpString         BMPString       (SIZE (1..ub-common-name)) }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Naming attributes of type X520LocalityName
+
+id-at-localityName      AttributeType ::= { 2 5 4 7 }
+
+-- Naming attributes of type X520LocalityName:
+--   X520LocalityName ::= DirectoryName (SIZE (1..ub-locality-name))
+--
+-- Expanded to avoid parameterized type:
+X520LocalityName ::= CHOICE {
+      teletexString     TeletexString   (SIZE (1..ub-locality-name)),
+      printableString   PrintableString (SIZE (1..ub-locality-name)),
+      universalString   UniversalString (SIZE (1..ub-locality-name)),
+      utf8String        UTF8String      (SIZE (1..ub-locality-name)),
+      bmpString         BMPString       (SIZE (1..ub-locality-name)) }
+
+-- Naming attributes of type X520StateOrProvinceName
+
+id-at-stateOrProvinceName AttributeType ::= { 2 5 4 8 }
+
+-- Naming attributes of type X520StateOrProvinceName:
+--   X520StateOrProvinceName ::= DirectoryName (SIZE (1..ub-state-name))
+--
+-- Expanded to avoid parameterized type:
+X520StateOrProvinceName ::= CHOICE {
+      teletexString     TeletexString   (SIZE (1..ub-state-name)),
+      printableString   PrintableString (SIZE (1..ub-state-name)),
+      universalString   UniversalString (SIZE (1..ub-state-name)),
+      utf8String        UTF8String      (SIZE (1..ub-state-name)),
+      bmpString         BMPString       (SIZE (1..ub-state-name)) }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Naming attributes of type X520OrganizationName
+
+id-at-organizationName  AttributeType ::= { 2 5 4 10 }
+
+-- Naming attributes of type X520OrganizationName:
+--   X520OrganizationName ::=
+--          DirectoryName (SIZE (1..ub-organization-name))
+--
+-- Expanded to avoid parameterized type:
+X520OrganizationName ::= CHOICE {
+      teletexString     TeletexString
+                          (SIZE (1..ub-organization-name)),
+      printableString   PrintableString
+                          (SIZE (1..ub-organization-name)),
+      universalString   UniversalString
+                          (SIZE (1..ub-organization-name)),
+      utf8String        UTF8String
+                          (SIZE (1..ub-organization-name)),
+      bmpString         BMPString
+                          (SIZE (1..ub-organization-name))  }
+
+-- Naming attributes of type X520OrganizationalUnitName
+
+id-at-organizationalUnitName AttributeType ::= { 2 5 4 11 }
+
+-- Naming attributes of type X520OrganizationalUnitName:
+--   X520OrganizationalUnitName ::=
+--          DirectoryName (SIZE (1..ub-organizational-unit-name))
+--
+-- Expanded to avoid parameterized type:
+X520OrganizationalUnitName ::= CHOICE {
+      teletexString     TeletexString
+                          (SIZE (1..ub-organizational-unit-name)),
+      printableString   PrintableString
+                          (SIZE (1..ub-organizational-unit-name)),
+      universalString   UniversalString
+                          (SIZE (1..ub-organizational-unit-name)),
+      utf8String        UTF8String
+                          (SIZE (1..ub-organizational-unit-name)),
+      bmpString         BMPString
+                          (SIZE (1..ub-organizational-unit-name)) }
+
+
+
+
+
+
+
+
+
+
+
+
+-- Naming attributes of type X520Title
+
+id-at-title             AttributeType ::= { 2 5 4 12 }
+
+-- Naming attributes of type X520Title:
+--   X520Title ::= DirectoryName (SIZE (1..ub-title))
+--
+-- Expanded to avoid parameterized type:
+X520Title ::= CHOICE {
+      teletexString     TeletexString   (SIZE (1..ub-title)),
+      printableString   PrintableString (SIZE (1..ub-title)),
+      universalString   UniversalString (SIZE (1..ub-title)),
+      utf8String        UTF8String      (SIZE (1..ub-title)),
+      bmpString         BMPString       (SIZE (1..ub-title)) }
+
+-- Naming attributes of type X520dnQualifier
+
+id-at-dnQualifier       AttributeType ::= { 2 5 4 46 }
+
+X520dnQualifier ::=     PrintableString
+
+-- Naming attributes of type X520countryName (digraph from IS 3166)
+
+id-at-countryName       AttributeType ::= { 2 5 4 6 }
+
+X520countryName ::=     PrintableString (SIZE (2))
+
+-- Naming attributes of type X520SerialNumber
+
+id-at-serialNumber      AttributeType ::= { 2 5 4 5 }
+
+X520SerialNumber ::=    PrintableString (SIZE (1..ub-serial-number))
+
+-- Naming attributes of type X520Pseudonym
+
+id-at-pseudonym         AttributeType ::= { 2 5 4 65 }
+
+-- Naming attributes of type X520Pseudonym:
+--   X520Pseudonym ::= DirectoryName (SIZE (1..ub-pseudonym))
+--
+-- Expanded to avoid parameterized type:
+X520Pseudonym ::= CHOICE {
+   teletexString     TeletexString   (SIZE (1..ub-pseudonym)),
+   printableString   PrintableString (SIZE (1..ub-pseudonym)),
+   universalString   UniversalString (SIZE (1..ub-pseudonym)),
+   utf8String        UTF8String      (SIZE (1..ub-pseudonym)),
+   bmpString         BMPString       (SIZE (1..ub-pseudonym)) }
+
+
+
+
+
+
+-- Naming attributes of type DomainComponent (from RFC 4519)
+
+id-domainComponent   AttributeType ::= { 0 9 2342 19200300 100 1 25 }
+
+DomainComponent ::=  IA5String
+
+-- Legacy attributes
+
+pkcs-9 OBJECT IDENTIFIER ::=
+       { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) 9 }
+
+id-emailAddress      AttributeType ::= { pkcs-9 1 }
+
+EmailAddress ::=     IA5String (SIZE (1..ub-emailaddress-length))
+
+-- naming data types --
+
+Name ::= CHOICE { -- only one possibility for now --
+      rdnSequence  RDNSequence }
+
+RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
+
+DistinguishedName ::=   RDNSequence
+
+RelativeDistinguishedName ::= SET SIZE (1..MAX) OF AttributeTypeAndValue
+
+-- Directory string type --
+
+DirectoryString ::= CHOICE {
+      teletexString       TeletexString   (SIZE (1..MAX)),
+      printableString     PrintableString (SIZE (1..MAX)),
+      universalString     UniversalString (SIZE (1..MAX)),
+      utf8String          UTF8String      (SIZE (1..MAX)),
+      bmpString           BMPString       (SIZE (1..MAX)) }
+
+-- certificate and CRL specific structures begin here
+
+Certificate  ::=  SEQUENCE  {
+     tbsCertificate       TBSCertificate,
+     signatureAlgorithm   AlgorithmIdentifier,
+     signature            BIT STRING  }
+
+
+
+
+
+
+
+
+
+
+
+
+TBSCertificate  ::=  SEQUENCE  {
+     version         [0]  Version DEFAULT v1,
+     serialNumber         CertificateSerialNumber,
+     signature            AlgorithmIdentifier,
+     issuer               Name,
+     validity             Validity,
+     subject              Name,
+     subjectPublicKeyInfo SubjectPublicKeyInfo,
+     issuerUniqueID  [1]  IMPLICIT UniqueIdentifier OPTIONAL,
+                          -- If present, version MUST be v2 or v3
+     subjectUniqueID [2]  IMPLICIT UniqueIdentifier OPTIONAL,
+                          -- If present, version MUST be v2 or v3
+     extensions      [3]  Extensions OPTIONAL
+                          -- If present, version MUST be v3 --  }
+
+Version  ::=  INTEGER  {  v1(0), v2(1), v3(2)  }
+
+CertificateSerialNumber  ::=  INTEGER
+
+Validity ::= SEQUENCE {
+     notBefore      Time,
+     notAfter       Time  }
+
+Time ::= CHOICE {
+     utcTime        UTCTime,
+     generalTime    GeneralizedTime }
+
+UniqueIdentifier  ::=  BIT STRING
+
+SubjectPublicKeyInfo ::=  SEQUENCE  {
+     algorithm            AlgorithmIdentifier,
+     subjectPublicKey     BIT STRING  }
+
+Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
+
+Extension  ::=  SEQUENCE  {
+     extnID      OBJECT IDENTIFIER,
+     critical    BOOLEAN DEFAULT FALSE,
+     extnValue   OCTET STRING
+                 -- contains the DER encoding of an ASN.1 value
+                 -- corresponding to the extension type identified
+                 -- by extnID
+     }
+
+
+
+
+
+
+
+
+
+
+-- CRL structures
+
+CertificateList  ::=  SEQUENCE  {
+     tbsCertList          TBSCertList,
+     signatureAlgorithm   AlgorithmIdentifier,
+     signature            BIT STRING  }
+
+TBSCertList  ::=  SEQUENCE  {
+     version                 Version OPTIONAL,
+                                   -- if present, MUST be v2
+     signature               AlgorithmIdentifier,
+     issuer                  Name,
+     thisUpdate              Time,
+     nextUpdate              Time OPTIONAL,
+     revokedCertificates     SEQUENCE OF SEQUENCE  {
+          userCertificate         CertificateSerialNumber,
+          revocationDate          Time,
+          crlEntryExtensions      Extensions OPTIONAL
+                                   -- if present, version MUST be v2
+                               }  OPTIONAL,
+     crlExtensions           [0] Extensions OPTIONAL }
+                                   -- if present, version MUST be v2
+
+-- Version, Time, CertificateSerialNumber, and Extensions were
+-- defined earlier for use in the certificate structure
+
+AlgorithmIdentifier ::=  SEQUENCE  {
+     algorithm               OBJECT IDENTIFIER,
+     parameters              ANY DEFINED BY algorithm OPTIONAL  }
+                                -- contains a value of the type
+                                -- registered for use with the
+                                -- algorithm object identifier value
+
+-- X.400 address syntax starts here
+
+ORAddress ::= SEQUENCE {
+   built-in-standard-attributes BuiltInStandardAttributes,
+   built-in-domain-defined-attributes
                    BuiltInDomainDefinedAttributes OPTIONAL,
    -- see also teletex-domain-defined-attributes
-          extension-attributes ExtensionAttributes OPTIONAL }
+   extension-attributes ExtensionAttributes OPTIONAL }
+
+
+
+
+
+
+
+
+
+
+
 
 -- Built-in Standard Attributes
 
@@ -98,6 +504,12 @@ NumericUserIdentifier ::= NumericString
                             (SIZE (1..ub-numeric-user-id-length))
 
 
+
+
+
+
+
+
 PersonalName ::= SET {
    surname     [0] IMPLICIT PrintableString
                     (SIZE (1..ub-surname-length)),
@@ -117,11 +529,9 @@ OrganizationalUnitNames ::= SEQUENCE SIZE (1..ub-organizational-units)
 OrganizationalUnitName ::= PrintableString (SIZE
                     (1..ub-organizational-unit-name-length))
 
-
-
 -- Built-in Domain-defined Attributes
 
-   BuiltInDomainDefinedAttributes ::= SEQUENCE SIZE
+BuiltInDomainDefinedAttributes ::= SEQUENCE SIZE
                     (1..ub-domain-defined-attributes) OF
                     BuiltInDomainDefinedAttribute
 
@@ -131,21 +541,192 @@ BuiltInDomainDefinedAttribute ::= SEQUENCE {
    value PrintableString (SIZE
                    (1..ub-domain-defined-attribute-value-length)) }
 
-
-
 -- Extension Attributes
 
-      ExtensionAttributes ::= SET SIZE (1..ub-extension-attributes) OF
+ExtensionAttributes ::= SET SIZE (1..ub-extension-attributes) OF
                ExtensionAttribute
 
-      ExtensionAttribute ::=  SEQUENCE {
-          extension-attribute-type [0] IMPLICIT INTEGER
+ExtensionAttribute ::=  SEQUENCE {
+   extension-attribute-type [0] IMPLICIT INTEGER
                    (0..ub-extension-attributes),
-          extension-attribute-value [1]
+   extension-attribute-value [1]
                    ANY DEFINED BY extension-attribute-type }
 
+-- Extension types and attribute values
 
-     -- Upper Bounds
+common-name INTEGER ::= 1
+
+CommonName ::= PrintableString (SIZE (1..ub-common-name-length))
+
+
+
+
+
+
+teletex-common-name INTEGER ::= 2
+
+TeletexCommonName ::= TeletexString (SIZE (1..ub-common-name-length))
+
+teletex-organization-name INTEGER ::= 3
+
+TeletexOrganizationName ::=
+                TeletexString (SIZE (1..ub-organization-name-length))
+
+teletex-personal-name INTEGER ::= 4
+
+TeletexPersonalName ::= SET {
+   surname     [0] IMPLICIT TeletexString
+                    (SIZE (1..ub-surname-length)),
+   given-name  [1] IMPLICIT TeletexString
+                    (SIZE (1..ub-given-name-length)) OPTIONAL,
+   initials    [2] IMPLICIT TeletexString
+                    (SIZE (1..ub-initials-length)) OPTIONAL,
+   generation-qualifier [3] IMPLICIT TeletexString
+                    (SIZE (1..ub-generation-qualifier-length))
+                    OPTIONAL }
+
+teletex-organizational-unit-names INTEGER ::= 5
+
+TeletexOrganizationalUnitNames ::= SEQUENCE SIZE
+      (1..ub-organizational-units) OF TeletexOrganizationalUnitName
+
+TeletexOrganizationalUnitName ::= TeletexString
+                  (SIZE (1..ub-organizational-unit-name-length))
+
+pds-name INTEGER ::= 7
+
+PDSName ::= PrintableString (SIZE (1..ub-pds-name-length))
+
+physical-delivery-country-name INTEGER ::= 8
+
+PhysicalDeliveryCountryName ::= CHOICE {
+   x121-dcc-code NumericString (SIZE (ub-country-name-numeric-length)),
+   iso-3166-alpha2-code PrintableString
+                               (SIZE (ub-country-name-alpha-length)) }
+
+postal-code INTEGER ::= 9
+
+PostalCode ::= CHOICE {
+   numeric-code   NumericString (SIZE (1..ub-postal-code-length)),
+   printable-code PrintableString (SIZE (1..ub-postal-code-length)) }
+
+physical-delivery-office-name INTEGER ::= 10
+
+
+
+
+
+PhysicalDeliveryOfficeName ::= PDSParameter
+
+physical-delivery-office-number INTEGER ::= 11
+
+PhysicalDeliveryOfficeNumber ::= PDSParameter
+
+extension-OR-address-components INTEGER ::= 12
+
+ExtensionORAddressComponents ::= PDSParameter
+
+physical-delivery-personal-name INTEGER ::= 13
+
+PhysicalDeliveryPersonalName ::= PDSParameter
+
+physical-delivery-organization-name INTEGER ::= 14
+
+PhysicalDeliveryOrganizationName ::= PDSParameter
+
+extension-physical-delivery-address-components INTEGER ::= 15
+
+ExtensionPhysicalDeliveryAddressComponents ::= PDSParameter
+
+unformatted-postal-address INTEGER ::= 16
+
+UnformattedPostalAddress ::= SET {
+   printable-address SEQUENCE SIZE (1..ub-pds-physical-address-lines)
+        OF PrintableString (SIZE (1..ub-pds-parameter-length)) OPTIONAL,
+   teletex-string TeletexString
+        (SIZE (1..ub-unformatted-address-length)) OPTIONAL }
+
+street-address INTEGER ::= 17
+
+StreetAddress ::= PDSParameter
+
+post-office-box-address INTEGER ::= 18
+
+PostOfficeBoxAddress ::= PDSParameter
+
+poste-restante-address INTEGER ::= 19
+
+PosteRestanteAddress ::= PDSParameter
+
+unique-postal-name INTEGER ::= 20
+
+UniquePostalName ::= PDSParameter
+
+local-postal-attributes INTEGER ::= 21
+
+
+
+
+
+
+LocalPostalAttributes ::= PDSParameter
+
+PDSParameter ::= SET {
+   printable-string PrintableString
+                (SIZE(1..ub-pds-parameter-length)) OPTIONAL,
+   teletex-string TeletexString
+                (SIZE(1..ub-pds-parameter-length)) OPTIONAL }
+
+extended-network-address INTEGER ::= 22
+
+ExtendedNetworkAddress ::= CHOICE {
+   e163-4-address SEQUENCE {
+      number      [0] IMPLICIT NumericString
+                       (SIZE (1..ub-e163-4-number-length)),
+      sub-address [1] IMPLICIT NumericString
+                       (SIZE (1..ub-e163-4-sub-address-length))
+                       OPTIONAL },
+   psap-address   [0] IMPLICIT PresentationAddress }
+
+PresentationAddress ::= SEQUENCE {
+    pSelector     [0] EXPLICIT OCTET STRING OPTIONAL,
+    sSelector     [1] EXPLICIT OCTET STRING OPTIONAL,
+    tSelector     [2] EXPLICIT OCTET STRING OPTIONAL,
+    nAddresses    [3] EXPLICIT SET SIZE (1..MAX) OF OCTET STRING }
+
+terminal-type  INTEGER ::= 23
+
+TerminalType ::= INTEGER {
+   telex        (3),
+   teletex      (4),
+   g3-facsimile (5),
+   g4-facsimile (6),
+   ia5-terminal (7),
+   videotex     (8) } (0..ub-integer-options)
+
+-- Extension Domain-defined Attributes
+
+teletex-domain-defined-attributes INTEGER ::= 6
+
+TeletexDomainDefinedAttributes ::= SEQUENCE SIZE
+   (1..ub-domain-defined-attributes) OF TeletexDomainDefinedAttribute
+
+TeletexDomainDefinedAttribute ::= SEQUENCE {
+        type TeletexString
+               (SIZE (1..ub-domain-defined-attribute-type-length)),
+        value TeletexString
+               (SIZE (1..ub-domain-defined-attribute-value-length)) }
+
+
+
+
+
+
+--  specifications of Upper Bounds MUST be regarded as mandatory
+--  from Annex B of ITU-T X.411 Reference Definition of MTS Parameter
+--  Upper Bounds
+
+-- Upper Bounds
 ub-name INTEGER ::= 32768
 ub-common-name INTEGER ::= 64
 ub-locality-name INTEGER ::= 128
@@ -184,604 +765,1552 @@ ub-terminal-id-length INTEGER ::= 24
 ub-unformatted-address-length INTEGER ::= 180
 ub-x121-address-length INTEGER ::= 16
 
+-- Note - upper bounds on string types, such as TeletexString, are
+-- measured in characters.  Excepting PrintableString or IA5String, a
+-- significantly greater number of octets will be required to hold
+-- such a value.  As a minimum, 16 octets, or twice the specified
+-- upper bound, whichever is the larger, should be allowed for
 
 
--- UNIVERSAL Types defined in 1993 and 1998 ASN.1
--- and required by this specification
 
-   UniversalString ::= [UNIVERSAL 28] IMPLICIT OCTET STRING
-        -- UniversalString is defined in ASN.1:1993
 
-   BMPString ::= [UNIVERSAL 30] IMPLICIT OCTET STRING
-      -- BMPString is the subtype of UniversalString and models
-      -- the Basic Multilingual Plane of ISO/IEC 10646
 
-   UTF8String ::= [UNIVERSAL 12] IMPLICIT OCTET STRING
-      -- The content of this type conforms to RFC 3629.
+-- TeletexString.  For UTF8String or UniversalString at least four
+-- times the upper bound should be allowed.
 
+END
 
 
-      -- Certificate 
+PKIX1Implicit88 { iso(1) identified-organization(3) dod(6) internet(1)
+  security(5) mechanisms(5) pkix(7) id-mod(0) id-pkix1-implicit(19) }
 
-	Certificate  ::=  SEQUENCE  {
-           tbsCertificate       TBSCertificate,
-       	   signatureAlgorithm   AlgorithmIdentifier,
-           signatureValue       BIT STRING 
-    }    
+DEFINITIONS IMPLICIT TAGS ::=
 
-        TBSCertificate  ::=  SEQUENCE  {
-           version         [0]  EXPLICIT Version DEFAULT v1,
-           serialNumber         CertificateSerialNumber,
-           signature            AlgorithmIdentifier,
-           issuer               Name,
-           validity             Validity,
-           subject              Name,
-           subjectPublicKeyInfo SubjectPublicKeyInfo,
-           issuerUniqueID  [1]  IMPLICIT UniqueIdentifier OPTIONAL,
-                             -- If present, version MUST be v2 or v3
-           subjectUniqueID [2]  IMPLICIT UniqueIdentifier OPTIONAL,
-                             -- If present, version MUST be v2 or v3
-           extensions      [3]  EXPLICIT Extensions OPTIONAL
-                             -- If present, version MUST be v3
-    }
+BEGIN
 
+-- EXPORTS ALL --
 
-         Version  ::= INTEGER  {  v1(0), v2(1), v3(2)  }
+IMPORTS
+      id-pe, id-kp, id-qt-unotice, id-qt-cps,
+      -- delete following line if "new" types are supported --
+      ORAddress, Name, RelativeDistinguishedName,
+      CertificateSerialNumber, Attribute, DirectoryString
+      FROM PKIX1Explicit88 { iso(1) identified-organization(3)
+            dod(6) internet(1) security(5) mechanisms(5) pkix(7)
+            id-mod(0) id-pkix1-explicit(18) };
 
-         CertificateSerialNumber  ::=  INTEGER
+-- ISO arc for standard certificate and CRL extensions
 
-         Validity ::= SEQUENCE {
-            notBefore      Time,
-            notAfter       Time }
+id-ce OBJECT IDENTIFIER  ::=  {joint-iso-ccitt(2) ds(5) 29}
 
-         Time ::= CHOICE {
-            utcTime        UTCTime,
-            generalTime    GeneralizedTime }
-           
-         UniqueIdentifier  ::=  BIT STRING
+-- authority key identifier OID and syntax
 
-         SubjectPublicKeyInfo  ::=  SEQUENCE  {
-             algorithm            AlgorithmIdentifier,
-             subjectPublicKey     BIT STRING  }
+id-ce-authorityKeyIdentifier OBJECT IDENTIFIER ::=  { 2 5 29 35 }
 
-         Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
+AuthorityKeyIdentifier ::= SEQUENCE {
+    keyIdentifier             [0] KeyIdentifier            OPTIONAL,
+    authorityCertIssuer       [1] GeneralNames             OPTIONAL,
+    authorityCertSerialNumber [2] CertificateSerialNumber  OPTIONAL }
+    -- authorityCertIssuer and authorityCertSerialNumber MUST both
+    -- be present or both be absent
 
-         Extension  ::=  SEQUENCE  {
-             extnID      OBJECT IDENTIFIER,
-             critical    BOOLEAN DEFAULT FALSE,
-             extnValue   OCTET STRING
-                    -- contains the DER encoding of an ASN.1 value
-                    -- corresponding to the extension type identified
-                    -- by extnID
-        }
+KeyIdentifier ::= OCTET STRING
 
 
-         AlgorithmIdentifier  ::=  SEQUENCE  {
-            algorithm               OBJECT IDENTIFIER,
-            parameters              ANY DEFINED BY algorithm OPTIONAL  }
 
-         
-        
-         Name ::= CHOICE { -- only one possibility for now --
-            rdnSequence  RDNSequence }
 
-         RDNSequence ::= SEQUENCE OF RelativeDistinguishedName
 
-         RelativeDistinguishedName ::= SET SIZE (1..MAX) OF AttributeTypeAndValue
 
-         AttributeTypeAndValue ::= SEQUENCE {
-             type     AttributeType,
-             value    AttributeValue }
 
-         AttributeType ::= OBJECT IDENTIFIER
 
-         AttributeValue ::= ANY -- DEFINED BY AttributeType
 
-         DirectoryString ::= CHOICE {
-             teletexString           TeletexString (SIZE (1..MAX)),
-             printableString         PrintableString (SIZE (1..MAX)),
-             universalString         UniversalString (SIZE (1..MAX)),
-             utf8String              UTF8String (SIZE (1..MAX)),
-             bmpString               BMPString (SIZE (1..MAX)) }
-    
 
 
+-- subject key identifier OID and syntax
 
-            
-      -- CertificateList
+id-ce-subjectKeyIdentifier OBJECT IDENTIFIER ::=  { 2 5 29 14 }
 
-          CertificateList  ::=  SEQUENCE  {
-             tbsCertList          TBSCertList,
-             signatureAlgorithm   AlgorithmIdentifier,
-             signatureValue       BIT STRING  }
+SubjectKeyIdentifier ::= KeyIdentifier
 
-          TBSCertList  ::=  SEQUENCE  {
-             version                 Version OPTIONAL,
-                                     -- if present, MUST be v2
-            signature               AlgorithmIdentifier,
-             issuer                  Name,
-            thisUpdate              Time,
-            nextUpdate              Time OPTIONAL,
-             revokedCertificates     SEQUENCE OF SEQUENCE  {
-                                          userCertificate         CertificateSerialNumber,
-                                          revocationDate          Time,
-                                          crlEntryExtensions      Extensions OPTIONAL
-                                      -- if present, version MUST be v2
-                                           }  OPTIONAL,
-            crlExtensions        [0]  EXPLICIT Extensions OPTIONAL
-                                      -- if present, version MUST be v2
-                    }
+-- key usage extension OID and syntax
 
+id-ce-keyUsage OBJECT IDENTIFIER ::=  { 2 5 29 15 }
 
-            KeyIdentifier ::= OCTET STRING
+KeyUsage ::= BIT STRING {
+     digitalSignature        (0),
+     nonRepudiation          (1),  -- recent editions of X.509 have
+                                -- renamed this bit to contentCommitment
+     keyEncipherment         (2),
+     dataEncipherment        (3),
+     keyAgreement            (4),
+     keyCertSign             (5),
+     cRLSign                 (6),
+     encipherOnly            (7),
+     decipherOnly            (8) }
 
+-- private key usage period extension OID and syntax
 
+id-ce-privateKeyUsagePeriod OBJECT IDENTIFIER ::=  { 2 5 29 16 }
 
+PrivateKeyUsagePeriod ::= SEQUENCE {
+     notBefore       [0]     GeneralizedTime OPTIONAL,
+     notAfter        [1]     GeneralizedTime OPTIONAL }
+     -- either notBefore or notAfter MUST be present
 
-           -- GeneralNames
+-- certificate policies extension OID and syntax
 
+id-ce-certificatePolicies OBJECT IDENTIFIER ::=  { 2 5 29 32 }
 
-            GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
+anyPolicy OBJECT IDENTIFIER ::= { 2 5 29 32 0 }
 
-            GeneralName ::= CHOICE {
-                otherName                       [0]     OtherName,
-                rfc822Name                      [1]     IA5String,
-                dNSName                         [2]     IA5String,
-                x400Address                     [3]     ORAddress,
-                directoryName                   [4]     Name,
-                ediPartyName                    [5]     EDIPartyName,
-                uniformResourceIdentifier       [6]     IA5String,
-                iPAddress                       [7]     OCTET STRING,
-                registeredID                    [8]     OBJECT IDENTIFIER }
+CertificatePolicies ::= SEQUENCE SIZE (1..MAX) OF PolicyInformation
 
-           OtherName ::= SEQUENCE {
-                type-id    OBJECT IDENTIFIER,
-                value      [0] EXPLICIT ANY DEFINED BY type-id }
+PolicyInformation ::= SEQUENCE {
+     policyIdentifier   CertPolicyId,
+     policyQualifiers   SEQUENCE SIZE (1..MAX) OF
+             PolicyQualifierInfo OPTIONAL }
 
-           EDIPartyName ::= SEQUENCE {
-                 nameAssigner            [0]     DirectoryString OPTIONAL,
-                 partyName               [1]     DirectoryString }
+CertPolicyId ::= OBJECT IDENTIFIER
 
 
 
 
-           -- CertReqMessages
 
 
-             CertReqMessages ::= SEQUENCE SIZE (1..MAX) OF CertReqMsg
 
-                 CertReqMsg ::= SEQUENCE {
-                 certReq   CertRequest,
-                 popo       ProofOfPossession  OPTIONAL,
-      -- content depends upon key type
-                 regInfo   SEQUENCE SIZE(1..MAX) OF AttributeTypeAndValue OPTIONAL
-   }
 
+PolicyQualifierInfo ::= SEQUENCE {
+     policyQualifierId  PolicyQualifierId,
+     qualifier          ANY DEFINED BY policyQualifierId }
 
+-- Implementations that recognize additional policy qualifiers MUST
+-- augment the following definition for PolicyQualifierId
 
-           -- Proof Of Possession
+PolicyQualifierId ::= OBJECT IDENTIFIER ( id-qt-cps | id-qt-unotice )
 
-           ProofOfPossession ::= CHOICE {
-                raVerified        [0] NULL,
-                signature         [1] POPOSigningKey,
-                keyEncipherment   [2] POPOPrivKey,
-                keyAgreement      [3] POPOPrivKey }
+-- CPS pointer qualifier
 
+CPSuri ::= IA5String
 
+-- user notice qualifier
 
-           -- POPOSigningKey
+UserNotice ::= SEQUENCE {
+     noticeRef        NoticeReference OPTIONAL,
+     explicitText     DisplayText OPTIONAL }
 
+NoticeReference ::= SEQUENCE {
+     organization     DisplayText,
+     noticeNumbers    SEQUENCE OF INTEGER }
 
-          POPOSigningKey ::= SEQUENCE {
-               poposkInput         [0] POPOSigningKeyInput OPTIONAL,
-               algorithmIdentifier     AlgorithmIdentifier,
-               signature               BIT STRING }
+DisplayText ::= CHOICE {
+     ia5String        IA5String      (SIZE (1..200)),
+     visibleString    VisibleString  (SIZE (1..200)),
+     bmpString        BMPString      (SIZE (1..200)),
+     utf8String       UTF8String     (SIZE (1..200)) }
 
+-- policy mapping extension OID and syntax
 
-        POPOSigningKeyInput ::= SEQUENCE {
-               authInfo            CHOICE {
-                        sender              [0] GeneralName,
-           -- used only if an authenticated identity has been
-           -- established for the sender (e.g., a DN from a
-           -- previously-issued and currently-valid certificate)
-                        publicKeyMAC        PKMACValue },
-           -- used if no authenticated GeneralName currently exists for
-           -- the sender; publicKeyMAC contains a password-based MAC
-           -- on the DER-encoded value of publicKey
-               publicKey           SubjectPublicKeyInfo }  -- from CertTemplate
-  
-           PKMACValue ::= SEQUENCE {
-               algId  AlgorithmIdentifier,
-               value  BIT STRING }
+id-ce-policyMappings OBJECT IDENTIFIER ::=  { 2 5 29 33 }
 
+PolicyMappings ::= SEQUENCE SIZE (1..MAX) OF SEQUENCE {
+     issuerDomainPolicy      CertPolicyId,
+     subjectDomainPolicy     CertPolicyId }
 
-         --  POPOPrivKey
+-- subject alternative name extension OID and syntax
 
-          POPOPrivKey ::= CHOICE {
-              thisMessage       [0] BIT STRING,   -- deprecated
-              subsequentMessage [1] SubsequentMessage,
-              dhMAC             [2] BIT STRING,   -- deprecated
-              agreeMAC          [3] PKMACValue,
-              encryptedKey      [4] EnvelopedData }
+id-ce-subjectAltName OBJECT IDENTIFIER ::=  { 2 5 29 17 }
 
-        SubsequentMessage ::= INTEGER {
-               encrCert (0),
-               challengeResp (1) }
+SubjectAltName ::= GeneralNames
 
+GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
 
 
-        -- Enveloped Data
 
-        EnvelopedData ::= SEQUENCE {
-              version CMSVersion,
-              originatorInfo [0] IMPLICIT OriginatorInfo OPTIONAL,
-              recipientInfos RecipientInfos,
-              encryptedContentInfo EncryptedContentInfo,
-              unprotectedAttrs [1] IMPLICIT UnprotectedAttributes OPTIONAL }
 
 
 
-        CMSVersion ::= INTEGER { v0(0), v1(1), v2(2), v3(3), v4(4), v5(5) }
 
-        --  OriginatorInfo
 
-        OriginatorInfo ::= SEQUENCE {
-              certs [0] IMPLICIT CertificateSet OPTIONAL,
-              crls [1] IMPLICIT RevocationInfoChoices OPTIONAL }
+-- EXPLICIT tagging is set manually as workaround
+-- TODO after compiler will be fixed
+GeneralName ::= CHOICE {
+     otherName                 [0] AnotherName,
+     rfc822Name                [1] IA5String,
+     dNSName                   [2] IA5String,
+     x400Address               [3] ORAddress,
+     directoryName             [4] Name,
+     ediPartyName              [5] EDIPartyName,
+     uniformResourceIdentifier [6] IA5String,
+     iPAddress                 [7] OCTET STRING,
+     registeredID              [8] OBJECT IDENTIFIER }
 
-       -- RecipientInfos
+-- AnotherName replaces OTHER-NAME ::= TYPE-IDENTIFIER, as
+-- TYPE-IDENTIFIER is not supported in the '88 ASN.1 syntax
 
-        RecipientInfos ::= SET SIZE (1..MAX) OF RecipientInfo
-         
-       -- EncryptedContentInfo
+AnotherName ::= SEQUENCE {
+     type-id    OBJECT IDENTIFIER,
+     value      [0] EXPLICIT ANY DEFINED BY type-id }
 
-        EncryptedContentInfo ::= SEQUENCE {
-             contentType ContentType,
-             contentEncryptionAlgorithm ContentEncryptionAlgorithmIdentifier,
-             encryptedContent [0] IMPLICIT EncryptedContent OPTIONAL }
+EDIPartyName ::= SEQUENCE {
+     nameAssigner              [0]  DirectoryString OPTIONAL,
+     partyName                 [1]  DirectoryString }
 
-        EncryptedContent ::= OCTET STRING
+-- issuer alternative name extension OID and syntax
 
-        UnprotectedAttributes ::= SET SIZE (1..MAX) OF Attribute
+id-ce-issuerAltName OBJECT IDENTIFIER ::=  { 2 5 29 18 }
 
-        RecipientInfo ::= CHOICE {
-            ktri KeyTransRecipientInfo,
-            kari [1] KeyAgreeRecipientInfo,
-            kekri [2] KEKRecipientInfo,
-            pwri [3] PasswordRecipientInfo,
-            ori [4] OtherRecipientInfo }
+IssuerAltName ::= GeneralNames
 
+id-ce-subjectDirectoryAttributes OBJECT IDENTIFIER ::=  { 2 5 29 9 }
 
-        EncryptedKey ::= OCTET STRING
+SubjectDirectoryAttributes ::= SEQUENCE SIZE (1..MAX) OF Attribute
 
-        KeyTransRecipientInfo ::= SEQUENCE {
-       	    version CMSVersion,  -- always set to 0 or 2
-            rid RecipientIdentifier,
-            keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
-            encryptedKey EncryptedKey }
+-- basic constraints extension OID and syntax
 
-       RecipientIdentifier ::= CHOICE {
-            issuerAndSerialNumber IssuerAndSerialNumber,
-            subjectKeyIdentifier [0] SubjectKeyIdentifier }
+id-ce-basicConstraints OBJECT IDENTIFIER ::=  { 2 5 29 19 }
 
-       KeyAgreeRecipientInfo ::= SEQUENCE {
-           version CMSVersion,  -- always set to 3
-           originator [0] EXPLICIT OriginatorIdentifierOrKey,
-           ukm [1] EXPLICIT UserKeyingMaterial OPTIONAL,
-           keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
-           recipientEncryptedKeys RecipientEncryptedKeys }    
+BasicConstraints ::= SEQUENCE {
+     cA                      BOOLEAN DEFAULT FALSE,
+     pathLenConstraint       INTEGER (0..MAX) OPTIONAL }
 
 
-       OriginatorIdentifierOrKey ::= CHOICE {
-           issuerAndSerialNumber IssuerAndSerialNumber,
-           subjectKeyIdentifier [0] SubjectKeyIdentifier,
-           originatorKey [1] OriginatorPublicKey }
- 
-      OriginatorPublicKey ::= SEQUENCE {
-          algorithm AlgorithmIdentifier,
-          publicKey BIT STRING }
 
-       RecipientEncryptedKeys ::= SEQUENCE OF RecipientEncryptedKey
 
-       RecipientEncryptedKey ::= SEQUENCE {
-          rid KeyAgreeRecipientIdentifier,
-          encryptedKey EncryptedKey }
- 
-       KeyAgreeRecipientIdentifier ::= CHOICE {
-          issuerAndSerialNumber IssuerAndSerialNumber,
-          rKeyId [0] IMPLICIT RecipientKeyIdentifier }
- 
-       RecipientKeyIdentifier ::= SEQUENCE {
-         subjectKeyIdentifier SubjectKeyIdentifier,
-         date GeneralizedTime OPTIONAL,
-         other OtherKeyAttribute OPTIONAL }
 
-        SubjectKeyIdentifier ::= OCTET STRING
 
-    KEKRecipientInfo ::= SEQUENCE {
-      version CMSVersion,  -- always set to 4
-      kekid KEKIdentifier,
-      keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
-      encryptedKey EncryptedKey }
 
-    KEKIdentifier ::= SEQUENCE {
-       keyIdentifier OCTET STRING,
-       date GeneralizedTime OPTIONAL,
-       other OtherKeyAttribute OPTIONAL }
 
-    PasswordRecipientInfo ::= SEQUENCE {
-       version CMSVersion,   -- always set to 0
-       keyDerivationAlgorithm [0] KeyDerivationAlgorithmIdentifier
-                                OPTIONAL,
-       keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
-       encryptedKey EncryptedKey }
 
-    OtherRecipientInfo ::= SEQUENCE {
-       oriType OBJECT IDENTIFIER,
-       oriValue ANY DEFINED BY oriType }
 
-     KeyEncryptionAlgorithmIdentifier ::= AlgorithmIdentifier
-     KeyDerivationAlgorithmIdentifier ::= AlgorithmIdentifier
 
-     RevocationInfoChoices ::= SET OF RevocationInfoChoice
 
-     RevocationInfoChoice ::= CHOICE {
-          crl CertificateList,
-          other [1] IMPLICIT OtherRevocationInfoFormat }
 
 
-     OtherRevocationInfoFormat ::= SEQUENCE {
-          otherRevInfoFormat OBJECT IDENTIFIER,
-          otherRevInfo ANY DEFINED BY otherRevInfoFormat }
-  
-     CertificateSet ::= SET OF CertificateChoices
+-- name constraints extension OID and syntax
 
-     CertificateChoices ::= CHOICE {
-          certificate Certificate,
-          extendedCertificate [0] IMPLICIT ExtendedCertificate,  -- Obsolete
-          v1AttrCert [1] IMPLICIT AttributeCertificateV1,        -- Obsolete
-          v2AttrCert [2] IMPLICIT AttributeCertificateV2,
-          other [3] IMPLICIT OtherCertificateFormat }
+id-ce-nameConstraints OBJECT IDENTIFIER ::=  { 2 5 29 30 }
 
-     AttributeCertificateV2 ::= AttributeCertificate
-     
+-- There is generation BUG for this type
+--NameConstraints ::= SEQUENCE {
+--     permittedSubtrees       [0]     GeneralSubtrees OPTIONAL,
+--     excludedSubtrees        [1]     GeneralSubtrees OPTIONAL }
 
-     OtherCertificateFormat ::= SEQUENCE {
-          otherCertFormat OBJECT IDENTIFIER,
-          otherCert ANY DEFINED BY otherCertFormat }
+-- There is generation BUG for this type
+--GeneralSubtrees ::= SEQUENCE SIZE (1..MAX) OF GeneralSubtree
 
+-- There is generation BUG for this type
+--GeneralSubtree ::= SEQUENCE {
+--     base                    GeneralName,
+--     minimum         [0]     BaseDistance DEFAULT 0,
+--     maximum         [1]     BaseDistance OPTIONAL }
 
-     IssuerAndSerialNumber ::= SEQUENCE {
-          issuer Name,
-          serialNumber CertificateSerialNumber }
+BaseDistance ::= INTEGER (0..MAX)
 
+-- policy constraints extension OID and syntax
 
-      UserKeyingMaterial ::= OCTET STRING
+id-ce-policyConstraints OBJECT IDENTIFIER ::=  { 2 5 29 36 }
 
+PolicyConstraints ::= SEQUENCE {
+     requireExplicitPolicy   [0]     SkipCerts OPTIONAL,
+     inhibitPolicyMapping    [1]     SkipCerts OPTIONAL }
 
-     OtherKeyAttribute ::= SEQUENCE {
-           keyAttrId OBJECT IDENTIFIER,
-           keyAttr ANY DEFINED BY keyAttrId OPTIONAL }
+SkipCerts ::= INTEGER (0..MAX)
 
-     ExtendedCertificate ::= SEQUENCE {
-          extendedCertificateInfo ExtendedCertificateInfo,
-          signatureAlgorithm SignatureAlgorithmIdentifier,
-          signature Signature }
+-- CRL distribution points extension OID and syntax
 
-   SignatureAlgorithmIdentifier ::= AlgorithmIdentifier
+id-ce-cRLDistributionPoints     OBJECT IDENTIFIER  ::=  {2 5 29 31}
 
-   Signature ::= BIT STRING
+CRLDistributionPoints ::= SEQUENCE SIZE (1..MAX) OF DistributionPoint
 
-     ExtendedCertificateInfo ::= SEQUENCE {
-       version CMSVersion,
-       certificate Certificate,
-       attributes UnauthAttributes }
+DistributionPoint ::= SEQUENCE {
+     distributionPoint       [0]     DistributionPointName OPTIONAL,
+     reasons                 [1]     ReasonFlags OPTIONAL,
+     cRLIssuer               [2]     GeneralNames OPTIONAL }
 
+DistributionPointName ::= CHOICE {
+     fullName                [0]     GeneralNames,
+     nameRelativeToCRLIssuer [1]     RelativeDistinguishedName }
 
-     AttributeCertificateV1 ::= SEQUENCE {
-         acInfo AttributeCertificateInfoV1,
-         signatureAlgorithm AlgorithmIdentifier,
-         signature BIT STRING }
 
-    AttributeCertificateInfoV1 ::= SEQUENCE {
-          version AttCertVersionV1 DEFAULT v1,
-          subject CHOICE {
-                  baseCertificateID [0] IssuerSerial,
+
+
+
+
+
+
+
+
+
+
+ReasonFlags ::= BIT STRING {
+     unused                  (0),
+     keyCompromise           (1),
+     cACompromise            (2),
+     affiliationChanged      (3),
+     superseded              (4),
+     cessationOfOperation    (5),
+     certificateHold         (6),
+     privilegeWithdrawn      (7),
+     aACompromise            (8) }
+
+-- extended key usage extension OID and syntax
+
+id-ce-extKeyUsage OBJECT IDENTIFIER ::= {2 5 29 37}
+
+ExtKeyUsageSyntax ::= SEQUENCE SIZE (1..MAX) OF KeyPurposeId
+
+KeyPurposeId ::= OBJECT IDENTIFIER
+
+-- permit unspecified key uses
+
+anyExtendedKeyUsage OBJECT IDENTIFIER ::= { 2 5 29 37 0 }
+
+-- extended key purpose OIDs
+
+id-kp-serverAuth             OBJECT IDENTIFIER ::= { id-kp 1 }
+id-kp-clientAuth             OBJECT IDENTIFIER ::= { id-kp 2 }
+id-kp-codeSigning            OBJECT IDENTIFIER ::= { id-kp 3 }
+id-kp-emailProtection        OBJECT IDENTIFIER ::= { id-kp 4 }
+id-kp-timeStamping           OBJECT IDENTIFIER ::= { id-kp 8 }
+id-kp-OCSPSigning            OBJECT IDENTIFIER ::= { id-kp 9 }
+
+-- inhibit any policy OID and syntax
+
+id-ce-inhibitAnyPolicy OBJECT IDENTIFIER ::=  { 2 5 29 54 }
+
+InhibitAnyPolicy ::= SkipCerts
+
+-- freshest (delta)CRL extension OID and syntax
+
+id-ce-freshestCRL OBJECT IDENTIFIER ::=  { 2 5 29 46 }
+
+FreshestCRL ::= CRLDistributionPoints
+
+
+
+
+
+
+
+
+
+
+-- authority info access
+
+id-pe-authorityInfoAccess OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 1 1 }
+
+AuthorityInfoAccessSyntax  ::=
+        SEQUENCE SIZE (1..MAX) OF AccessDescription
+
+AccessDescription  ::=  SEQUENCE {
+        accessMethod          OBJECT IDENTIFIER,
+        accessLocation        GeneralName  }
+
+-- subject info access
+
+id-pe-subjectInfoAccess OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 1 11 }
+
+SubjectInfoAccessSyntax  ::=
+        SEQUENCE SIZE (1..MAX) OF AccessDescription
+
+-- CRL number extension OID and syntax
+
+id-ce-cRLNumber OBJECT IDENTIFIER ::= { 2 5 29 20 }
+
+CRLNumber ::= INTEGER (0..MAX)
+
+-- issuing distribution point extension OID and syntax
+
+id-ce-issuingDistributionPoint OBJECT IDENTIFIER ::= { 2 5 29 28 }
+
+-- There is generation BUG for this type
+--IssuingDistributionPoint ::= SEQUENCE {
+--     distributionPoint          [0] DistributionPointName OPTIONAL,
+--     onlyContainsUserCerts      [1] BOOLEAN DEFAULT FALSE,
+--     onlyContainsCACerts        [2] BOOLEAN DEFAULT FALSE,
+--     onlySomeReasons            [3] ReasonFlags OPTIONAL,
+--     indirectCRL                [4] BOOLEAN DEFAULT FALSE,
+--     onlyContainsAttributeCerts [5] BOOLEAN DEFAULT FALSE }
+     -- at most one of onlyContainsUserCerts, onlyContainsCACerts,
+     -- and onlyContainsAttributeCerts may be set to TRUE.
+
+id-ce-deltaCRLIndicator OBJECT IDENTIFIER ::= { 2 5 29 27 }
+
+BaseCRLNumber ::= CRLNumber
+
+
+
+
+
+
+
+
+
+
+
+
+-- reason code extension OID and syntax
+
+id-ce-cRLReasons OBJECT IDENTIFIER ::= { 2 5 29 21 }
+
+CRLReason ::= ENUMERATED {
+     unspecified             (0),
+     keyCompromise           (1),
+     cACompromise            (2),
+     affiliationChanged      (3),
+     superseded              (4),
+     cessationOfOperation    (5),
+     certificateHold         (6),
+     removeFromCRL           (8),
+     privilegeWithdrawn      (9),
+     aACompromise           (10) }
+
+-- certificate issuer CRL entry extension OID and syntax
+
+id-ce-certificateIssuer OBJECT IDENTIFIER ::= { 2 5 29 29 }
+
+CertificateIssuer ::= GeneralNames
+
+-- hold instruction extension OID and syntax
+
+id-ce-holdInstructionCode OBJECT IDENTIFIER ::= { 2 5 29 23 }
+
+HoldInstructionCode ::= OBJECT IDENTIFIER
+
+-- ANSI x9 arc holdinstruction arc
+
+holdInstruction OBJECT IDENTIFIER ::=
+          {joint-iso-itu-t(2) member-body(2) us(840) x9cm(10040) 2}
+
+-- ANSI X9 holdinstructions
+
+id-holdinstruction-none OBJECT IDENTIFIER  ::=
+                                      {2 2 840 10040 2 1} -- deprecated
+
+id-holdinstruction-callissuer OBJECT IDENTIFIER ::= {2 2 840 10040 2 2}
+
+id-holdinstruction-reject OBJECT IDENTIFIER ::= {2 2 840 10040 2 3}
+
+
+
+
+
+
+
+
+
+
+
+
+-- invalidity date CRL entry extension OID and syntax
+
+id-ce-invalidityDate OBJECT IDENTIFIER ::= { 2 5 29 24 }
+
+InvalidityDate ::=  GeneralizedTime
+
+END
+
+
+   PKIXAttributeCertificate {iso(1) identified-organization(3) dod(6)
+                internet(1) security(5) mechanisms(5) pkix(7) id-mod(0)
+                id-mod-attribute-cert(12)}
+
+      DEFINITIONS IMPLICIT TAGS ::=
+
+      BEGIN
+
+      -- EXPORTS ALL --
+
+      IMPORTS
+
+            -- IMPORTed module OIDs MAY change if [PKIXPROF] changes
+            -- PKIX Certificate Extensions
+               Attribute, AlgorithmIdentifier, CertificateSerialNumber,
+               Extensions, UniqueIdentifier,
+               id-pkix, id-pe, id-kp, id-ad, id-at
+               FROM PKIX1Explicit88 {iso(1) identified-organization(3)
+                        dod(6) internet(1) security(5) mechanisms(5)
+                        pkix(7) id-mod(0) id-pkix1-explicit-88(1)}
+
+               GeneralName, GeneralNames, id-ce
+               FROM PKIX1Implicit88 {iso(1) identified-organization(3)
+                        dod(6) internet(1) security(5) mechanisms(5)
+                        pkix(7) id-mod(0) id-pkix1-implicit-88(2)} ;
+
+      id-pe-ac-auditIdentity       OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 1 4 }
+      id-pe-aaControls             OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 1 6 }
+      id-pe-ac-proxying            OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 1 10 }
+      id-ce-targetInformation      OBJECT IDENTIFIER ::= { 2 5 29 55 }
+
+      id-aca                       OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 10 }
+
+
+
+
+
+
+      id-aca-authenticationInfo    OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 10 1 }
+      id-aca-accessIdentity        OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 10 2 }
+      id-aca-chargingIdentity      OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 10 3 }
+      id-aca-group                 OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 10 4 }
+      -- { 1 3 6 1 5 5 7 10 5 } is reserved
+      id-aca-encAttrs              OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 10 6 }
+
+      id-at-role                   OBJECT IDENTIFIER ::= { 2 5 4 72}
+      id-at-clearance              OBJECT IDENTIFIER ::=
+                  { joint-iso-ccitt(2) ds(5) module(1)
+                    selected-attribute-types(5) clearance (55) }
+
+             -- Uncomment this if using a 1988 level ASN.1 compiler
+             -- UTF8String ::= [UNIVERSAL 12] IMPLICIT OCTET STRING
+
+             AttributeCertificate ::= SEQUENCE {
+                   acinfo               AttributeCertificateInfo,
+                   signatureAlgorithm   AlgorithmIdentifier,
+                   signatureValue       BIT STRING
+             }
+
+             AttributeCertificateInfo ::= SEQUENCE {
+                version        AttCertVersion,  -- version is v2
+                holder         Holder,
+                issuer         AttCertIssuer,
+                signature      AlgorithmIdentifier,
+                serialNumber   CertificateSerialNumber,
+                attrCertValidityPeriod   AttCertValidityPeriod,
+                attributes     SEQUENCE OF Attribute,
+                issuerUniqueID UniqueIdentifier OPTIONAL,
+                extensions     Extensions     OPTIONAL
+             }
+
+             AttCertVersion ::= INTEGER { v2(1) }
+
+             Holder ::= SEQUENCE {
+                   baseCertificateID   [0] IssuerSerial OPTIONAL,
+                             -- the issuer and serial number of
+                             -- the holder's Public Key Certificate
+                   entityName          [1] GeneralNames OPTIONAL,
+                             -- the name of the claimant or role
+                   objectDigestInfo    [2] ObjectDigestInfo OPTIONAL
+                             -- used to directly authenticate the
+                             -- holder, for example, an executable
+             }
+
+
+
+
+
+
+
+
+             ObjectDigestInfo    ::= SEQUENCE {
+                   digestedObjectType  ENUMERATED {
+                        publicKey            (0),
+                        publicKeyCert        (1),
+                        otherObjectTypes     (2) },
+                                -- otherObjectTypes MUST NOT
+                                -- MUST NOT be used in this profile
+                   otherObjectTypeID   OBJECT IDENTIFIER  OPTIONAL,
+                   digestAlgorithm     AlgorithmIdentifier,
+                   objectDigest        BIT STRING
+             }
+
+             AttCertIssuer ::= CHOICE {
+                   v1Form   GeneralNames,  -- MUST NOT be used in this
+                                           -- profile
+                   v2Form   [0] V2Form     -- v2 only
+             }
+
+             V2Form ::= SEQUENCE {
+                   issuerName            GeneralNames  OPTIONAL,
+                   baseCertificateID     [0] IssuerSerial  OPTIONAL,
+                   objectDigestInfo      [1] ObjectDigestInfo  OPTIONAL
+                      -- issuerName MUST be present in this profile
+                      -- baseCertificateID and objectDigestInfo MUST
+                      -- NOT be present in this profile
+             }
+
+             IssuerSerial  ::=  SEQUENCE {
+                   issuer         GeneralNames,
+                   serial         CertificateSerialNumber,
+                   issuerUID      UniqueIdentifier OPTIONAL
+             }
+
+             AttCertValidityPeriod  ::= SEQUENCE {
+                   notBeforeTime  GeneralizedTime,
+                   notAfterTime   GeneralizedTime
+             }
+
+             Targets ::= SEQUENCE OF Target
+
+             Target  ::= CHOICE {
+                   targetName     [0] GeneralName,
+                   targetGroup    [1] GeneralName,
+                   targetCert     [2] TargetCert
+             }
+
+
+
+
+
+
+
+
+             TargetCert  ::= SEQUENCE {
+                   targetCertificate  IssuerSerial,
+                   targetName         GeneralName OPTIONAL,
+                   certDigestInfo     ObjectDigestInfo OPTIONAL
+             }
+
+             IetfAttrSyntax ::= SEQUENCE {
+                  policyAuthority[0] GeneralNames    OPTIONAL,
+                  values         SEQUENCE OF CHOICE {
+                                 octets    OCTET STRING,
+                                 oid       OBJECT IDENTIFIER,
+                                 string    UTF8String
+                 }
+             }
+
+             SvceAuthInfo ::=    SEQUENCE {
+                   service       GeneralName,
+                   ident         GeneralName,
+                   authInfo      OCTET STRING OPTIONAL
+             }
+
+             RoleSyntax ::= SEQUENCE {
+                   roleAuthority  [0] GeneralNames OPTIONAL,
+                   roleName       [1] GeneralName
+             }
+
+-- removed DEFAULT {unclassified} for classList
+             Clearance  ::=  SEQUENCE {
+                   policyId       [0] OBJECT IDENTIFIER,
+                   classList      [1] ClassList,
+                   securityCategories
+                                  [2] SET OF SecurityCategory  OPTIONAL
+             }
+
+             ClassList  ::=  BIT STRING {
+                   unmarked       (0),
+                   unclassified   (1),
+                   restricted     (2),
+                   confidential   (3),
+                   secret         (4),
+                   topSecret      (5)
+             }
+
+             SecurityCategory ::= SEQUENCE {
+                   type      [0]  IMPLICIT OBJECT IDENTIFIER,
+                   value     [1]  ANY DEFINED BY type
+             }
+
+
+
+
+
+
+
+--             AAControls ::= SEQUENCE {
+--                   pathLenConstraint INTEGER (0..MAX) OPTIONAL,
+--                   permittedAttrs    [0] AttrSpec OPTIONAL,
+--                   excludedAttrs     [1] AttrSpec OPTIONAL,
+--                   permitUnSpecified BOOLEAN DEFAULT TRUE
+--             }
+
+             AttrSpec::= SEQUENCE OF OBJECT IDENTIFIER
+
+             ACClearAttrs ::= SEQUENCE {
+                   acIssuer          GeneralName,
+                   acSerial          INTEGER,
+                   attrs             SEQUENCE OF Attribute
+             }
+
+             ProxyInfo ::= SEQUENCE OF Targets
+
+      END
+
+
+AttributeCertificateVersion1 { iso(1) member-body(2) us(840) rsadsi(113549)
+         pkcs(1) pkcs-9(9) smime(16) modules(0) v1AttrCert(15) }
+
+   DEFINITIONS EXPLICIT TAGS ::=
+   BEGIN
+
+   -- EXPORTS All
+
+   IMPORTS
+
+     -- Imports from RFC 3280 [PROFILE], Appendix A.1
+           AlgorithmIdentifier, Attribute, CertificateSerialNumber,
+           Extensions, UniqueIdentifier
+              FROM PKIX1Explicit88
+                   { iso(1) identified-organization(3) dod(6)
+                     internet(1) security(5) mechanisms(5) pkix(7)
+                     mod(0) pkix1-explicit(18) }
+
+     -- Imports from RFC 3280 [PROFILE], Appendix A.2
+           GeneralNames
+              FROM PKIX1Implicit88
+                   { iso(1) identified-organization(3) dod(6)
+                     internet(1) security(5) mechanisms(5) pkix(7)
+                     mod(0) pkix1-implicit(19) }
+
+     -- Imports from RFC 3281 [ACPROFILE], Appendix B
+           AttCertValidityPeriod, IssuerSerial
+              FROM PKIXAttributeCertificate
+                   { iso(1) identified-organization(3) dod(6)
+                     internet(1) security(5) mechanisms(5) pkix(7)
+                     mod(0) attribute-cert(12) } ;
+
+   -- Definition extracted from X.509-1997 [X.509-97], but
+   -- different type names are used to avoid collisions.
+
+
+
+
+
+
+
+   AttributeCertificateV1 ::= SEQUENCE {
+     acInfo AttributeCertificateInfoV1,
+     signatureAlgorithm AlgorithmIdentifier,
+     signature BIT STRING }
+
+   AttributeCertificateInfoV1 ::= SEQUENCE {
+     version AttCertVersionV1 DEFAULT v1,
+     subject CHOICE {
+       baseCertificateID [0] IssuerSerial,
          -- associated with a Public Key Certificate
-                  subjectName [1] GeneralNames },
+       subjectName [1] GeneralNames },
          -- associated with a name
-                  issuer GeneralNames,
-                  signature AlgorithmIdentifier,
-                  serialNumber CertificateSerialNumber,
-                  attCertValidityPeriod AttCertValidityPeriod,
-                  attributes SEQUENCE OF Attribute,
-                  issuerUniqueID UniqueIdentifier OPTIONAL,
-                  extensions Extensions OPTIONAL }
+     issuer GeneralNames,
+     signature AlgorithmIdentifier,
+     serialNumber CertificateSerialNumber,
+     attCertValidityPeriod AttCertValidityPeriod,
+     attributes SEQUENCE OF Attribute,
+     issuerUniqueID UniqueIdentifier OPTIONAL,
+     extensions Extensions OPTIONAL }
 
    AttCertVersionV1 ::= INTEGER { v1(0) }
 
-   UnauthAttributes ::= SET SIZE (1..MAX) OF Attribute
+END -- of AttributeCertificateVersion1
 
-   ContentEncryptionAlgorithmIdentifier ::= AlgorithmIdentifier
+
+CryptographicMessageSyntax2004 { iso(1) member-body(2) us(840) rsadsi(113549)
+   pkcs(1) pkcs-9(9) smime(16) modules(0) cms-2004(24) }
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+-- EXPORTS All
+-- The types and values defined in this module are exported for use
+-- in the other ASN.1 modules.  Other applications may use them for
+-- their own purposes.
+
+IMPORTS
+
+     -- Imports from RFC 3280 [PROFILE], Appendix A.1
+           AlgorithmIdentifier, Certificate, CertificateList,
+           CertificateSerialNumber, Name
+              FROM PKIX1Explicit88
+                   { iso(1) identified-organization(3) dod(6)
+                     internet(1) security(5) mechanisms(5) pkix(7)
+                     mod(0) pkix1-explicit(18) }
+
+     -- Imports from RFC 3281 [ACPROFILE], Appendix B
+           AttributeCertificate
+              FROM PKIXAttributeCertificate
+                   { iso(1) identified-organization(3) dod(6)
+                     internet(1) security(5) mechanisms(5) pkix(7)
+                     mod(0) attribute-cert(12) }
+
+     -- Imports from Appendix B of this document
+           AttributeCertificateV1
+              FROM AttributeCertificateVersion1
+                   { iso(1) member-body(2) us(840) rsadsi(113549)
+                     pkcs(1) pkcs-9(9) smime(16) modules(0)
+                     v1AttrCert(15) } ;
+
+   -- Cryptographic Message Syntax
+
+   ContentInfo ::= SEQUENCE {
+     contentType ContentType,
+     content [0] EXPLICIT ANY DEFINED BY contentType }
 
    ContentType ::= OBJECT IDENTIFIER
 
-   IssuerSerial  ::=  SEQUENCE {
-         issuer         GeneralNames,
-         serial         CertificateSerialNumber,
-         issuerUID      UniqueIdentifier OPTIONAL
-            }
-
-    AttCertValidityPeriod  ::= SEQUENCE {
-        notBeforeTime  GeneralizedTime,
-        notAfterTime   GeneralizedTime
-            }
-
-
-        AttributeCertificate ::= SEQUENCE {
-              acinfo               AttributeCertificateInfo,
-              signatureAlgorithm   AlgorithmIdentifier,
-              signatureValue       BIT STRING
-             }
-
-        AttributeCertificateInfo ::= SEQUENCE {
-                 version              AttCertVersion, -- version is v2
-                 holder               Holder,
-                 issuer               AttCertIssuer,
-                 signature            AlgorithmIdentifier,
-                 serialNumber         CertificateSerialNumber,
-                 attrCertValidityPeriod   AttCertValidityPeriod,
-                 attributes           SEQUENCE OF Attribute,
-                 issuerUniqueID       UniqueIdentifier OPTIONAL,
-                 extensions           Extensions OPTIONAL
-            }
 
 
 
-           AttCertVersion ::= INTEGER { v2(1) }
-
-           Holder ::= SEQUENCE {
-                  baseCertificateID   [0] IssuerSerial OPTIONAL,
-                           -- the issuer and serial number of
-                           -- the holder's Public Key Certificate
 
 
-                  entityName          [1] GeneralNames OPTIONAL,
-                           -- the name of the claimant or role
-                  objectDigestInfo    [2] ObjectDigestInfo OPTIONAL
-                           -- used to directly authenticate the holder,
-                           -- for example, an executable
-            }
-
-           ObjectDigestInfo ::= SEQUENCE {
-                 digestedObjectType  ENUMERATED {
-                         publicKey            (0),
-                         publicKeyCert        (1),
-                         otherObjectTypes     (2) },
-                                 -- otherObjectTypes MUST NOT
-                                 -- be used in this profile
-                 otherObjectTypeID   OBJECT IDENTIFIER OPTIONAL,
-                 digestAlgorithm     AlgorithmIdentifier,
-                 objectDigest        BIT STRING
-            }
 
 
-            AttCertIssuer ::= CHOICE {
-                 v1Form   GeneralNames,  -- MUST NOT be used in this
-                                         -- profile
-                 v2Form   [0] V2Form     -- v2 only
-            }
+   SignedData ::= SEQUENCE {
+     version CMSVersion,
+     digestAlgorithms DigestAlgorithmIdentifiers,
+     encapContentInfo EncapsulatedContentInfo,
+     certificates [0] IMPLICIT CertificateSet OPTIONAL,
+     crls [1] IMPLICIT RevocationInfoChoices OPTIONAL,
+     signerInfos SignerInfos }
 
-            V2Form ::= SEQUENCE {
-                 issuerName            GeneralNames  OPTIONAL,
-                 baseCertificateID     [0] IssuerSerial  OPTIONAL,
-                 objectDigestInfo      [1] ObjectDigestInfo  OPTIONAL
-                   -- issuerName MUST be present in this profile
-                   -- baseCertificateID and objectDigestInfo MUST NOT
-                   -- be present in this profile
-            }
+   DigestAlgorithmIdentifiers ::= SET OF DigestAlgorithmIdentifier
 
+   SignerInfos ::= SET OF SignerInfo
 
-       --  CertRequest
+   EncapsulatedContentInfo ::= SEQUENCE {
+     eContentType ContentType,
+     eContent [0] EXPLICIT OCTET STRING OPTIONAL }
 
+   SignerInfo ::= SEQUENCE {
+     version CMSVersion,
+     sid SignerIdentifier,
+     digestAlgorithm DigestAlgorithmIdentifier,
+     signedAttrs [0] IMPLICIT SignedAttributes OPTIONAL,
+     signatureAlgorithm SignatureAlgorithmIdentifier,
+     signature SignatureValue,
+     unsignedAttrs [1] IMPLICIT UnsignedAttributes OPTIONAL }
 
-             CertRequest ::= SEQUENCE {
-                  certReqId     INTEGER,        -- ID for matching request and reply
-                  certTemplate  CertTemplate, --Selected fields of cert to be issued
-                  controls      Controls OPTIONAL } -- Attributes affecting issuance
+   SignerIdentifier ::= CHOICE {
+     issuerAndSerialNumber IssuerAndSerialNumber,
+     subjectKeyIdentifier [0] SubjectKeyIdentifier }
 
-             Controls  ::= SEQUENCE SIZE(1..MAX) OF AttributeTypeAndValue
+   SignedAttributes ::= SET SIZE (1..MAX) OF AttributeImplicit
 
-             CertTemplate ::= SEQUENCE {
-                  version      [0] Version               OPTIONAL,
-                  serialNumber [1] INTEGER               OPTIONAL,
-                  signingAlg   [2] AlgorithmIdentifier   OPTIONAL,
-                  issuer       [3] Name                  OPTIONAL,
-                  validity     [4] OptionalValidity      OPTIONAL,
-                  subject      [5] Name                  OPTIONAL,
-                  publicKey    [6] SubjectPublicKeyInfo  OPTIONAL,
-                  issuerUID    [7] UniqueIdentifier      OPTIONAL,
-                  subjectUID   [8] UniqueIdentifier      OPTIONAL,
-                  extensions   [9] Extensions            OPTIONAL }
+   UnsignedAttributes ::= SET SIZE (1..MAX) OF AttributeImplicit
 
-             OptionalValidity ::= SEQUENCE {
-                  notBefore  [0] Time OPTIONAL,
-                  notAfter   [1] Time OPTIONAL } --at least one must be present
+   AttributeImplicit ::= SEQUENCE {
+     attrType OBJECT IDENTIFIER,
+     attrValues SET OF AttributeValueImplicit }
 
+   AttributeValueImplicit ::= ANY
 
-             CertId ::= SEQUENCE {
-                  issuer           GeneralName,
-                  serialNumber     INTEGER
-              }
+   SignatureValue ::= OCTET STRING
 
 
-             PKIPublicationInfo ::= SEQUENCE {
-                 action     INTEGER { dontPublish (0),pleasePublish (1) },
-                 pubInfos  SEQUENCE SIZE (1..MAX) OF SinglePubInfo OPTIONAL }
-
-             SinglePubInfo ::= SEQUENCE {
-                 pubMethod    INTEGER {
-                             dontCare    (0),
-                             x500        (1),
-                             web         (2),
-                             ldap        (3) },
-                 pubLocation  GeneralName OPTIONAL }
-
-    --  CertificationRequestInfo
-
-             CertificationRequestInfo ::= SEQUENCE {
-                version       INTEGER,
-                subject       Name,
-                subjectPKInfo SubjectPublicKeyInfo,
-                attributes    [0] Attributes
-                }
 
 
-             Attributes ::= SET OF Attribute
 
 
-             Attribute  ::= SEQUENCE {
-                 type      AttributeType,
-                 values    SET OF AttributeValue
-                 }
 
 
-    -- CertificationRequest
 
-             CertificationRequest ::= SEQUENCE {
-                 certificationRequestInfo CertificationRequestInfo,
-                 signatureAlgorithm AlgorithmIdentifier,
-                 signature BIT STRING
-                    }
 
-    --  EncryptedValue
 
-            EncryptedValue ::= SEQUENCE {
-                 intendedAlg   [0] AlgorithmIdentifier  OPTIONAL,
-      -- the intended algorithm for which the value will be used
-                 symmAlg       [1] AlgorithmIdentifier  OPTIONAL,
-      -- the symmetric algorithm used to encrypt the value
-                 encSymmKey    [2] BIT STRING           OPTIONAL,
-      -- the (encrypted) symmetric key used to encrypt the value
-                 keyAlg        [3] AlgorithmIdentifier  OPTIONAL,
-      -- algorithm used to encrypt the symmetric key
-                 valueHint     [4] OCTET STRING         OPTIONAL,
-      -- a brief description or identifier of the encValue content
-      -- (may be meaningful only to the sending entity, and used only
-      -- if EncryptedValue might be re-examined by the sending entity
-      -- in the future)
-                encValue       BIT STRING }
 
+
+   EnvelopedData ::= SEQUENCE {
+     version CMSVersion,
+     originatorInfo [0] IMPLICIT OriginatorInfo OPTIONAL,
+     recipientInfos RecipientInfos,
+     encryptedContentInfo EncryptedContentInfo,
+     unprotectedAttrs [1] IMPLICIT UnprotectedAttributes OPTIONAL }
+
+   OriginatorInfo ::= SEQUENCE {
+     certs [0] IMPLICIT CertificateSet OPTIONAL,
+     crls [1] IMPLICIT RevocationInfoChoices OPTIONAL }
+
+   RecipientInfos ::= SET SIZE (1..MAX) OF RecipientInfo
+
+   EncryptedContentInfo ::= SEQUENCE {
+     contentType ContentType,
+     contentEncryptionAlgorithm ContentEncryptionAlgorithmIdentifier,
+     encryptedContent [0] IMPLICIT EncryptedContent OPTIONAL }
+
+   EncryptedContent ::= OCTET STRING
+
+   UnprotectedAttributes ::= SET SIZE (1..MAX) OF AttributeImplicit
+
+   RecipientInfo ::= CHOICE {
+     ktri KeyTransRecipientInfo,
+     kari [1] KeyAgreeRecipientInfo,
+     kekri [2] KEKRecipientInfo,
+     pwri [3] PasswordRecipientInfo,
+     ori [4] OtherRecipientInfo }
+
+   EncryptedKey ::= OCTET STRING
+
+   KeyTransRecipientInfo ::= SEQUENCE {
+     version CMSVersion,  -- always set to 0 or 2
+     rid RecipientIdentifier,
+     keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
+     encryptedKey EncryptedKey }
+
+   RecipientIdentifier ::= CHOICE {
+     issuerAndSerialNumber IssuerAndSerialNumber,
+     subjectKeyIdentifier [0] SubjectKeyIdentifier }
+
+   KeyAgreeRecipientInfo ::= SEQUENCE {
+     version CMSVersion,  -- always set to 3
+     originator [0] EXPLICIT OriginatorIdentifierOrKey,
+     ukm [1] EXPLICIT UserKeyingMaterial OPTIONAL,
+     keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
+     recipientEncryptedKeys RecipientEncryptedKeys }
+
+
+
+
+
+
+   OriginatorIdentifierOrKey ::= CHOICE {
+     issuerAndSerialNumber IssuerAndSerialNumber,
+     subjectKeyIdentifier [0] SubjectKeyIdentifier,
+     originatorKey [1] OriginatorPublicKey }
+
+   OriginatorPublicKey ::= SEQUENCE {
+     algorithm AlgorithmIdentifier,
+     publicKey BIT STRING }
+
+   RecipientEncryptedKeys ::= SEQUENCE OF RecipientEncryptedKey
+
+   RecipientEncryptedKey ::= SEQUENCE {
+     rid KeyAgreeRecipientIdentifier,
+     encryptedKey EncryptedKey }
+
+   KeyAgreeRecipientIdentifier ::= CHOICE {
+     issuerAndSerialNumber IssuerAndSerialNumber,
+     rKeyId [0] IMPLICIT RecipientKeyIdentifier }
+
+   RecipientKeyIdentifier ::= SEQUENCE {
+     subjectKeyIdentifier SubjectKeyIdentifier,
+     date GeneralizedTime OPTIONAL,
+     other OtherKeyAttribute OPTIONAL }
+
+-- defined in PKIX1Implicit88 also IMPLICIT as the current module
+--   SubjectKeyIdentifier ::= OCTET STRING
+
+   KEKRecipientInfo ::= SEQUENCE {
+     version CMSVersion,  -- always set to 4
+     kekid KEKIdentifier,
+     keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
+     encryptedKey EncryptedKey }
+
+   KEKIdentifier ::= SEQUENCE {
+     keyIdentifier OCTET STRING,
+     date GeneralizedTime OPTIONAL,
+     other OtherKeyAttribute OPTIONAL }
+
+   PasswordRecipientInfo ::= SEQUENCE {
+     version CMSVersion,   -- always set to 0
+     keyDerivationAlgorithm [0] KeyDerivationAlgorithmIdentifier
+                                OPTIONAL,
+     keyEncryptionAlgorithm KeyEncryptionAlgorithmIdentifier,
+     encryptedKey EncryptedKey }
+
+   OtherRecipientInfo ::= SEQUENCE {
+     oriType OBJECT IDENTIFIER,
+     oriValue ANY DEFINED BY oriType }
+
+
+
+
+
+
+   DigestedData ::= SEQUENCE {
+     version CMSVersion,
+     digestAlgorithm DigestAlgorithmIdentifier,
+     encapContentInfo EncapsulatedContentInfo,
+     digest Digest }
+
+   Digest ::= OCTET STRING
+
+   EncryptedData ::= SEQUENCE {
+     version CMSVersion,
+     encryptedContentInfo EncryptedContentInfo,
+     unprotectedAttrs [1] IMPLICIT UnprotectedAttributes OPTIONAL }
+
+   AuthenticatedData ::= SEQUENCE {
+     version CMSVersion,
+     originatorInfo [0] IMPLICIT OriginatorInfo OPTIONAL,
+     recipientInfos RecipientInfos,
+     macAlgorithm MessageAuthenticationCodeAlgorithm,
+     digestAlgorithm [1] DigestAlgorithmIdentifier OPTIONAL,
+     encapContentInfo EncapsulatedContentInfo,
+     authAttrs [2] IMPLICIT AuthAttributes OPTIONAL,
+     mac MessageAuthenticationCode,
+     unauthAttrs [3] IMPLICIT UnauthAttributes OPTIONAL }
+
+   AuthAttributes ::= SET SIZE (1..MAX) OF AttributeImplicit
+
+   UnauthAttributes ::= SET SIZE (1..MAX) OF AttributeImplicit
+
+   MessageAuthenticationCode ::= OCTET STRING
+
+   DigestAlgorithmIdentifier ::= AlgorithmIdentifier
+
+   SignatureAlgorithmIdentifier ::= AlgorithmIdentifier
+
+   KeyEncryptionAlgorithmIdentifier ::= AlgorithmIdentifier
+
+   ContentEncryptionAlgorithmIdentifier ::= AlgorithmIdentifier
+
+   MessageAuthenticationCodeAlgorithm ::= AlgorithmIdentifier
+
+   KeyDerivationAlgorithmIdentifier ::= AlgorithmIdentifier
+
+   RevocationInfoChoices ::= SET OF RevocationInfoChoice
+
+   RevocationInfoChoice ::= CHOICE {
+     crl CertificateList,
+     other [1] IMPLICIT OtherRevocationInfoFormat }
+
+
+
+
+
+
+   OtherRevocationInfoFormat ::= SEQUENCE {
+     otherRevInfoFormat OBJECT IDENTIFIER,
+     otherRevInfo ANY DEFINED BY otherRevInfoFormat }
+
+   CertificateChoices ::= CHOICE {
+     certificate Certificate,
+     extendedCertificate [0] IMPLICIT ExtendedCertificate,  -- Obsolete
+     v1AttrCert [1] IMPLICIT AttributeCertificateV1,        -- Obsolete
+     v2AttrCert [2] IMPLICIT AttributeCertificateV2,
+     other [3] IMPLICIT OtherCertificateFormat }
+
+   AttributeCertificateV2 ::= AttributeCertificate
+
+   OtherCertificateFormat ::= SEQUENCE {
+     otherCertFormat OBJECT IDENTIFIER,
+     otherCert ANY DEFINED BY otherCertFormat }
+
+   CertificateSet ::= SET OF CertificateChoices
+
+   IssuerAndSerialNumber ::= SEQUENCE {
+     issuer Name,
+     serialNumber CertificateSerialNumber }
+
+   CMSVersion ::= INTEGER  { v0(0), v1(1), v2(2), v3(3), v4(4), v5(5) }
+
+   UserKeyingMaterial ::= OCTET STRING
+
+   OtherKeyAttribute ::= SEQUENCE {
+     keyAttrId OBJECT IDENTIFIER,
+     keyAttr ANY DEFINED BY keyAttrId OPTIONAL }
+
+   -- Content Type Object Identifiers
+
+   id-ct-contentInfo OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs9(9) smime(16) ct(1) 6 }
+
+   id-data OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs7(7) 1 }
+
+   id-signedData OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs7(7) 2 }
+
+   id-envelopedData OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs7(7) 3 }
+
+   id-digestedData OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs7(7) 5 }
+
+
+
+
+
+
+   id-encryptedData OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs7(7) 6 }
+
+   id-ct-authData OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) ct(1) 2 }
+
+   -- The CMS Attributes
+
+   MessageDigest ::= OCTET STRING
+
+   SigningTime  ::= TimeImplicit
+
+   TimeImplicit ::= CHOICE {
+     utcTime UTCTime,
+     generalTime GeneralizedTime }
+
+   Countersignature ::= SignerInfo
+
+   -- Attribute Object Identifiers
+
+   id-contentType OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs9(9) 3 }
+
+   id-messageDigest OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs9(9) 4 }
+
+   id-signingTime OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs9(9) 5 }
+
+   id-countersignature OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+       us(840) rsadsi(113549) pkcs(1) pkcs9(9) 6 }
+
+   -- Obsolete Extended Certificate syntax from PKCS#6
+
+   ExtendedCertificateOrCertificate ::= CHOICE {
+     certificate Certificate,
+     extendedCertificate [0] IMPLICIT ExtendedCertificate }
+
+   ExtendedCertificate ::= SEQUENCE {
+     extendedCertificateInfo ExtendedCertificateInfo,
+     signatureAlgorithm SignatureAlgorithmIdentifier,
+     signature Signature }
+
+
+
+
+
+
+
+
+
+
+
+   ExtendedCertificateInfo ::= SEQUENCE {
+     version CMSVersion,
+     certificate Certificate,
+     attributes UnauthAttributes }
+
+   Signature ::= BIT STRING
+
+END -- of CryptographicMessageSyntax2004
+
+
+PKIXCRMF-2005 {iso(1) identified-organization(3) dod(6) internet(1)
+security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-crmf2005(36)}
+
+DEFINITIONS IMPLICIT TAGS ::=
+BEGIN
+
+IMPORTS
+  -- Directory Authentication Framework (X.509)
+     Version, AlgorithmIdentifier, Name, Time,
+     SubjectPublicKeyInfo, Extensions, UniqueIdentifier, Attribute
+        FROM PKIX1Explicit88 {iso(1) identified-organization(3) dod(6)
+            internet(1) security(5) mechanisms(5) pkix(7) id-mod(0)
+            id-pkix1-explicit(18)} -- found in [PROFILE]
+
+  -- Certificate Extensions (X.509)
+     GeneralName
+        FROM PKIX1Implicit88 {iso(1) identified-organization(3) dod(6)
+               internet(1) security(5) mechanisms(5) pkix(7) id-mod(0)
+               id-pkix1-implicit(19)}  -- found in [PROFILE]
+
+  -- Cryptographic Message Syntax
+     EnvelopedData
+        FROM CryptographicMessageSyntax2004 { iso(1) member-body(2)
+             us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16)
+             modules(0) cms-2004(24) };  -- found in [CMS]
+
+-- The following definition may be uncommented for use with
+-- ASN.1 compilers that do not understand UTF8String.
+
+-- UTF8String ::= [UNIVERSAL 12] IMPLICIT OCTET STRING
+       -- The contents of this type correspond to RFC 2279.
+
+-- id-pkix  OBJECT IDENTIFIER  ::= { iso(1) identified-organization(3)
+-- dod(6) internet(1) security(5) mechanisms(5) 7 }
+
+-- arc for Internet X.509 PKI protocols and their components
+
+id-pkip  OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 }
+
+id-smime OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+             us(840) rsadsi(113549) pkcs(1) pkcs9(9) 16 }
+
+id-ct   OBJECT IDENTIFIER ::= { 1 2 840 113549 1 9 16  1 }  -- content types
+
+
+
+
+
+
+
+
+-- Core definitions for this module
+
+CertReqMessages ::= SEQUENCE SIZE (1..MAX) OF CertReqMsg
+
+CertReqMsg ::= SEQUENCE {
+ certReq   CertRequest,
+ popo       ProofOfPossession  OPTIONAL,
+ -- content depends upon key type
+ regInfo   SEQUENCE SIZE(1..MAX) OF AttributeTypeAndValueImplicit OPTIONAL }
+
+CertRequest ::= SEQUENCE {
+ certReqId     INTEGER,          -- ID for matching request and reply
+ certTemplate  CertTemplate,  -- Selected fields of cert to be issued
+ controls      Controls OPTIONAL }   -- Attributes affecting issuance
+
+CertTemplate ::= SEQUENCE {
+ version      [0]            Version               OPTIONAL,
+ serialNumber [1]            INTEGER               OPTIONAL,
+ signingAlg   [2]            AlgorithmIdentifier   OPTIONAL,
+ issuer       [3]            Name                  OPTIONAL,
+ validity     [4]            OptionalValidity      OPTIONAL,
+ subject      [5]            Name                  OPTIONAL,
+ publicKey    [6]            SubjectPublicKeyInfo  OPTIONAL,
+ issuerUID    [7]            UniqueIdentifier      OPTIONAL,
+ subjectUID   [8]            UniqueIdentifier      OPTIONAL,
+ extensions   [9]            Extensions            OPTIONAL }
+
+OptionalValidity ::= SEQUENCE {
+ notBefore  [0] Time OPTIONAL,
+ notAfter   [1] Time OPTIONAL } -- at least one MUST be present
+
+Controls  ::= SEQUENCE SIZE(1..MAX) OF AttributeTypeAndValueImplicit
+AttributeTypeAndValueImplicit ::= SEQUENCE {
+ type         OBJECT IDENTIFIER,
+ value        ANY DEFINED BY type }
+
+ProofOfPossession ::= CHOICE {
+ raVerified        [0] NULL,
+ -- used if the RA has already verified that the requester is in
+ -- possession of the private key
+ signature         [1] POPOSigningKey,
+ keyEncipherment   [2] POPOPrivKey,
+ keyAgreement      [3] POPOPrivKey }
+
+POPOSigningKey ::= SEQUENCE {
+ poposkInput           [0] POPOSigningKeyInput OPTIONAL,
+ algorithmIdentifier   AlgorithmIdentifier,
+ signature             BIT STRING }
+
+
+
+
+
+ -- The signature (using "algorithmIdentifier") is on the
+ -- DER-encoded value of poposkInput.  NOTE: If the CertReqMsg
+ -- certReq CertTemplate contains the subject and publicKey values,
+ -- then poposkInput MUST be omitted and the signature MUST be
+ -- computed over the DER-encoded value of CertReqMsg certReq.  If
+ -- the CertReqMsg certReq CertTemplate does not contain both the
+ -- public key and subject values (i.e., if it contains only one
+ -- of these, or neither), then poposkInput MUST be present and
+ -- MUST be signed.
+
+
+POPOSigningKeyInput ::= SEQUENCE {
+ authInfo            CHOICE {
+     sender              [0] GeneralName,
+     -- used only if an authenticated identity has been
+     -- established for the sender (e.g., a DN from a
+     -- previously-issued and currently-valid certificate)
+     publicKeyMAC        PKMACValue },
+     -- used if no authenticated GeneralName currently exists for
+     -- the sender; publicKeyMAC contains a password-based MAC
+     -- on the DER-encoded value of publicKey
+ publicKey           SubjectPublicKeyInfo }  -- from CertTemplate
+
+PKMACValue ::= SEQUENCE {
+algId  AlgorithmIdentifier,
+-- algorithm value shall be PasswordBasedMac {1 2 840 113533 7 66 13}
+-- parameter value is PBMParameter-2005
+value  BIT STRING }
+
+PBMParameter-2005 ::= SEQUENCE {
+   salt                OCTET STRING,
+   owf                 AlgorithmIdentifier,
+   -- AlgId for a One-Way Function (SHA-1 recommended)
+   iterationCount      INTEGER,
+   -- number of times the OWF is applied
+   mac                 AlgorithmIdentifier
+   -- the MAC AlgId (e.g., DES-MAC, Triple-DES-MAC [PKCS11],
+}   -- or HMAC [HMAC, RFC2202])
+
+POPOPrivKey ::= CHOICE {
+ thisMessage       [0] BIT STRING,         -- Deprecated
+ -- possession is proven in this message (which contains the private
+ -- key itself (encrypted for the CA))
+ subsequentMessage [1] SubsequentMessage,
+ -- possession will be proven in a subsequent message
+ dhMAC             [2] BIT STRING,         -- Deprecated
+ agreeMAC          [3] PKMACValue,
+ encryptedKey      [4] EnvelopedData }
+
+
+
+
+
+ -- for keyAgreement (only), possession is proven in this message
+ -- (which contains a MAC (over the DER-encoded value of the
+ -- certReq parameter in CertReqMsg, which MUST include both subject
+ -- and publicKey) based on a key derived from the end entity's
+ -- private DH key and the CA's public DH key);
+
+SubsequentMessage ::= INTEGER {
+ encrCert (0),
+ -- requests that resulting certificate be encrypted for the
+ -- end entity (following which, POP will be proven in a
+ -- confirmation message)
+ challengeResp (1) }
+ -- requests that CA engage in challenge-response exchange with
+ -- end entity in order to prove private key possession
+
+-- Object identifier assignments --
+
+-- Registration Controls in CRMF
+id-regCtrl OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 }
+
+
+id-regCtrl-regToken OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 1 }
+--with syntax:
+RegToken ::= UTF8String
+
+id-regCtrl-authenticator OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 2 }
+--with syntax:
+Authenticator ::= UTF8String
+
+id-regCtrl-pkiPublicationInfo OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 3 }
+--with syntax:
+
+PKIPublicationInfo ::= SEQUENCE {
+action     INTEGER {
+             dontPublish (0),
+             pleasePublish (1) },
+pubInfos  SEQUENCE SIZE (1..MAX) OF SinglePubInfo OPTIONAL }
+  -- pubInfos MUST NOT be present if action is "dontPublish"
+  -- (if action is "pleasePublish" and pubInfos is omitted,
+  -- "dontCare" is assumed)
+
+SinglePubInfo ::= SEQUENCE {
+ pubMethod    INTEGER {
+     dontCare    (0),
+     x500        (1),
+     web         (2),
+     ldap        (3) },
+ pubLocation  GeneralName OPTIONAL }
+
+
+
+
+
+
+id-regCtrl-pkiArchiveOptions     OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 4 }
+--with syntax:
+PKIArchiveOptions ::= CHOICE {
+ encryptedPrivKey     [0] EncryptedKey2005,
+ -- the actual value of the private key
+ keyGenParameters     [1] KeyGenParameters,
+ -- parameters that allow the private key to be re-generated
+ archiveRemGenPrivKey [2] BOOLEAN }
+ -- set to TRUE if sender wishes receiver to archive the private
+ -- key of a key pair that the receiver generates in response to
+ -- this request; set to FALSE if no archival is desired.
+
+EncryptedKey2005 ::= CHOICE {
+ encryptedValue        EncryptedValue,   -- Deprecated
+ envelopedData     [0] EnvelopedData }
+ -- The encrypted private key MUST be placed in the envelopedData
+ -- encryptedContentInfo encryptedContent OCTET STRING.
+
+EncryptedValue ::= SEQUENCE {
+ intendedAlg   [0] AlgorithmIdentifier  OPTIONAL,
+ -- the intended algorithm for which the value will be used
+ symmAlg       [1] AlgorithmIdentifier  OPTIONAL,
+ -- the symmetric algorithm used to encrypt the value
+ encSymmKey    [2] BIT STRING           OPTIONAL,
+ -- the (encrypted) symmetric key used to encrypt the value
+ keyAlg        [3] AlgorithmIdentifier  OPTIONAL,
+ -- algorithm used to encrypt the symmetric key
+ valueHint     [4] OCTET STRING         OPTIONAL,
+ -- a brief description or identifier of the encValue content
+ -- (may be meaningful only to the sending entity, and used only
+ -- if EncryptedValue might be re-examined by the sending entity
+ -- in the future)
+ encValue       BIT STRING }
+ -- the encrypted value itself
+-- When EncryptedValue is used to carry a private key (as opposed to
+-- a certificate), implementations MUST support the encValue field
+-- containing an encrypted PrivateKeyInfo as defined in [PKCS11],
+-- section 12.11.  If encValue contains some other format/encoding
+-- for the private key, the first octet of valueHint MAY be used
+-- to indicate the format/encoding (but note that the possible values
+-- of this octet are not specified at this time).  In all cases, the
+-- intendedAlg field MUST be used to indicate at least the OID of
+-- the intended algorithm of the private key, unless this information
+-- is known a priori to both sender and receiver by some other means.
+
+KeyGenParameters ::= OCTET STRING
+
+
+
+
+
+
+id-regCtrl-oldCertID          OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 5 }
+--with syntax:
+OldCertId ::= CertId
+
+CertId ::= SEQUENCE {
+ issuer           GeneralName,
+ serialNumber     INTEGER }
+
+id-regCtrl-protocolEncrKey    OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 1 6 }
+--with syntax:
+ProtocolEncrKey ::= SubjectPublicKeyInfo
+
+-- Registration Info in CRMF
+id-regInfo OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 2 }
+
+id-regInfo-utf8Pairs    OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 2 1 }
+--with syntax
+UTF8Pairs ::= UTF8String
+
+
+id-regInfo-certReq       OBJECT IDENTIFIER ::= { 1 3 6 1 5 5 7 5 2 2 }
+--with syntax
+CertReq ::= CertRequest
+
+-- id-ct-encKeyWithID is a new content type used for CMS objects.
+-- it contains both a private key and an identifier for key escrow
+-- agents to check against recovery requestors.
+
+id-ct-encKeyWithID OBJECT IDENTIFIER ::= {1 2 840 113549 1 9 16  1 21}
+
+EncKeyWithID ::= SEQUENCE {
+  privateKey           PrivateKeyInfo,
+  identifier CHOICE {
+    string             UTF8String,
+    generalName        GeneralName
+  } OPTIONAL
+}
+
+PrivateKeyInfo ::= SEQUENCE {
+   version                   INTEGER,
+   privateKeyAlgorithm       AlgorithmIdentifier,
+   privateKey                OCTET STRING,
+   attributes                [0] IMPLICIT Attributes OPTIONAL
+}
+
+Attributes ::= SET OF Attribute
+
+END
+
+PKCS-10 {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
+   pkcs-10(10) modules(1) pkcs-10(1)}
+
+   DEFINITIONS IMPLICIT TAGS ::=
+
+   BEGIN
+   -- EXPORTS All --
+
+   -- All types and values defined in this module are exported for use
+   -- in other ASN.1 modules.
+
+--   IMPORTS
+
+--   informationFramework, authenticationFramework
+--        FROM UsefulDefinitions {joint-iso-itu-t(2) ds(5) module(1)
+--        usefulDefinitions(0) 3}
+
+--   ATTRIBUTE, Name
+--        FROM InformationFramework informationFramework
+
+--   ALGORITHM
+--        FROM AuthenticationFramework authenticationFramework;
+
+   -- Certificate requests
+-- manually simplified
+   CertificationRequestInfo ::= SEQUENCE {
+        version       INTEGER,
+        subject       Name,
+        subjectPKInfo SubjectPublicKeyInfo-10,
+        attributes    [0] Attributes-10
+   }
+
+-- manually simplified
+   SubjectPublicKeyInfo-10 ::= SEQUENCE {
+        algorithm        AlgorithmIdentifier-10,
+        subjectPublicKey BIT STRING
+   }
+
+--   PKInfoAlgorithms ALGORITHM ::= {
+--        ...  }
+-- add any locally defined algorithms here -- 
+
+-- manually simplified
+   Attributes-10 ::= SET OF Attribute-10
+
+--   CRIAttributes  ATTRIBUTE  ::= {
+--        ...  }
+-- add any locally defined attributes here --
+
+-- manually simplified
+	AttributeValue-10 ::= ANY
+   Attribute-10 ::= SEQUENCE {
+        type   OBJECT IDENTIFIER,
+        values SET OF AttributeValue-10
+   }
+
+-- manually simplified
+   CertificationRequest ::= SEQUENCE {
+        certificationRequestInfo CertificationRequestInfo,
+        signatureAlgorithm AlgorithmIdentifier-10,
+        signature          BIT STRING
+   }
+
+-- manually simplified
+   AlgorithmIdentifier-10 ::= SEQUENCE {
+        algorithm  OBJECT IDENTIFIER,
+        parameters ANY DEFINED BY algorithm OPTIONAL
+   }
+
+--   SignatureAlgorithms ALGORITHM ::= {
+--        ...  }
+-- add any locally defined algorithms here --
+  
+   END
+
+     PKIXCMP {iso(1) identified-organization(3)
+           dod(6) internet(1) security(5) mechanisms(5) pkix(7)
+           id-mod(0) id-mod-cmp2000(16)}
+
+     DEFINITIONS EXPLICIT TAGS ::=
+
+     BEGIN
+
+     -- EXPORTS ALL --
+
+     IMPORTS
+
+         Certificate, CertificateList, Extensions, AlgorithmIdentifier,
+         UTF8String -- if required; otherwise, comment out
+                FROM PKIX1Explicit88 {iso(1) identified-organization(3)
+                dod(6) internet(1) security(5) mechanisms(5) pkix(7)
+                id-mod(0) id-pkix1-explicit-88(1)}
+
+         GeneralName, KeyIdentifier
+                FROM PKIX1Implicit88 {iso(1) identified-organization(3)
+                dod(6) internet(1) security(5) mechanisms(5) pkix(7)
+                id-mod(0) id-pkix1-implicit-88(2)}
+
+         CertTemplate, PKIPublicationInfo, EncryptedValue, CertId,
+         CertReqMessages
+                FROM PKIXCRMF-2005 {iso(1) identified-organization(3)
+                dod(6) internet(1) security(5) mechanisms(5) pkix(7)
+                id-mod(0) id-mod-crmf2005(36)}
+
+         -- see also the behavioral clarifications to CRMF codified in
+         -- Appendix C of this specification
+
+         CertificationRequest
+                FROM PKCS-10 {iso(1) member-body(2)
+                              us(840) rsadsi(113549)
+                              pkcs(1) pkcs-10(10) modules(1) pkcs-10(1)}
+
+         -- (specified in RFC 2986 with 1993 ASN.1 syntax and IMPLICIT
+         -- tags).  Alternatively, implementers may directly include
+         -- the [PKCS10] syntax in this module
+
+
+
+
+
+
+         ;
 
    -- the rest of the module contains locally-defined OIDs and
    -- constructs
-
-
-
-
-   -- CMPCertificate
-
-
 
       CMPCertificate ::= CHOICE {
          x509v3PKCert        Certificate
@@ -801,9 +2330,6 @@ ub-x121-address-length INTEGER ::= 16
 
    -- CMPCertificate ::= Certificate
 
-
-    --  PKIMessage
-
       PKIMessage ::= SEQUENCE {
          header           PKIHeader,
          body             PKIBody,
@@ -813,9 +2339,6 @@ ub-x121-address-length INTEGER ::= 16
      }
 
      PKIMessages ::= SEQUENCE SIZE (1..MAX) OF PKIMessage
-
-
-    -- PKIHeader
 
      PKIHeader ::= SEQUENCE {
          pvno                INTEGER     { cmp1999(1), cmp2000(2) },
@@ -832,6 +2355,10 @@ ub-x121-address-length INTEGER ::= 16
          senderKID       [2] KeyIdentifier           OPTIONAL,
          recipKID        [3] KeyIdentifier           OPTIONAL,
          -- to identify specific keys used for protection
+
+
+
+
 
          transactionID   [4] OCTET STRING            OPTIONAL,
          -- identifies the transaction; i.e., this will be the same in
@@ -858,10 +2385,6 @@ ub-x121-address-length INTEGER ::= 16
          -- to indicate the language of the contained text
          -- see [RFC2482] for details)
 
-
-
-     -- PKIBody
-
      PKIBody ::= CHOICE {       -- message-specific body elements
          ir       [0]  CertReqMessages,        --Initialization Request
          ip       [1]  CertRepMessage,         --Initialization Response
@@ -878,20 +2401,19 @@ ub-x121-address-length INTEGER ::= 16
          rp       [12] RevRepContent,          --Revocation Response
          ccr      [13] CertReqMessages,        --Cross-Cert. Request
          ccp      [14] CertRepMessage,         --Cross-Cert. Response
-         ckuann   [15] CAKeyUpdAnnContent,     --CA Key Update Ann.
-         cann     [16] CertAnnContent,         --Certificate Ann.
-         rann     [17] RevAnnContent,          --Revocation Ann.
-         crlann   [18] CRLAnnContent,          --CRL Announcement
          pkiconf  [19] PKIConfirmContent,      --Confirmation
          genm     [21] GenMsgContent,          --General Message
+
+
+
+
+
          genp     [22] GenRepContent,          --General Response
          error    [23] ErrorMsgContent,        --Error Message
          certConf [24] CertConfirmContent,     --Certificate confirm
          pollReq  [25] PollReqContent,         --Polling request
          pollRep  [26] PollRepContent          --Polling response
      }
-
-        NestedMessageContent ::= PKIMessages
 
      PKIProtection ::= BIT STRING
 
@@ -926,7 +2448,7 @@ ub-x121-address-length INTEGER ::= 16
      }   -- or HMAC [RFC2104, RFC2202])
 
 
-     
+     NestedMessageContent ::= PKIMessages
 
      PKIStatus ::= INTEGER {
          accepted                (0),
@@ -934,6 +2456,11 @@ ub-x121-address-length INTEGER ::= 16
          grantedWithMods        (1),
          -- you got something like what you asked for; the
          -- requester is responsible for ascertaining the differences
+
+
+
+
+
          rejection              (2),
          -- you don't get it, more information elsewhere in the message
          waiting                (3),
@@ -951,8 +2478,6 @@ ub-x121-address-length INTEGER ::= 16
          -- update already done for the oldCertId specified in
          -- CertReqMsg
      }
-
-
 
      PKIFailureInfo ::= BIT STRING {
      -- since we can fail in more than one way!
@@ -984,6 +2509,11 @@ ub-x121-address-length INTEGER ::= 16
             -- the certificate has already been revoked
          certConfirmed       (11),
             -- the certificate has already been confirmed
+
+
+
+
+
          wrongIntegrity      (12),
             -- invalid integrity, password based instead of signature or
             -- vice versa
@@ -1020,7 +2550,6 @@ ub-x121-address-length INTEGER ::= 16
          -- certificate already exists
      }
 
-
      PKIStatusInfo ::= SEQUENCE {
          status        PKIStatus,
          statusString  PKIFreeText     OPTIONAL,
@@ -1034,16 +2563,17 @@ ub-x121-address-length INTEGER ::= 16
          certId      [1] CertId                  OPTIONAL,
          hashVal         BIT STRING
 
+
+
+
+
          -- hashVal is calculated over the DER encoding of the
          -- self-signed certificate with the identifier certID.
      }
 
-
-
      POPODecKeyChallContent ::= SEQUENCE OF Challenge
      -- One Challenge per encryption key certification request (in the
      -- same order as these requests appear in CertReqMessages).
-
 
      Challenge ::= SEQUENCE {
          owf                 AlgorithmIdentifier  OPTIONAL,
@@ -1061,11 +2591,11 @@ ub-x121-address-length INTEGER ::= 16
          -- the encryption (under the public key for which the cert.
          -- request is being made) of Rand, where Rand is specified as
          --   Rand ::= SEQUENCE {
-         --                int      INTEGER,
+         --      int      INTEGER,
          --       - the randomly-generated INTEGER A (above)
-         --                sender   GeneralName
+         --      sender   GeneralName
          --       - the sender's name (as included in PKIHeader)
-         --                     }
+         --   }
      }
 
      POPODecKeyRespContent ::= SEQUENCE OF INTEGER
@@ -1074,17 +2604,12 @@ ub-x121-address-length INTEGER ::= 16
      -- retrieved INTEGER A (above) is returned to the sender of the
      -- corresponding Challenge.
 
-
-
-   -- CertRepMessage
-
      CertRepMessage ::= SEQUENCE {
          caPubs       [1] SEQUENCE SIZE (1..MAX) OF CMPCertificate
                           OPTIONAL,
          response         SEQUENCE OF CertResponse
      }
 
-    
      CertResponse ::= SEQUENCE {
          certReqId           INTEGER,
          -- to match this response with corresponding request (a value
@@ -1147,6 +2672,7 @@ ub-x121-address-length INTEGER ::= 16
 
 
 
+
          -- the resulting CRLs (there may be more than one)
      }
 
@@ -1196,6 +2722,10 @@ ub-x121-address-length INTEGER ::= 16
      --      SignKeyPairTypesValue   ::= SEQUENCE OF AlgorithmIdentifier
      --   id-it-encKeyPairTypes  OBJECT IDENTIFIER ::= {id-it 3}
 
+
+
+
+
      --      EncKeyPairTypesValue    ::= SEQUENCE OF AlgorithmIdentifier
      --   id-it-preferredSymmAlg OBJECT IDENTIFIER ::= {id-it 4}
      --      PreferredSymmAlgValue   ::= AlgorithmIdentifier
@@ -1226,7 +2756,7 @@ ub-x121-address-length INTEGER ::= 16
      --      iso(1) identified-organization(3)
      --      dod(6) internet(1) security(5) mechanisms(5) pkix(7)}
      -- and
-     --   id-it   OBJECT IDENTIFIER ::= {id-pkix 4}
+     --   id-it   OBJECT IDENTIFIER ::= {1 3 6 1 5 5 7 4}
      --
      --
      -- This construct MAY also be used to define new PKIX Certificate
@@ -1243,6 +2773,10 @@ ub-x121-address-length INTEGER ::= 16
      -- does not recognize. If sent from EE to CA, the empty set
      -- indicates that the CA may send
      -- any/all information that it wishes.
+
+
+
+
 
 
      GenRepContent ::= SEQUENCE OF InfoTypeAndValue
@@ -1267,4 +2801,4 @@ ub-x121-address-length INTEGER ::= 16
          reason                 PKIFreeText OPTIONAL
      }
 
-END
+     END -- of CMP module

@@ -49,6 +49,17 @@ void XERValueWriter::writeObjectIdentifier(const ObjectIdentifier& value, const 
       _buffer.append(newLine());
 }
 
+// Writes BIT STRING value
+void XERValueWriter::writeBitString(const BitString& value, const BitStringType& type)
+{
+   _writeTagBegin(type);
+   _buffer.append(value.getValueAsString());
+   _writeTagEnd(type);
+
+   if (!_isCanonical)
+      _buffer.append(newLine());
+}
+
 // Writes NULL value
 void XERValueWriter::writeNull(const NullType& type)
 {
@@ -67,6 +78,18 @@ void XERValueWriter::writeOctetString(const OctetString& value, const OctetStrin
 
    if (!_isCanonical)
       _buffer.append(newLine());
+}
+
+// Writes VISIBLE STRING value
+void XERValueWriter::writeVisibleString(const OctetString& value, const VisibleStringType& type)
+{
+   writeOctetString(value, type);
+}
+
+// Writes UTC TIME value
+void XERValueWriter::writeUtcTime(const OctetString& value, const UTCTimeType& type)
+{
+   writeVisibleString(value, type);
 }
 
 // Writes SEQUENCE value

@@ -40,7 +40,7 @@ public:
    void writeObjectIdentifier(const ObjectIdentifier& value, const ObjectIdentifierType& type);
 
    // Writes BIT STRING value
-   void writeBitString(const BitString& value, const BitStringType& type) {}
+   void writeBitString(const BitString& value, const BitStringType& type);
 
    // Writes NULL value
    void writeNull(const NullType& type);
@@ -49,7 +49,7 @@ public:
    void writeOctetString(const OctetString& value, const OctetStringType& type);
 
    // Writes VISIBLE STRING value
-   void writeVisibleString(const OctetString& value, const VisibleStringType& type) {}
+   void writeVisibleString(const OctetString& value, const VisibleStringType& type);
 
    // Writes GRAPHIC STRING value
    void writeGraphicString(const OctetString& value, const GraphicStringType& type) {}
@@ -67,7 +67,7 @@ public:
    void writeIA5String(const OctetString& value, const IA5StringType& type) {}
 
    // Writes UTC TIME value
-   void writeUtcTime(const OctetString& value, const UTCTimeType& type) {}
+   void writeUtcTime(const OctetString& value, const UTCTimeType& type);
 
    // Writes ANY value
    void writeAny(const OctetString& value, const AnyType& type) {}
