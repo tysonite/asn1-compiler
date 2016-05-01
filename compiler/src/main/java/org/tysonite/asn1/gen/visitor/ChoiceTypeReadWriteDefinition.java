@@ -184,7 +184,7 @@ public class ChoiceTypeReadWriteDefinition extends DoNothingASTVisitor implement
               append("::read(ASN1ValueReader& reader, ").append("ValueType").
               append("& value) const").newLine();
       builder.append("{").newLine();
-      builder.append(1, asn1NameSpace).append("Type* choosenType = NULL;").newLine();
+      builder.append(1, asn1NameSpace).append("Type* choosenType = nullptr;").newLine();
       builder.append(1, "reader.readChoice(*this, &choosenType);").newLine();
       builder.newLine();
 

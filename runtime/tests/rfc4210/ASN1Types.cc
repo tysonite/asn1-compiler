@@ -46,7 +46,7 @@ void _INTERNAL__SequenceType_userCertificateuserCertificate_INTERNAL_asn1__gener
 
 void _APPLICATION_1_INTERNAL__ChoiceType_x121_dcc_codex121_dcc_code_INTERNAL_asn1__NumericStringType_iso_3166_alpha2_codeiso_3166_alpha2_code_INTERNAL_asn1__PrintableStringType::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_x121_dcc_code_Type)
@@ -85,7 +85,7 @@ void _APPLICATION_1_INTERNAL__ChoiceType_x121_dcc_codex121_dcc_code_INTERNAL_asn
 
 void _APPLICATION_2_INTERNAL__ChoiceType_numericnumeric_INTERNAL_asn1__NumericStringType_printableprintable_INTERNAL_asn1__PrintableStringType::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_numeric_Type)
@@ -185,7 +185,7 @@ void _INTERNAL__SequenceType_issuerDomainPolicyissuerDomainPolicy_INTERNAL_asn1_
 
 void _INTERNAL__ChoiceType_octetsoctets_INTERNAL_asn1__OctetStringType_oidoid_INTERNAL_asn1__ObjectIdentifierType_stringstring_INTERNAL_asn1__generated__UTF8String::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_octets_Type)
@@ -232,7 +232,7 @@ void _INTERNAL__ChoiceType_octetsoctets_INTERNAL_asn1__OctetStringType_oidoid_IN
 
 void subject_INTERNAL__ChoiceType_baseCertificateIDbaseCertificateID_INTERNAL__NOTAG_0_INTERNAL_asn1__generated__IssuerSerial_subjectNamesubjectName_INTERNAL__NOTAG_1_INTERNAL_asn1__generated__GeneralNames::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_baseCertificateID_Type)
@@ -271,7 +271,7 @@ void subject_INTERNAL__ChoiceType_baseCertificateIDbaseCertificateID_INTERNAL__N
 
 void authInfo_INTERNAL__ChoiceType_sendersender_INTERNAL__NOTAG_0_INTERNAL_asn1__generated__GeneralName_publicKeyMACpublicKeyMAC_INTERNAL_asn1__generated__PKMACValue::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_sender_Type)
@@ -310,7 +310,7 @@ void authInfo_INTERNAL__ChoiceType_sendersender_INTERNAL__NOTAG_0_INTERNAL_asn1_
 
 void identifier_INTERNAL__ChoiceType_stringstring_INTERNAL_asn1__generated__UTF8String_generalNamegeneralName_INTERNAL_asn1__generated__GeneralName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_string_Type)
@@ -468,7 +468,7 @@ void AttributeTypeAndValue::write(ASN1ValueWriter& writer, const ValueType& valu
 
 void X520name::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -531,7 +531,7 @@ void X520name::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void X520CommonName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -594,7 +594,7 @@ void X520CommonName::write(ASN1ValueWriter& writer, const ValueType& value) cons
 
 void X520LocalityName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -657,7 +657,7 @@ void X520LocalityName::write(ASN1ValueWriter& writer, const ValueType& value) co
 
 void X520StateOrProvinceName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -720,7 +720,7 @@ void X520StateOrProvinceName::write(ASN1ValueWriter& writer, const ValueType& va
 
 void X520OrganizationName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -783,7 +783,7 @@ void X520OrganizationName::write(ASN1ValueWriter& writer, const ValueType& value
 
 void X520OrganizationalUnitName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -846,7 +846,7 @@ void X520OrganizationalUnitName::write(ASN1ValueWriter& writer, const ValueType&
 
 void X520Title::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -909,7 +909,7 @@ void X520Title::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void X520Pseudonym::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -972,7 +972,7 @@ void X520Pseudonym::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void Name::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_rdnSequence_Type)
@@ -1003,7 +1003,7 @@ void Name::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void DirectoryString::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_teletexString_Type)
@@ -1216,7 +1216,7 @@ void Validity::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void Time::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_utcTime_Type)
@@ -1596,7 +1596,7 @@ void BuiltInStandardAttributes::write(ASN1ValueWriter& writer, const ValueType& 
 
 void PrivateDomainName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_numeric_Type)
@@ -1793,7 +1793,7 @@ void TeletexPersonalName::write(ASN1ValueWriter& writer, const ValueType& value)
 
 void PhysicalDeliveryCountryName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_x121_dcc_code_Type)
@@ -1832,7 +1832,7 @@ void PhysicalDeliveryCountryName::write(ASN1ValueWriter& writer, const ValueType
 
 void PostalCode::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_numeric_code_Type)
@@ -1941,7 +1941,7 @@ void PDSParameter::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void ExtendedNetworkAddress::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_e163_4_address_Type)
@@ -2263,7 +2263,7 @@ void NoticeReference::write(ASN1ValueWriter& writer, const ValueType& value) con
 
 void DisplayText::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_ia5String_Type)
@@ -2318,7 +2318,7 @@ void DisplayText::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void GeneralName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_otherName_Type)
@@ -2585,7 +2585,7 @@ void DistributionPoint::write(ASN1ValueWriter& writer, const ValueType& value) c
 
 void DistributionPointName::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_fullName_Type)
@@ -2853,7 +2853,7 @@ void ObjectDigestInfo::write(ASN1ValueWriter& writer, const ValueType& value) co
 
 void AttCertIssuer::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_v1Form_Type)
@@ -3003,7 +3003,7 @@ void AttCertValidityPeriod::write(ASN1ValueWriter& writer, const ValueType& valu
 
 void Target::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_targetName_Type)
@@ -3592,7 +3592,7 @@ void SignerInfo::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void SignerIdentifier::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_issuerAndSerialNumber_Type)
@@ -3786,7 +3786,7 @@ void EncryptedContentInfo::write(ASN1ValueWriter& writer, const ValueType& value
 
 void RecipientInfo::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_ktri_Type)
@@ -3890,7 +3890,7 @@ void KeyTransRecipientInfo::write(ASN1ValueWriter& writer, const ValueType& valu
 
 void RecipientIdentifier::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_issuerAndSerialNumber_Type)
@@ -3979,7 +3979,7 @@ void KeyAgreeRecipientInfo::write(ASN1ValueWriter& writer, const ValueType& valu
 
 void OriginatorIdentifierOrKey::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_issuerAndSerialNumber_Type)
@@ -4084,7 +4084,7 @@ void RecipientEncryptedKey::write(ASN1ValueWriter& writer, const ValueType& valu
 
 void KeyAgreeRecipientIdentifier::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_issuerAndSerialNumber_Type)
@@ -4481,7 +4481,7 @@ void AuthenticatedData::write(ASN1ValueWriter& writer, const ValueType& value) c
 
 void RevocationInfoChoice::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_crl_Type)
@@ -4549,7 +4549,7 @@ void OtherRevocationInfoFormat::write(ASN1ValueWriter& writer, const ValueType& 
 
 void CertificateChoices::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_certificate_Type)
@@ -4702,7 +4702,7 @@ void OtherKeyAttribute::write(ASN1ValueWriter& writer, const ValueType& value) c
 
 void TimeImplicit::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_utcTime_Type)
@@ -4741,7 +4741,7 @@ void TimeImplicit::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void ExtendedCertificateOrCertificate::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_certificate_Type)
@@ -5100,7 +5100,7 @@ void AttributeTypeAndValueImplicit::write(ASN1ValueWriter& writer, const ValueTy
 
 void ProofOfPossession::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_raVerified_Type)
@@ -5292,7 +5292,7 @@ void PBMParameter_2005::write(ASN1ValueWriter& writer, const ValueType& value) c
 
 void POPOPrivKey::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_thisMessage_Type)
@@ -5419,7 +5419,7 @@ void SinglePubInfo::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void PKIArchiveOptions::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_encryptedPrivKey_Type)
@@ -5466,7 +5466,7 @@ void PKIArchiveOptions::write(ASN1ValueWriter& writer, const ValueType& value) c
 
 void EncryptedKey2005::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_encryptedValue_Type)
@@ -5844,7 +5844,7 @@ void AlgorithmIdentifier_10::write(ASN1ValueWriter& writer, const ValueType& val
 
 void CMPCertificate::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_x509v3PKCert_Type)
@@ -6038,7 +6038,7 @@ void PKIHeader::write(ASN1ValueWriter& writer, const ValueType& value) const
 
 void PKIBody::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_ir_Type)
@@ -6576,7 +6576,7 @@ void CertifiedKeyPair::write(ASN1ValueWriter& writer, const ValueType& value) co
 
 void CertOrEncCert::read(ASN1ValueReader& reader, ValueType& value) const
 {
-   asn1::Type* choosenType = NULL;
+   asn1::Type* choosenType = nullptr;
    reader.readChoice(*this, &choosenType);
 
    if (choosenType == &_certificate_Type)
