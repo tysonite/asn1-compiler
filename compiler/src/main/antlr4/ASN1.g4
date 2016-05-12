@@ -40,20 +40,25 @@ moduleDefinition :
 moduleIdentifier : modulereference definitiveIdentifier ;
 definitiveIdentifier : (L_BRACE definitiveObjIdComponentList R_BRACE)? ;
 definitiveObjIdComponentList : definitiveObjIdComponent definitiveObjIdComponent* ;
-definitiveObjIdComponent : nameForm | definitiveNumberForm | definitiveNameAndNumberForm ;
+definitiveObjIdComponent :
+      nameForm
+      | definitiveNumberForm
+      | definitiveNameAndNumberForm ;
 definitiveNumberForm : number ;
 definitiveNameAndNumberForm : identifier L_PAREN definitiveNumberForm R_PAREN ;
-
 tagDefault : ((EXPLICIT_WORD | IMPLICIT_WORD | AUTOMATIC_WORD) TAGS_WORD)? ;
 extensionDefault : (EXTENSIBILITY_WORD IMPLIED_WORD)? ;
-
-moduleBody : imports? assignmentList? ;
+moduleBody : exports? imports? assignmentList? ;
+exports :
+      EXPORTS_WORD symbolsExported ';'
+      | EXPORTS_WORD ALL_WORD ';' ;
+symbolsExported : symbolList? ;
 imports : IMPORTS_WORD symbolsImported ';' ;
 symbolsImported : symbolsFromModuleList? ;
 symbolsFromModuleList : symbolsFromModule symbolsFromModule* ;
 symbolsFromModule : symbolList FROM_WORD globalModuleReference ;
 globalModuleReference : modulereference assignedIdentifier ;
-assignedIdentifier : objectIdentifierValue | definedValue | ;
+assignedIdentifier : (objectIdentifierValue | definedValue)? ;
 symbolList : symbol (COMMA symbol)* ;
 symbol : reference /* | parameterizedReference */ ;
 reference :
@@ -63,7 +68,8 @@ reference :
       | objectreference
       | objectsetreference ;
 assignmentList : assignment assignment* ;
-assignment : typeAssignment
+assignment :
+      typeAssignment
       | valueAssignment
       | valueSetTypeAssignment
       | objectClassAssignment
@@ -150,7 +156,7 @@ builtinValue :
 //      | taggedValue
       ;
 // X.680: 16.11
-referencedValue : definedValue /* | valueFromObject */ ;
+referencedValue : definedValue | valueFromObject ;
 // X.680: 16.13
 namedValue : identifier value ;
 
@@ -227,7 +233,7 @@ extensionEndMarker : (COMMA ELLIPSIS) ;
 extensionAdditions : (COMMA extensionAdditionList)? ;
 extensionAdditionList : extensionAddition (COMMA extensionAddition)* ;
 extensionAddition : componentType | extensionAdditionGroup ;
-extensionAdditionGroup : '[[' versionNumber componentTypeList ']]' ;
+extensionAdditionGroup : LV_BRACKET versionNumber componentTypeList RV_BRACKET ;
 versionNumber : (number COLON)? ;
 componentTypeList : componentType (COMMA componentType)* ;
 componentType : namedType | namedType OPTIONAL_WORD | namedType DEFAULT_WORD value
@@ -275,7 +281,7 @@ extensionAdditionAlternatives : (COMMA extensionAdditionAlternativesList)* ;
 extensionAdditionAlternativesList : extensionAdditionAlternative
       | extensionAdditionAlternativesList COMMA extensionAdditionAlternative ;
 extensionAdditionAlternative : extensionAdditionAlternativesGroup | namedType ;
-extensionAdditionAlternativesGroup : '[[' versionNumber alternativeTypeList ']]' ;
+extensionAdditionAlternativesGroup : LV_BRACKET versionNumber alternativeTypeList RV_BRACKET ;
 alternativeTypeList : namedType (COMMA namedType)* ;
 
 // X.680: 30: Notation for tagged types
@@ -438,7 +444,7 @@ includes : INCLUDES_WORD? ;
 
 // X.680: 47.4: Value range
 // X.680: 47.4.1
-valueRange : lowerEndpoint '..' upperEndpoint ;
+valueRange : lowerEndpoint RANGE upperEndpoint ;
 // X.680: 47.4.3
 lowerEndpoint : lowerEndValue | lowerEndValue '<' ;
 upperEndpoint : upperEndValue | '<' upperEndValue ;
@@ -571,6 +577,7 @@ fixedTypeFieldVal : builtinValue | referencedValue ;
 
 // X.681: 15: Information from objects
 // X.681: 15.1
+valueFromObject : referencedObjects DOT fieldName ;
 valueSetFromObjects : referencedObjects DOT fieldName ;
 typeFromObject : referencedObjects DOT fieldName ;
 referencedObjects :
@@ -739,7 +746,10 @@ L_PAREN : '(' ;
 R_PAREN : ')' ;
 
 ASSIGN : '::=' ;
+RANGE : '..' ;
 ELLIPSIS : '...' ;
+LV_BRACKET : '[[' ;
+RV_BRACKET : ']]' ;
 COLON : ':' ;
 DOT : '.' ;
 COMMA : ',' ;
