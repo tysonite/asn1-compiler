@@ -58,6 +58,8 @@ public class GoodAsn1ParseTest extends Antlr4BaseTest {
                  boolean exact, BitSet ambigAlts, ATNConfigSet configs) {
             if (exact) {
                Assert.fail("Can't parse ASN.1 file (" + file.getName() + ")");
+            } else {
+               System.out.println(file.getName() + " : ambiguity found");
             }
          }
 
