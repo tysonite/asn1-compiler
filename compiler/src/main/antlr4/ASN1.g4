@@ -121,12 +121,12 @@ referencedType :
       definedType
       | usefulType
 //      | selectionType
-//      | typeFromObject // X.681
-/*      | valueSetFromObjects */ ; // X.681
+      | typeFromObject // X.681
+      | valueSetFromObjects ; // X.681
 // X.680: 16.5
 namedType : identifier type ;
 // X.680: 16.7
-value : builtinValue | referencedValue /* | objectClassFieldValue */ ;
+value : builtinValue | referencedValue | objectClassFieldValue ;
 // X.680: 16.9:
 builtinValue :
       bitStringValue
@@ -564,6 +564,20 @@ objectSetElements :
 // X.681: 14: Notation for the object class field type
 // X.681: 14.1
 objectClassFieldType : definedObjectClass DOT fieldName ;
+// X.681: 14.6
+objectClassFieldValue : openTypeFieldVal | fixedTypeFieldVal ;
+openTypeFieldVal : type COLON value ;
+fixedTypeFieldVal : builtinValue | referencedValue ;
+
+// X.681: 15: Information from objects
+// X.681: 15.1
+valueSetFromObjects : referencedObjects DOT fieldName ;
+typeFromObject : referencedObjects DOT fieldName ;
+referencedObjects :
+      definedObject
+//      | parameterizedObject
+      | definedObjectSet
+/*      | parameterizedObjectSet */ ;
 
 // Deprecated types
 anyType : ANY_WORD (DEFINED_WORD BY_WORD)? identifier? ;
