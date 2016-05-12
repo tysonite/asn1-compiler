@@ -19,4 +19,21 @@ WITH SYNTAX
    CODE &errorCode
 }
 
+ProtocolExtensionContainer {S1AP-PROTOCOL-EXTENSION : ExtensionSetParam} ::= 
+   SEQUENCE (SIZE (1..maxProtocolExtensions)) OF
+   ProtocolExtensionField {{ExtensionSetParam}}
+
+TABasedMDT ::= SEQUENCE {
+   tAListforMDT TAListforMDT,
+   iE-Extensions ProtocolExtensionContainer { {TABasedMDT-ExtIEs} } OPTIONAL,
+   ...
+}
+
+ProtocolExtensionField {S1AP-PROTOCOL-EXTENSION : ExtensionSetParam} ::= SEQUENCE {
+--	id					S1AP-PROTOCOL-EXTENSION.&id				({ExtensionSetParam})
+   criticality S1AP-PROTOCOL-EXTENSION.&criticality ({ExtensionSetParam}{@id}),
+   extensionValue S1AP-PROTOCOL-EXTENSION.&Extension ({ExtensionSetParam}{@id})
+}
+
+
 END

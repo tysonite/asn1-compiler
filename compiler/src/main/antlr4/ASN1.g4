@@ -60,7 +60,7 @@ symbolsFromModule : symbolList FROM_WORD globalModuleReference ;
 globalModuleReference : modulereference assignedIdentifier ;
 assignedIdentifier : (objectIdentifierValue | definedValue)? ;
 symbolList : symbol (COMMA symbol)* ;
-symbol : reference /* | parameterizedReference */ ;
+symbol : reference | parameterizedReference ;
 reference :
       typereference
       | valuereference
@@ -75,12 +75,12 @@ assignment :
       | objectClassAssignment
       | objectAssignment
       | objectSetAssignment
-/*      | parameterizedAssignment */ ;
+      | parameterizedAssignment ;
 
 // X.680: 13: Referencing type and value definitions
 // X.680: 13.1
-definedType : externalTypeReference | typereference ;
-definedValue : externalValueReference | valuereference ;
+definedType : externalTypeReference | typereference | parameterizedType | parameterizedValueSetType;
+definedValue : externalValueReference | valuereference | parameterizedValue ;
 // X.680: 13.6
 externalTypeReference : modulereference DOT typereference ;
 externalValueReference : modulereference DOT valuereference ;
@@ -311,8 +311,8 @@ numberForm : number | definedValue ;
 nameAndNumberForm : identifier L_PAREN numberForm R_PAREN ;
 
 extensionAndException : ELLIPSIS | ELLIPSIS exceptionSpec ;
-exceptionSpec : ('!' exceptionIdentification)* ;
-exceptionIdentification : signedNumber definedValue type COLON value ;
+exceptionSpec : ('!' exceptionIdentification)? ;
+exceptionIdentification : signedNumber | definedValue | type COLON value ;
 optionalExtensionMarker : (COMMA ELLIPSIS)? ;
 
 // X.680: 36: Notation for character string types
@@ -386,26 +386,9 @@ subtypeConstraint : elementSetSpecs ;
 // X.682: 8: General constraint specification
 // X.682: 8.1
 generalConstraint :
-//      userDefinedConstraint
-/*      | */ tableConstraint
+      userDefinedConstraint
+      |  tableConstraint
       |  contentsConstraint ;
-
-// X.682: 10:
-// X.682: 10.3
-tableConstraint : simpleTableConstraint | componentRelationConstraint ;
-simpleTableConstraint : objectSet ;
-// X.682: 10.7
-componentRelationConstraint : L_BRACE definedObjectSet R_BRACE L_BRACE atNotation (COMMA atNotation)* R_BRACE ;
-atNotation : '@' componentIdList | '@.' level componentIdList ;
-level : DOT level | ;
-componentIdList : identifier (DOT identifier)* ;
-
-// X.682: 11: Contents constraints
-// X.682: 11.1
-contentsConstraint :
-      CONTAINING_WORD type
-      | ENCODED_WORD BY_WORD value
-      | CONTAINING_WORD type ENCODED_WORD BY_WORD value ;
 
 // X.680: 46: Element set specification
 // X.680: 46.1
@@ -435,13 +418,15 @@ subtypeElements :
       | containedSubtype 
       | valueRange
       | permittedAlphabet
-      | sizeConstraint ;
+      | sizeConstraint
+//      | typeConstraint
+//      | innerTypeConstraints
+/*      | patternConstraint */ ;
 // X.680: 47.2.1
 singleValue : value ;
 // X.680: 47.3.1
 containedSubtype : includes type ;
 includes : INCLUDES_WORD? ;
-
 // X.680: 47.4: Value range
 // X.680: 47.4.1
 valueRange : lowerEndpoint RANGE upperEndpoint ;
@@ -451,12 +436,39 @@ upperEndpoint : upperEndValue | '<' upperEndValue ;
 // X.680: 47.4.4
 lowerEndValue : value | MIN_WORD ;
 upperEndValue : value | MAX_WORD ;
-
 // X.680: 47.5.1
 sizeConstraint : SIZE_WORD constraint ;
-
 // X.680: 47.7.1
 permittedAlphabet : FROM_WORD constraint ;
+
+// X.682: 9: User-defined constraints
+// X.682: 9.1
+userDefinedConstraint : CONSTRAINED_WORD BY_WORD
+      L_BRACE userDefinedConstraintParameter? (COMMA userDefinedConstraintParameter)* R_BRACE ;
+userDefinedConstraintParameter :
+      governor COLON value
+      | governor COLON valueSet
+      | governor COLON object
+      | governor COLON objectSet
+      | type
+      | definedObjectClass ;
+
+// X.682: 10:
+// X.682: 10.3
+tableConstraint : simpleTableConstraint | componentRelationConstraint ;
+simpleTableConstraint : objectSet ;
+// X.682: 10.7
+componentRelationConstraint : L_BRACE definedObjectSet R_BRACE L_BRACE atNotation (COMMA atNotation)* R_BRACE ;
+atNotation : '@' componentIdList | '@.' level componentIdList ;
+level : DOT level | ;
+componentIdList : identifier (DOT identifier)* ;
+
+// X.682: 11: Contents constraints
+// X.682: 11.1
+contentsConstraint :
+      CONTAINING_WORD type
+      | ENCODED_WORD BY_WORD value
+      | CONTAINING_WORD type ENCODED_WORD BY_WORD value ;
 
 // X.681: 8: Referencing definitions
 // X.681: 8.1
@@ -477,7 +489,7 @@ usefulObjectClassReference : TYPE_IDENTIFIER_WORD | ABSTRACT_SYNTAX_WORD ;
 // X.681: 9.1
 objectClassAssignment : objectclassreference ASSIGN objectClass ;
 // X.681: 9.2
-objectClass : definedObjectClass | objectClassDefn /* | parameterizedObjectClass */ ;
+objectClass : definedObjectClass | objectClassDefn | parameterizedObjectClass ;
 // X.681: 9.3
 objectClassDefn : CLASS_WORD L_BRACE fieldSpec (COMMA fieldSpec)* R_BRACE withSyntaxSpec? ;
 withSyntaxSpec : WITH_WORD SYNTAX_WORD syntaxList ;
@@ -489,7 +501,7 @@ fieldSpec :
       | fixedTypeValueSetFieldSpec
       | variableTypeValueSetFieldSpec
       | objectFieldSpec
-/*      | objectSetFieldSpec */ ;
+      | objectSetFieldSpec ;
 // X.681: 9.5
 typeFieldSpec : typefieldreference typeOptionalitySpec? ;
 typeOptionalitySpec : OPTIONAL_WORD | (DEFAULT_WORD type) ;
@@ -506,6 +518,9 @@ variableTypeValueSetFieldSpec : valuesetfieldreference fieldName valueSetOptiona
 // X.681: 9.11
 objectFieldSpec : objectfieldreference definedObjectClass objectOptionalitySpec? ;
 objectOptionalitySpec : OPTIONAL_WORD | (DEFAULT_WORD object);
+// X.681: 9.12
+objectSetFieldSpec : objectsetfieldreference definedObjectClass objectSetOptionalitySpec? ;
+objectSetOptionalitySpec : OPTIONAL_WORD | (DEFAULT_WORD objectSet) ;
 // X.681: 9.13
 primitiveFieldName :
       typefieldreference
@@ -532,7 +547,7 @@ object :
       definedObject
       | objectDefn
       | objectFromObject
-/*      | parameterizedObject */ ;
+      | parameterizedObject ;
 // X.681: 11.4
 objectDefn : defaultSyntax | definedSyntax ;
 // X.681: 11.5
@@ -565,7 +580,7 @@ objectSetElements :
       object
       | definedObjectSet
       | objectSetFromObjects
-/*      | parameterizedObjectSet */ ;
+      | parameterizedObjectSet ;
 
 // X.681: 14: Notation for the object class field type
 // X.681: 14.1
@@ -584,9 +599,9 @@ objectFromObject : referencedObjects DOT fieldName ;
 objectSetFromObjects : referencedObjects DOT fieldName ;
 referencedObjects :
       definedObject
-//      | parameterizedObject
+      | parameterizedObject
       | definedObjectSet
-/*      | parameterizedObjectSet */ ;
+      | parameterizedObjectSet ;
 
 // Deprecated types
 anyType : ANY_WORD (DEFINED_WORD BY_WORD)? identifier? ;
@@ -634,6 +649,52 @@ word : ReferenceItem
             }
       }
       ;
+
+// X.683: 8: Parameterized assignments
+// X.683: 8.1
+parameterizedAssignment :
+      parameterizedTypeAssignment
+      | parameterizedValueAssignment
+      | parameterizedValueSetTypeAssignment
+      | parameterizedObjectClassAssignment
+      | parameterizedObjectAssignment
+      | parameterizedObjectSetAssignment ;
+// X.683: 8.2
+parameterizedTypeAssignment : typereference parameterList ASSIGN type ;
+parameterizedValueAssignment : valuereference parameterList type ASSIGN value ;
+parameterizedValueSetTypeAssignment : typereference parameterList type ASSIGN valueSet ;
+parameterizedObjectClassAssignment : objectclassreference parameterList ASSIGN objectClass ;
+parameterizedObjectAssignment : objectreference parameterList definedObjectClass ASSIGN object ;
+parameterizedObjectSetAssignment : objectsetreference parameterList definedObjectClass ASSIGN objectSet ;
+// X.683: 8.3
+parameterList : L_BRACE parameter (COMMA parameter)* R_BRACE ;
+parameter : (paramGovernor COLON dummyReference) | dummyReference ;
+paramGovernor : governor | dummyGovernor ;
+governor : type | definedObjectClass ;
+dummyGovernor : dummyReference ;
+dummyReference : reference ;
+
+// X.683: 9: Referencing parameterized definitions
+// X.683: 9.1
+parameterizedReference : reference | reference L_BRACE R_BRACE ;
+// X.683: 9.2
+parameterizedType : simpleDefinedType actualParameterList ;
+simpleDefinedType : externalTypeReference | typereference ;
+parameterizedValue : simpleDefinedValue actualParameterList ;
+simpleDefinedValue : externalValueReference | valuereference ;
+parameterizedValueSetType : simpleDefinedType actualParameterList ;
+parameterizedObjectClass : definedObjectClass actualParameterList ;
+parameterizedObjectSet : definedObjectSet actualParameterList ;
+parameterizedObject : definedObject actualParameterList ;
+// X.683: 9.5
+actualParameterList : L_BRACE actualParameter (COMMA actualParameter)* R_BRACE ;
+actualParameter :
+      type
+      | value
+      | valueSet
+      | definedObjectClass
+      | object
+      | objectSet ;
 
 // X.680: 11: ASN.1 lexical items
 // X.680: 11.2
