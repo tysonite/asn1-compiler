@@ -1,0 +1,8 @@
+TestModule DEFINITIONS ::= BEGIN
+   Os1 ::= OCTET STRING
+
+   vos1 OCTET STRING ::= '01000111'B
+   vos2 OCTET STRING ::= ''B
+   vos11 OCTET STRING ::= '1AD23F34'H
+   vos12 OCTET STRING ::= ''H
+END

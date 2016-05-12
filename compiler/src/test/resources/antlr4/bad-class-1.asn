@@ -1,0 +1,8 @@
+TestModule DEFINITIONS ::= BEGIN
+
+OpERAtION -- No lower case characters allowed -- ::= CLASS
+{
+   &ArgumentType
+}
+
+END

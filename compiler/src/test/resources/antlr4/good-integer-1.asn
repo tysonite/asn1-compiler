@@ -1,0 +1,9 @@
+TestModule DEFINITIONS ::= BEGIN
+   I1 ::= INTEGER
+   I2 ::= INTEGER { a(1), b(2), c(-1), f(x), z(0) }
+
+   vi1 INTEGER ::= 102
+   vi2 INTEGER ::= -103
+   vi3 INTEGER ::= 0
+   vi4 INTEGER ::= id1
+END

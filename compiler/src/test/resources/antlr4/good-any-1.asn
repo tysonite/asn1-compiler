@@ -1,0 +1,11 @@
+TestModule DEFINITIONS ::= BEGIN
+
+An1 ::= ANY
+
+As1 ::= SEQUENCE {
+   i INTEGER,
+   adb ANY DEFINED BY any OPTIONAL,
+   adb1 ANY DEFINED BY any1
+}
+
+END

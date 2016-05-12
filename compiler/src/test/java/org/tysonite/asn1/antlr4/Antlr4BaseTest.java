@@ -1,15 +1,13 @@
-package org.tysonite.asn1.gen;
+package org.tysonite.asn1.antlr4;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.tysonite.asn1.parser.AsnParser;
 
-public class AbstractAsn1ParseTest {
+public class Antlr4BaseTest {
 
-   private static final String PATH_TO_ASN_FILES = "src/test/resources/javacc";
-   protected static AsnParser parser = null;
+   private static final String PATH_TO_ASN_FILES = "src/test/resources/antlr4";
 
    protected interface Filter {
 

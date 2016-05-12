@@ -1,0 +1,4 @@
+TestModule DEFINITIONS ::= BEGIN
+   B0 ::= BIT STRING
+   B1 ::= BIT STRING { a(1), b(2), c(3), x(y), z(0) }
+END

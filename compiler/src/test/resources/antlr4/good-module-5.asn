@@ -1,0 +1,2 @@
+TestModule { abc(1) xyz(10) } DEFINITIONS ::= BEGIN
+END

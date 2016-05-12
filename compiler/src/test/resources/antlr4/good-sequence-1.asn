@@ -1,0 +1,63 @@
+TestModule DEFINITIONS ::= BEGIN
+
+S0 ::= SEQUENCE {
+  a INTEGER
+}
+
+S1 ::= SEQUENCE {
+   a INTEGER,
+   b BOOLEAN
+}
+
+S2 ::= SEQUENCE {
+   a INTEGER,
+   bs BIT STRING,
+   ...
+}
+
+S3 ::= SEQUENCE {
+   a INTEGER,
+   ...,
+   b BOOLEAN
+}
+
+S4 ::= SEQUENCE {
+   myVar MyType
+}
+
+S5 ::= SEQUENCE {
+   c CHOICE {
+      b BOOLEAN,
+      i INTEGER
+   }
+}
+
+S6 ::= SEQUENCE {
+   s SEQUENCE {
+      b BOOLEAN,
+      i INTEGER,
+      c CHOICE {
+         b BOOLEAN,
+         bs BIT STRING
+      }
+   }
+}
+
+S7 ::= SEQUENCE {
+   b BOOLEAN OPTIONAL,
+   i INTEGER DEFAULT 1,
+   b1 BOOLEAN DEFAULT FALSE
+}
+
+S8 ::= SEQUENCE {
+}
+
+S19 ::= SEQUENCE {
+   abc SEQUENCE OF BIT STRING { a(0), b(1), c(2) }
+}
+
+S20 ::= SEQUENCE {
+   nt NULL
+}
+
+END

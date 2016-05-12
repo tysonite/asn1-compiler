@@ -1,0 +1,6 @@
+TestModule DEFINITIONS ::= BEGIN
+   B1 ::= BOOLEAN
+
+   vb1 BOOLEAN ::= FALSE
+   vb2 BOOLEAN ::= TRUE
+END

@@ -1,0 +1,10 @@
+TestModule DEFINITIONS ::= BEGIN
+
+Oi1 ::= OBJECT IDENTIFIER
+
+voi1 OBJECT IDENTIFIER ::= { abc(1) xyz(2) }
+voi2 OBJECT IDENTIFIER ::= { 1 2 3 }
+voi3 OBJECT IDENTIFIER ::= { abc(1) 2 }
+vo-i-4 OBJECT IDENTIFIER ::= { 1 2 3 }
+
+END

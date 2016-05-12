@@ -1,0 +1,9 @@
+TestModule DEFINITIONS ::= BEGIN
+
+Bmps1 ::= BMPString (SIZE (1..10))
+Bmps2 ::= BMPString (FROM ("abcXYZ123"))
+Bmps3 ::= BMPString (FROM ("0".."9"))
+Bmps4 ::= BMPString (FROM ("0".."9"|"abc"|"XYZ"))
+--Bmps5 ::= BMPString (SIZE (1..10)) (FROM ("0".."9"|"abc"|"XYZ"))
+
+END

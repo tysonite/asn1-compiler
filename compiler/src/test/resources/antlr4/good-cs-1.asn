@@ -1,0 +1,20 @@
+TestModule DEFINITIONS ::= BEGIN
+  S1 ::= BMPString
+  S2 ::= GeneralString
+  S4 ::= GraphicString 
+  S5 ::= IA5String
+  S6 ::= ISO646String
+  S7 ::= NumericString
+  S8 ::= PrintableString
+  S9 ::= TeletexString
+  S10 ::= T61String
+  S11 ::= UniversalString
+  S12 ::= UTF8String
+  S13 ::= VideotexString
+  S14 ::= VisibleString
+
+  S15 ::= CHARACTER STRING
+  
+  vs1 BMPString ::= ""
+  vs2 BMPString ::= "abcXYZ123"
+END

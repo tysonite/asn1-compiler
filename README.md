@@ -12,6 +12,16 @@ The top directory consists of these sub-directories:
 * compiler -- A Java ASN.1 to C++ compiler
 * runtime  -- C++ runtime library for encoding/decoding of the data
 
+# ASN.1 grammars
+
+The Java ASN.1 to C++ compiler depends on [JavaCC ASN.1 grammar](https://github.com/tysonite/asn1-compiler/blob/master/compiler/src/main/javacc/asn1/AsnParser.jjt),
+this grammar is a bit modified comparing to original one. It is far from complete (e.g. does not
+parse Information objects). However, ASN.1 compiler generates C++ code using that grammar.
+
+An experimental [Antlr4 ASN.1 grammar](http://) with partial support of notations from X.680, X.681, X.682 and X.683
+is available as an option of ASN.1 compiler. Right now, compiler does not produce any C++ code if you this grammar
+is selected.
+
 # Examples
 
 Several ASN.1 files and generated C++ code is available for protocols:
@@ -19,7 +29,8 @@ Several ASN.1 files and generated C++ code is available for protocols:
 * CMPv2 (RFC 4210 / 4211) -- https://github.com/tysonite/asn1-compiler/tree/master/runtime/tests/rfc4210
 
 # Compile & Test runtime library
-The runtime library uses [CMake](http://www.cmake.org/) to build itself. As a result of compilation static and shared libraries will be produced.
+The runtime library uses [CMake](http://www.cmake.org/) to build itself. As a result of compilation
+static and shared libraries will be produced.
 
 1. Ensure that you are located in the directory with runtime library sources;
 2. Create a temporary build directory (e.g. build) with help of 'mkdir' command: `mkdir build`;
@@ -27,9 +38,14 @@ The runtime library uses [CMake](http://www.cmake.org/) to build itself. As a re
 4. Execute CMake to create Makefile: `cmake ..`;
 5. Execute GNU make to build static and shared libraries: `make`;
 
-Unit tests can be built during library compilation, if CMake command line contains option `-DBUILD_UNIT_TESTS=1`. Unit tests require Boost test framework, on Windows set environment variable BOOST_ROOT equal to your Boost installation path (e.g. BOOST_ROOT="c:\boost_1_55_0").
+Unit tests can be built during library compilation, if CMake command line contains option
+`-DBUILD_UNIT_TESTS=1`. Unit tests require Boost test framework, on Windows set environment
+variable BOOST_ROOT equal to your Boost installation path (e.g. BOOST_ROOT="c:\boost_1_55_0").
 
-Coverage data can be calculated, if CMake command line contains option `-DDO_COVERAGE=1`. There is no need to specify `-DBUILD_UNIT_TESTS=1` if you are going to see coverage data, because it will be enabled automatically. For example, to compile unit tests and collect coverage data during their running, execute `cmake -DDO_COVERAGE=1 ..` instead of command in step 4 above.
+Coverage data can be calculated, if CMake command line contains option `-DDO_COVERAGE=1`. There
+is no need to specify `-DBUILD_UNIT_TESTS=1` if you are going to see coverage data, because it
+will be enabled automatically. For example, to compile unit tests and collect coverage data
+during their running, execute `cmake -DDO_COVERAGE=1 ..` instead of command in step 4 above.
 
 To run unit tests execute command: `./tests/TestBER`.
 
@@ -40,4 +56,5 @@ To run unit tests execute command: `./tests/TestBER`.
 1. Execute `java -jar asn1-compiler-<...>.jar` and follow on-screen instructions
 
 # Generate Debian/Ubuntu runtime package
-The runtime library uses CPack (feature of CMake) to generate an installable Debian package. If compilation of runtime library was successful, execute `make package` to create package.
+The runtime library uses CPack (feature of CMake) to generate an installable Debian package. If
+compilation of runtime library was successful, execute `make package` to create package.

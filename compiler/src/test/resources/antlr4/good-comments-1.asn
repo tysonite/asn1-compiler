@@ -1,0 +1,28 @@
+TestModule DEFINITIONS ::= BEGIN
+
+-- Comment 1
+MyVar ::= MyType -- Comment 2
+
+-- Comment 3 --
+MySeq ::= SEQUENCE {
+   myVar1 /* Some comment */ MyType1, -- Comment 4
+   myVar2 -- Comment 5 -- MyType2
+}
+
+/*
+/*                   
+   Another comment
+*/
+
+Also comment
+*/
+
+-- Comment 6
+--    Comment-7
+
+/*
+-- Comment
+*/
+
+END
+-- End of file (without newline)

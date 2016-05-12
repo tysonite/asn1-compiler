@@ -1,0 +1,16 @@
+TestModule DEFINITIONS ::= BEGIN
+
+MyTimeType1 ::= UTCTime
+MyTimeType2 ::= GeneralizedTime
+
+C1 ::= CHOICE {
+   utcTime UTCTime,
+   generalTime GeneralizedTime
+}
+
+S1 ::= SEQUENCE {
+   utcTime UTCTime,
+   generalTime GeneralizedTime
+}
+
+END

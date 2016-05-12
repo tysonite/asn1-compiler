@@ -1,0 +1,22 @@
+TestModule DEFINITIONS ::= BEGIN
+
+OPERATION ::= CLASS
+{
+   &ArgumentType OPTIONAL,
+   &Errors ERROR OPTIONAL,
+   &resultReturned BOOLEAN DEFAULT TRUE,
+   &code INTEGER 
+}
+
+ERROR ::= CLASS
+{
+   &ParameterType OPTIONAL,
+   &errorCode INTEGER UNIQUE
+}
+WITH SYNTAX
+{
+   [PARAMETER &ParameterType]
+   CODE &errorCode
+}
+
+END

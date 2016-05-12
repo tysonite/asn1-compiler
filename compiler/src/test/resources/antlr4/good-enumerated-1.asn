@@ -1,0 +1,18 @@
+TestModule DEFINITIONS ::= BEGIN
+
+E1 ::= ENUMERATED {
+   e1 (0)
+}
+
+E2 ::= ENUMERATED {
+   e1(0),
+   e2(1)
+}
+
+E3 ::= ENUMERATED {
+   e1(0),
+   ...,
+   e2(1)
+}
+
+END

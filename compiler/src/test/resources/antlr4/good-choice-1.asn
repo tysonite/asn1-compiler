@@ -1,0 +1,41 @@
+TestModule DEFINITIONS ::= BEGIN
+
+C0 ::= CHOICE {
+   b BOOLEAN
+}
+
+C1 ::= CHOICE {
+   b BOOLEAN,
+   bs BIT STRING
+}
+
+C2 ::= CHOICE {
+   b BOOLEAN,
+   bs BIT STRING,
+   ...
+}
+
+C3 ::= CHOICE {
+   b BOOLEAN,
+   ...,
+   bs BIT STRING
+}
+
+C4 ::= CHOICE {
+   myVar MyType
+}
+
+C5 ::= CHOICE {
+   b BOOLEAN,
+   myVar MyType,
+   bs BIT STRING
+}
+
+C6 ::= CHOICE {
+  c CHOICE {
+    b BOOLEAN,
+    bs BIT STRING
+  }
+}
+
+END

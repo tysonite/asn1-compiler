@@ -1,0 +1,4 @@
+TestModule DEFINITIONS ::= BEGIN
+   Os1 ::= OCTET STRING (SIZE(10))
+   Os2 ::= OCTET STRING (SIZE(1..10))
+END

@@ -1,0 +1,13 @@
+TestModule DEFINITIONS ::= BEGIN
+
+SO1 ::= SET OF BOOLEAN
+SO2 ::= SET OF MyType
+
+vso1 SET OF INTEGER ::= { 1, 2, 3 }
+vso2 SET OF BOOLEAN ::= { TRUE, FALSE, TRUE }
+vso3 SET OF NULL ::= { NULL, NULL }
+vso4 SET OF OCTET STRING ::= { '0110'B, '1A2F'H }
+vso5 SET OF MyType ::= { abc, edf }
+vso5 SET OF MyAnotherType ::= { }
+
+END

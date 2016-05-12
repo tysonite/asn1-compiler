@@ -1,0 +1,5 @@
+TestModule DEFINITIONS ::= BEGIN
+   N1 ::= NULL
+
+   vn BOOLEAN ::= NULL
+END
