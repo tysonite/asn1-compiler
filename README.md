@@ -18,9 +18,9 @@ The Java ASN.1 to C++ compiler depends on [JavaCC ASN.1 grammar](https://github.
 this grammar is a bit modified comparing to original one. It is far from complete (e.g. does not
 parse Information objects). However, ASN.1 compiler generates C++ code using that grammar.
 
-An experimental [Antlr4 ASN.1 grammar](http://) with partial support of notations from X.680, X.681, X.682 and X.683
-is available as an option of ASN.1 compiler. Right now, compiler does not produce any C++ code if you this grammar
-is selected.
+An experimental [Antlr4 ASN.1 grammar](https://github.com/tysonite/asn1-compiler/blob/master/compiler/src/main/antlr4/ASN1.g4)
+with partial support of notations from X.680, X.681, X.682 and X.683 is available as an option of
+ASN.1 compiler. Right now, compiler does not produce any C++ code if you this grammar is selected.
 
 # Examples
 
