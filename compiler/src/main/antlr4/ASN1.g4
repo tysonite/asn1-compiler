@@ -608,15 +608,7 @@ anyType : ANY_WORD (DEFINED_WORD BY_WORD)? identifier? ;
 
 // X.681: 7: ASN.1 lexical items
 // X.681: 7.1
-objectclassreference : ReferenceItem
-      {
-            // No lower case characters
-            if (!$ReferenceItem.getText().equals($ReferenceItem.getText().toUpperCase())) {
-                  System.out.println("No lower case characters allowed in 'objectclassreference': " + $ReferenceItem.getText());
-                  throw new InputMismatchException(this); 
-            }
-      }
-      ;
+objectclassreference : { !_input.LT(1).getText().matches(".*[a-z]+.*") }? ReferenceItem ;
 // X.681: 7.2
 objectreference : IdentifierOrValueItem ;
 // X.681: 7.3
@@ -632,23 +624,7 @@ objectfieldreference : '&' IdentifierOrValueItem ;
 // X.681: 7.8
 objectsetfieldreference : '&' ReferenceItem ;
 // X.681: 7.9
-word : ReferenceItem
-      {
-            // No lower case characters
-            if (!$ReferenceItem.getText().equals($ReferenceItem.getText().toUpperCase())) {
-                  System.out.println("No lower case characters allowed in 'word': " + $ReferenceItem.getText());
-                  throw new InputMismatchException(this);
-            }
-
-            // No digits
-            for (int i = 0; i < $ReferenceItem.getText().length(); ++i) {
-                  if (Character.isDigit($ReferenceItem.getText().charAt(i))) {
-                        System.out.println("No digits allowed in 'word': " + $ReferenceItem.getText());
-                        throw new InputMismatchException(this);
-                  }
-            }
-      }
-      ;
+word : { !_input.LT(1).getText().matches(".*[a-z]+.*") && !_input.LT(1).getText().matches(".*[0-9]+.*") }? ReferenceItem ;
 
 // X.683: 8: Parameterized assignments
 // X.683: 8.1
