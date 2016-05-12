@@ -531,7 +531,7 @@ objectAssignment : objectreference definedObjectClass ASSIGN object ;
 object :
       definedObject
       | objectDefn
-//      | objectFromObject
+      | objectFromObject
 /*      | parameterizedObject */ ;
 // X.681: 11.4
 objectDefn : defaultSyntax | definedSyntax ;
@@ -564,7 +564,7 @@ objectSetSpec :
 objectSetElements :
       object
       | definedObjectSet
-//      | objectSetFromObjects
+      | objectSetFromObjects
 /*      | parameterizedObjectSet */ ;
 
 // X.681: 14: Notation for the object class field type
@@ -580,6 +580,8 @@ fixedTypeFieldVal : builtinValue | referencedValue ;
 valueFromObject : referencedObjects DOT fieldName ;
 valueSetFromObjects : referencedObjects DOT fieldName ;
 typeFromObject : referencedObjects DOT fieldName ;
+objectFromObject : referencedObjects DOT fieldName ;
+objectSetFromObjects : referencedObjects DOT fieldName ;
 referencedObjects :
       definedObject
 //      | parameterizedObject
