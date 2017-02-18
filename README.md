@@ -58,3 +58,8 @@ To run unit tests execute command: `./tests/TestBER`.
 # Generate Debian/Ubuntu runtime package
 The runtime library uses CPack (feature of CMake) to generate an installable Debian package. If
 compilation of runtime library was successful, execute `make package` to create package.
+
+# Donation
+If this project helped you, please, consider to make a donation.
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z8MVWEREKYYRL)
