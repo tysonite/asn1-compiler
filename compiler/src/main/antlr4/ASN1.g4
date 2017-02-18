@@ -89,10 +89,7 @@ externalValueReference : modulereference DOT valuereference ;
 // X.680: 15.1
 typeAssignment : typereference ASSIGN type ;
 // X.680: 15.2
-valueAssignment :
-      (valuereference withoutObjectTypetype ASSIGN withoutObjectValue)
-      | (valuereference withObjectTypetype ASSIGN withObjectValue)
-      ;
+valueAssignment : valuereference type ASSIGN value ;
 // X.680: 15.6
 valueSetTypeAssignment : typereference type ASSIGN valueSet ;
 // X.680: 15.7
@@ -100,13 +97,9 @@ valueSet : L_BRACE elementSetSpecs R_BRACE ;
 
 // X.680: 16: Definition of types and values
 // X.680: 16.1
-type : withoutObjectTypetype | withObjectTypetype ;
-withoutObjectTypetype : nonObjectBuiltinType | referencedType | constrainedType ;
-withObjectTypetype : objectBuiltinType | referencedType | constrainedType ;
+type : builtinType | referencedType | constrainedType ;
 // X.680: 16.2
-builtinType : nonObjectBuiltinType | objectBuiltinType;
-
-nonObjectBuiltinType :
+builtinType :
       bitStringType
       | booleanType
       | characterStringType
@@ -117,6 +110,8 @@ nonObjectBuiltinType :
 //      | instanceOfType
       | integerType
       | nullType
+      | objectClassFieldType
+      | objectIdentifierType
       | octetStringType
 //      | realType
 //      | relativeOIDType
@@ -127,12 +122,6 @@ nonObjectBuiltinType :
       | taggedType
       | anyType // Deprecated since 1994
       ;
-
-objectBuiltinType :
-      objectClassFieldType
-      | objectIdentifierType
-      ;
-
 // X.680: 16.3
 referencedType :
       definedType
@@ -144,8 +133,6 @@ referencedType :
 namedType : identifier type ;
 // X.680: 16.7
 value : builtinValue | referencedValue | objectClassFieldValue ;
-withoutObjectValue : builtinValue | referencedValue ;
-withObjectValue : objectClassFieldValue ;
 // X.680: 16.9:
 builtinValue :
       bitStringValue
@@ -422,7 +409,7 @@ exclusions : EXCEPT_WORD elements ;
 unionMark : '|' | UNION_WORD ;
 intersectionMark : '^' | INTERSECTION_WORD ;
 // X.680: 46.5
-elements : subtypeElements | objectSetElements | (L_PAREN elementSetSpec R_PAREN) ;
+elements : subtypeElements | objectSetElements | L_PAREN elementSetSpec R_PAREN ;
 
 // X.680: 47: Subtype elements
 // X.680: 47.1
