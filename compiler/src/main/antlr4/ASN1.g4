@@ -141,7 +141,7 @@ referencedType :
       | typeFromObject // X.681
       | valueSetFromObjects ; // X.681
 // X.680: 16.5
-namedType : identifier withoutObjectTypetype ;
+namedType : identifier type ;
 // X.680: 16.7
 value : builtinValue | referencedValue | objectClassFieldValue ;
 withoutObjectValue : builtinValue | referencedValue ;
@@ -163,8 +163,9 @@ builtinValue :
 //      | realValue
 //      | relativeOIDValue
       | sequenceValue
-      | setOrSequenceOfValue
+      | sequenceOfValue
       | setValue
+      | setOfValue
 //      | taggedValue
       ;
 // X.680: 16.11
@@ -258,12 +259,12 @@ componentValueList : namedValue (COMMA namedValue)* ;
 // X.680: 25: Notation for sequence-of types
 // X.680: 25.1
 sequenceOfType : SEQUENCE_WORD OF_WORD type | SEQUENCE_WORD OF_WORD namedType ;
-// X.680: 25.3 and X.680: 27.3
-setOrSequenceOfValue :
+// X.680: 25.3
+sequenceOfValue :
       L_BRACE valueList R_BRACE
       | L_BRACE namedValueList R_BRACE
       | L_BRACE R_BRACE ;
-valueList : withoutObjectValue (COMMA withoutObjectValue)* ;
+valueList : value (COMMA value)* ;
 namedValueList : namedValue (COMMA namedValue)* ;
 
 // X.680: 26: Notation for set types
@@ -277,9 +278,12 @@ setValue : L_BRACE componentValueList R_BRACE
       | L_BRACE R_BRACE ;
 
 // X.680: 27.1
-setOfType : SET_WORD OF_WORD withoutObjectTypetype
+setOfType : SET_WORD OF_WORD type
       | SET_WORD OF_WORD namedType ;
-// X.680: 27.3 - the same as sequenceOfValue
+// X.680: 27.3
+setOfValue : L_BRACE valueList R_BRACE
+      | L_BRACE namedValueList R_BRACE
+      | L_BRACE R_BRACE ;
 
 // X.680: 28.1
 choiceType : CHOICE_WORD L_BRACE alternativeTypeLists R_BRACE ;
