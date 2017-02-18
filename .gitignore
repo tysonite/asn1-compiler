@@ -1,3 +1,5 @@
 *~
 /compiler/target/
 nbactions.xml
+.idea
+*.iml
