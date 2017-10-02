@@ -11,8 +11,8 @@ before_install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get install -y libboost-all-dev libboost-test-dev lcov; fi
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo pip install cpp-coveralls; fi
 script:
-  - if [ $TRAVIS_OS_NAME == linux ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 -DBUILD_UNIT_TESTS=1 . && make VERBOSE=1 && ./tests/TestBER; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug . && make VERBOSE=1; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 -DBUILD_UNIT_TESTS=1 . && make -j VERBOSE=1 && ./tests/TestBER; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug . && make -j VERBOSE=1; fi
 after_success:
   - if [ $TRAVIS_OS_NAME == linux ]; then coveralls --gcov-options '\-lp'; fi
 os:
