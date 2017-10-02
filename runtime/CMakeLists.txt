@@ -23,7 +23,7 @@ if (ENABLE_XER)
    add_definitions (-DASN1_ENABLE_XER)
 endif ()
 
-if (DO_COVERAGE)
+if (CMAKE_COMPILER_IS_GNUCXX AND DO_COVERAGE)
    if (NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
       message (FATAL_ERROR "Code coverage is possible only in Debug mode")
    endif ()
