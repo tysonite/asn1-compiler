@@ -14,7 +14,7 @@ script:
   - if [ $TRAVIS_OS_NAME == linux ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug -DDO_COVERAGE=1 -DBUILD_UNIT_TESTS=1 . && make VERBOSE=1 && ./tests/TestBER; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then cd runtime && cmake $BIG_INT -DCMAKE_BUILD_TYPE=Debug -DBUILD_UNIT_TESTS=1 . && make VERBOSE=1 && ./tests/TestBER; fi
 after_success:
-  - if [ $TRAVIS_OS_NAME == linux ]; then coveralls --gcov-options '\-lp'; fi
+  - if [ $TRAVIS_OS_NAME == linux ] && [ $CC == gcc ]; then coveralls --gcov-options '\-lp'; fi
 os:
   - linux
   - osx
