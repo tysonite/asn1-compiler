@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/tysonite/asn1-compiler.png?branch=master)](https://travis-ci.org/tysonite/asn1-compiler)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftysonite%2Fasn1-compiler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftysonite%2Fasn1-compiler?ref=badge_shield)
-
+[![Build Status](https://travis-ci.org/tysonite/asn1-compiler.png?branch=master)](https://travis-ci.org/tysonite/asn1-compiler)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftysonite%2Fasn1-compiler.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftysonite%2Fasn1-compiler?ref=badge_shield)
 [![Coverage Status](https://coveralls.io/repos/tysonite/asn1-compiler/badge.svg?branch=master&service=github)](https://coveralls.io/github/tysonite/asn1-compiler?branch=master)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/tysonite/asn1-compiler.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tysonite/asn1-compiler/alerts/)
 
@@ -66,6 +66,5 @@ If this project helped you, please, consider to make a donation.
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z8MVWEREKYYRL)
 
-
-## License
+# License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftysonite%2Fasn1-compiler.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftysonite%2Fasn1-compiler?ref=badge_large)
