@@ -1424,7 +1424,7 @@ void ChoiceInsideChoiceInsideChoice2::write(asn1::ASN1ValueWriter& writer, const
       _f_Type.write(writer, value.get_f());
 }
 
-BOOST_AUTO_TEST_CASE(TestBerChoiceChoiceType1)
+BOOST_AUTO_TEST_CASE(TestBerChoiceChoiceType2)
 {
    Choice::ValueType vToWrite, vToRead;
 
